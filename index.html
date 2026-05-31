@@ -1,0 +1,25 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>KUN · Kernel U-Net</title>
+  <link rel="canonical" href="{{ '/en/' | relative_url }}">
+  <script>
+    // Send visitors to the best-matching language, defaulting to English.
+    (function () {
+      var supported = ["en", "zh", "fr"];
+      var base = "{{ site.baseurl }}";
+      var lang = (navigator.language || "en").slice(0, 2).toLowerCase();
+      if (supported.indexOf(lang) === -1) lang = "en";
+      window.location.replace(base + "/" + lang + "/");
+    })();
+  </script>
+  <meta http-equiv="refresh" content="0; url={{ '/en/' | relative_url }}">
+</head>
+<body>
+  <p>Redirecting to <a href="{{ '/en/' | relative_url }}">KUN documentation</a>…</p>
+</body>
+</html>

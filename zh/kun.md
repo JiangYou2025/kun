@@ -1,0 +1,119 @@
+---
+lang: zh
+ref: kun
+permalink: /zh/kun/
+title: "使用 KUN —— Kernel U-Net"
+lead: "KUN（Kernel U-Net）是一个用于长时域、多变量时间序列预测的层次化、对称式架构。本页解释它背后的思想，并给出在你自己数据上运行它的分步教程。"
+prev: forecasting
+math: true
+---
+
+## 一张图看懂思想
+
+KUN 借用了图像分割中 **U-Net** 的形状：一个不断压缩输入的**编码器**，和一个不断把它扩张回预测的**对称解码器**，信息在对应的层级之间流动。
+
+```
+输入窗口
+   │  切分成 patch（片段）
+   ▼
+[ 编码器 ]  patch → patch → patch        （下采样：单元更少、更粗）
+   │            │      │       │
+   │         skip   skip    skip          （对应层级相连）
+   ▼            ▼      ▼       ▼
+[ 解码器 ]  patch ← patch ← patch        （上采样：重建分辨率）
+   │
+   ▼
+预测时域
+```
+
+让 KUN 得名的关键之处在于：在 U 形的每个节点上，执行的运算是一个**可插拔的核（kernel）**，而不是固定的卷积。一个核就是一个把片段映射到片段的小函数——它可以是**线性层、MLP、RNN 或注意力模块**。你为每个层级选择核，于是同一套骨架既可以做得很轻量，也可以做得很有表达力。
+
+## 为什么这个设计有效
+
+- **层次结构匹配时间。** 靠近输入的短 patch 捕捉局部、高频的细节；更深的层级看到更长、更粗的上下文。一条序列很少只存在于单一尺度上，而 U 形一次就能捕捉多个尺度。
+- **对称带来高效。** 由于解码器镜像了编码器，模型可以重建出完整的时域，而不会随长度产生二次方的开销——这是相对于普通 Transformer 在长序列上的优势。
+- **核带来灵活。** 线性核给出快速而强劲的基线（与 DLinear 思路一致）；注意力核在数据需要时增加容量。你通过替换核、而不是重写模型，来在算力和精度之间权衡。
+- **直接多输出。** KUN 一次性预测整个时域，避免了递归预测的误差累积。
+
+## 分步教程：用 KUN 做预测
+
+> **关于 API 的说明。** 下面的代码片段展示的是一个典型训练流程的*形状*，方便你将其改写为本仓库中 KUN 真正的接口。等代码正式发布后，请把导入路径、类名和参数名替换成代码里真实的名字。请把它当作模板，而不是可直接复制运行的代码。
+
+### 1. 获取代码并安装
+
+```bash
+git clone https://github.com/JiangYou2025/kun.git
+cd kun
+pip install -r requirements.txt   # 或者：pip install -e .
+```
+
+### 2. 整理数据
+
+KUN 期望 [时间序列](./../time-series/) 一页里讲的滑动窗口格式：长度为 `L`（回看）的输入，映射到长度为 `H`（时域）的输出，共有 `C` 个通道（变量）。
+
+```python
+# x: 形状为 (样本数, L, C) 的数组  -> 回看窗口
+# y: 形状为 (样本数, H, C) 的数组  -> 要预测的目标
+```
+
+务必**按通道归一化**（减去训练集均值、除以训练集标准差），并**按时间切分**。
+
+### 3. 配置模型
+
+```python
+from kun import KernelUNet            # 改成真实的导入路径
+
+model = KernelUNet(
+    input_len=336,     # L —— 回看窗口
+    pred_len=96,       # H —— 预测时域
+    n_channels=7,      # C —— 变量个数
+    patch_sizes=[16, 8, 4],   # 每个层级如何切分序列
+    kernel="linear",          # "linear" | "mlp" | "attention" —— 每层的核
+)
+```
+
+先从 `kernel="linear"` 和较短的时域开始。它几秒就能训练完，并给你一个要去超越的基线——这正是 [如何做预测](./../forecasting/) 一页强调的纪律。
+
+### 4. 训练
+
+```python
+import torch
+opt = torch.optim.Adam(model.parameters(), lr=1e-3)
+loss_fn = torch.nn.L1Loss()          # MAE —— 鲁棒且可解释
+
+for epoch in range(50):
+    for xb, yb in train_loader:
+        opt.zero_grad()
+        pred = model(xb)             # (batch, H, C)
+        loss = loss_fn(pred, yb)
+        loss.backward()
+        opt.step()
+```
+
+### 5. 评估与预测
+
+```python
+model.eval()
+with torch.no_grad():
+    pred = model(x_test)             # 预测留出的时域
+mae = (pred - y_test).abs().mean()
+print("测试集 MAE:", mae.item())
+```
+
+把这个数字和**季节性朴素基线**对比。如果 KUN 赢了，你就有了一个真正有用的模型；如果没赢，回头检查你的窗口、归一化和切分方式。
+
+## 一个合理的调参顺序
+
+1. **回看长度 `L`**——更长的上下文通常对长时域有帮助，但有上限。
+2. **patch 大小**——层级越多，层次性越强；尽量让每个 patch 大小能整除该层级的长度。
+3. **核的选择**——只有当验证误差能证明额外开销值得时，才从 `linear` → `mlp` → `attention` 升级。
+4. **学习率与轮数**——基于验证集 MAE 做早停。
+
+## 接下来去哪
+
+- 重读 [如何做预测](./../forecasting/)，先把基线跑出来——KUN 只有相对于基线才有意义。
+- 在 [GitHub](https://github.com/JiangYou2025/kun) 上提 issue 或阅读源码，以获得当前确切的 API。
+
+<div class="note">
+  <strong>引用 KUN。</strong> 如果 KUN 对你的研究或产品有帮助，请引用 Jiang You 的 Kernel U-Net 工作，并附上本仓库的链接。
+</div>

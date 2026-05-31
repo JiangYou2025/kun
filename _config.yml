@@ -1,0 +1,34 @@
+# Site settings
+title: "KUN · Kernel U-Net"
+description: "An introduction to time series, forecasting, and the Kernel U-Net (KUN) model — 时间序列、预测与 Kernel U-Net 入门 — Introduction aux séries temporelles, à la prévision et au modèle Kernel U-Net."
+author: "Jiang You"
+
+# GitHub Pages project page lives at https://<user>.github.io/kun
+url: "https://jiangyou2025.github.io"
+baseurl: "/kun"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# Languages available on the site
+languages: ["en", "zh", "fr"]
+default_lang: "en"
+
+kramdown:
+  math_engine: mathjax
+  syntax_highlighter: rouge
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - vendor
+  - .github
