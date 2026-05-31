@@ -11,6 +11,8 @@ lead: "一门关于时间序列分析与预测的入门课程，共 15 讲。本
 本讲义带你从零开始理解**时间序列 (time series)**：它是什么、如何分析、如何做**预测 (forecasting)**，并最终走到现代深度学习模型，包括本仓库的 **Kernel U-Net (KUN)**。
 
 > 配套站点（中 / 英 / 法）：[时间序列](../zh/time-series/) · [如何预测](../zh/forecasting/) · [使用 KUN](../zh/kun/)
+>
+> 想了解方法的来龙去脉？见 [时间序列百年史](../history/)。
 
 ## 讲义目录 (Table of Contents)
 

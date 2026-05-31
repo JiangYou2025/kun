@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if page.title %}{{ page.title }} · 时间序列入门{% else %}时间序列入门{% endif %}</title>
-  <meta name="description" content="{{ page.lead | default: '时间序列与预测入门讲义' }}">
+  <title>{% if page.title %}{{ page.title }} · 时间序列百年史{% else %}时间序列百年史{% endif %}</title>
+  <meta name="description" content="{{ page.lead | default: '时间序列分析与预测的百年历史 (A Century of Time Series)' }}">
   <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
   <link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
   {% if page.math %}
@@ -15,10 +15,10 @@
 <body>
 <header class="site-header">
   <div class="bar">
-    <a class="brand" href="{{ '/course/' | relative_url }}"><span class="logo">⨃</span> <strong>时间序列入门</strong></a>
+    <a class="brand" href="{{ '/history/' | relative_url }}"><span class="logo">⨃</span> <strong>时间序列百年史</strong></a>
     <nav class="site-nav">
-      <a href="{{ '/course/' | relative_url }}">目录</a>
-      <a href="{{ '/history/' | relative_url }}">百年史</a>
+      <a href="{{ '/history/' | relative_url }}">目录</a>
+      <a href="{{ '/course/' | relative_url }}">讲义</a>
       <a href="{{ '/zh/' | relative_url }}">KUN 站点</a>
       <a href="https://github.com/JiangYou2025/kun">GitHub</a>
     </nav>
@@ -26,20 +26,21 @@
 </header>
 
 <main class="content">
+  {% if page.era %}<p class="lead" style="margin-bottom:.2em;color:var(--accent)">{{ page.era }}</p>{% endif %}
   {% if page.title %}<h1 class="page-title">{{ page.title }}</h1>{% endif %}
   {% if page.lead %}<p class="lead">{{ page.lead }}</p>{% endif %}
   {{ content }}
 
   {% if page.prev or page.next %}
   <nav class="pager">
-    {% if page.prev %}<a class="prev" href="{{ page.prev | relative_url }}">← 上一讲</a>{% endif %}
-    {% if page.next %}<a class="next" href="{{ page.next | relative_url }}">下一讲 →</a>{% endif %}
+    {% if page.prev %}<a class="prev" href="{{ page.prev | relative_url }}">← 上一章</a>{% endif %}
+    {% if page.next %}<a class="next" href="{{ page.next | relative_url }}">下一章 →</a>{% endif %}
   </nav>
   {% endif %}
 </main>
 
 <footer class="site-footer">
-  <div class="bar"><span>© Jiang You · 时间序列入门</span><span class="muted">由 Jekyll 构建 · 托管于 GitHub Pages</span></div>
+  <div class="bar"><span>© Jiang You · 时间序列百年史</span><span class="muted">由 Jekyll 构建 · 托管于 GitHub Pages</span></div>
 </footer>
 </body>
 </html>
