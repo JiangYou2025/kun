@@ -32,3 +32,4 @@ exclude:
   - README.md
   - vendor
   - .github
+  - notebooks

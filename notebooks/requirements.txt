@@ -1,0 +1,5 @@
+numpy
+pandas
+matplotlib
+# 案例 3 需要 PyTorch（可选）:
+torch
