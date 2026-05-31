@@ -14,7 +14,7 @@ Une **série temporelle** est une suite d'observations enregistrées dans l'ordr
 
 $$ x_1, x_2, x_3, \dots, x_T $$
 
-Chaque $x_t$ est la valeur mesurée au pas de temps $t$. Ce qui rend une série temporelle particulière — et plus difficile que des données tabulaires ordinaires — c'est que **l'ordre compte** : hier influence aujourd'hui ; on ne peut pas mélanger les lignes.
+Chaque $$x_t$$ est la valeur mesurée au pas de temps $$t$$. Ce qui rend une série temporelle particulière — et plus difficile que des données tabulaires ordinaires — c'est que **l'ordre compte** : hier influence aujourd'hui ; on ne peut pas mélanger les lignes.
 
 Les exemples sont partout : température quotidienne, demande horaire d'électricité, cours de clôture d'une action, nombre de patients arrivant à l'hôpital, utilisation du CPU d'un serveur.
 
@@ -46,18 +46,18 @@ Une série est **stationnaire** si ses propriétés statistiques (moyenne, varia
 
 Les données réelles sont généralement **non stationnaires** (tendance, variance changeante). Deux remèdes courants :
 
-- **Différenciation** — modéliser la variation $x_t - x_{t-1}$ plutôt que la valeur brute, ce qui supprime une tendance.
+- **Différenciation** — modéliser la variation $$x_t - x_{t-1}$$ plutôt que la valeur brute, ce qui supprime une tendance.
 - **Transformations** — par exemple le logarithme pour stabiliser une variance croissante.
 
 Les modèles profonds modernes comme KUN tolèrent mieux la non-stationnarité, mais normaliser les données aide toujours beaucoup.
 
 ## L'autocorrélation — le passé prédit l'avenir
 
-Si la prévision est possible, c'est grâce à l'**autocorrélation** : une valeur est corrélée à ses propres valeurs passées. L'**autocorrélation au décalage $k$** mesure à quel point la série ressemble à une copie d'elle-même décalée de $k$ pas. Une forte autocorrélation au décalage 24 sur des données horaires, par exemple, crie « saisonnalité quotidienne ».
+Si la prévision est possible, c'est grâce à l'**autocorrélation** : une valeur est corrélée à ses propres valeurs passées. L'**autocorrélation au décalage $$k$$** mesure à quel point la série ressemble à une copie d'elle-même décalée de $$k$$ pas. Une forte autocorrélation au décalage 24 sur des données horaires, par exemple, crie « saisonnalité quotidienne ».
 
 ## Comment poser le problème pour un modèle
 
-Étant donné une **fenêtre de rétrospection** (aussi appelée *contexte* ou *longueur d'entrée*) des $L$ dernières observations, on veut prédire les $H$ valeurs suivantes (l'**horizon**) :
+Étant donné une **fenêtre de rétrospection** (aussi appelée *contexte* ou *longueur d'entrée*) des $$L$$ dernières observations, on veut prédire les $$H$$ valeurs suivantes (l'**horizon**) :
 
 $$ \underbrace{(x_{t-L+1}, \dots, x_t)}_{\text{entrée}} \;\longrightarrow\; \underbrace{(x_{t+1}, \dots, x_{t+H})}_{\text{prévision}} $$
 

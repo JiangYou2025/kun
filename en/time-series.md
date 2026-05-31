@@ -14,7 +14,7 @@ A **time series** is a sequence of observations recorded in time order, usually 
 
 $$ x_1, x_2, x_3, \dots, x_T $$
 
-Each $x_t$ is the value measured at time step $t$. What makes a time series special — and harder than ordinary tabular data — is that **the order matters**. Yesterday influences today; you cannot shuffle the rows.
+Each $$x_t$$ is the value measured at time step $$t$$. What makes a time series special — and harder than ordinary tabular data — is that **the order matters**. Yesterday influences today; you cannot shuffle the rows.
 
 Examples are everywhere: daily temperature, hourly electricity demand, a stock's closing price, the number of patients arriving at a hospital, the CPU usage of a server.
 
@@ -46,18 +46,18 @@ A series is **stationary** if its statistical properties (mean, variance, autoco
 
 Real data is usually **non-stationary** (it has trends and changing variance). Two common fixes:
 
-- **Differencing** — model the change $x_t - x_{t-1}$ instead of the raw value, which removes a trend.
+- **Differencing** — model the change $$x_t - x_{t-1}$$ instead of the raw value, which removes a trend.
 - **Transformations** — e.g. taking the logarithm to stabilise a growing variance.
 
 Modern deep-learning models like KUN are more tolerant of non-stationarity, but normalising your data still helps a lot.
 
 ## Autocorrelation — the past predicts the future
 
-The reason forecasting is possible at all is **autocorrelation**: a value is correlated with its own past values. The **lag-$k$ autocorrelation** measures how similar the series is to a copy of itself shifted by $k$ steps. Strong autocorrelation at lag 24 in hourly data, for example, screams "daily seasonality".
+The reason forecasting is possible at all is **autocorrelation**: a value is correlated with its own past values. The **lag-$$k$$ autocorrelation** measures how similar the series is to a copy of itself shifted by $$k$$ steps. Strong autocorrelation at lag 24 in hourly data, for example, screams "daily seasonality".
 
 ## How we frame the problem for a model
 
-Given a **lookback window** (also called *context* or *input length*) of the last $L$ observations, we want to predict the next $H$ values (the **horizon**):
+Given a **lookback window** (also called *context* or *input length*) of the last $$L$$ observations, we want to predict the next $$H$$ values (the **horizon**):
 
 $$ \underbrace{(x_{t-L+1}, \dots, x_t)}_{\text{input}} \;\longrightarrow\; \underbrace{(x_{t+1}, \dots, x_{t+H})}_{\text{forecast}} $$
 

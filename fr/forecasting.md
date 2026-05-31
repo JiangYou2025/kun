@@ -13,7 +13,7 @@ math: true
 
 Un projet de prévision fiable suit presque toujours la même boucle :
 
-1. **Définir la tâche.** Que prédisez-vous, à quelle distance (l'horizon $H$), et à quelle fréquence ?
+1. **Définir la tâche.** Que prédisez-vous, à quelle distance (l'horizon $$H$$), et à quelle fréquence ?
 2. **Préparer les données.** Nettoyer les valeurs manquantes, rééchantillonner à une fréquence régulière, traiter les valeurs aberrantes.
 3. **Découper selon le temps.** S'entraîner sur le passé, valider sur une tranche plus récente, tester sur la plus récente. *Jamais de mélange aléatoire.*
 4. **Commencer par une référence.** Si votre modèle sophistiqué ne la bat pas, le problème vient du modèle.
@@ -27,8 +27,8 @@ Un projet de prévision fiable suit presque toujours la même boucle :
 
 Calculez toujours celles-ci d'abord — elles sont quasi gratuites et étonnamment fortes :
 
-- **Naïve / persistance :** demain = aujourd'hui, soit $\hat{x}_{t+1} = x_t$.
-- **Naïve saisonnière :** ce lundi = lundi dernier, soit $\hat{x}_{t+1} = x_{t+1-s}$ pour une saison de longueur $s$.
+- **Naïve / persistance :** demain = aujourd'hui, soit $$\hat{x}_{t+1} = x_t$$.
+- **Naïve saisonnière :** ce lundi = lundi dernier, soit $$\hat{x}_{t+1} = x_{t+1-s}$$ pour une saison de longueur $$s$$.
 - **Moyenne mobile / dérive :** prolonger la moyenne récente ou la pente récente.
 
 ## Le paysage des modèles
@@ -56,9 +56,9 @@ La métrique encode ce que « bon » signifie pour *votre* problème.
 
 | Métrique | Formule | À utiliser quand |
 |---|---|---|
-| **MAE** | $\frac{1}{H}\sum\lvert x_t-\hat{x}_t\rvert$ | Vous voulez des erreurs dans l'unité d'origine, robustes aux valeurs aberrantes |
-| **RMSE** | $\sqrt{\frac{1}{H}\sum (x_t-\hat{x}_t)^2}$ | Les grandes erreurs doivent être plus pénalisées |
-| **MAPE** | $\frac{100}{H}\sum\frac{\lvert x_t-\hat{x}_t\rvert}{\lvert x_t\rvert}$ | Vous voulez un pourcentage sans unité (évitez les valeurs proches de zéro) |
+| **MAE** | $$\frac{1}{H}\sum\lvert x_t-\hat{x}_t\rvert$$ | Vous voulez des erreurs dans l'unité d'origine, robustes aux valeurs aberrantes |
+| **RMSE** | $$\sqrt{\frac{1}{H}\sum (x_t-\hat{x}_t)^2}$$ | Les grandes erreurs doivent être plus pénalisées |
+| **MAPE** | $$\frac{100}{H}\sum\frac{\lvert x_t-\hat{x}_t\rvert}{\lvert x_t\rvert}$$ | Vous voulez un pourcentage sans unité (évitez les valeurs proches de zéro) |
 
 Reportez votre métrique **par rapport à la référence**, et non isolément.
 
@@ -74,9 +74,9 @@ Comme on ne peut pas mélanger, utilisez une **validation croisée à fenêtre g
 
 ## Pas unique vs. multi-pas
 
-Pour prévoir un horizon $H > 1$, vous pouvez :
+Pour prévoir un horizon $$H > 1$$, vous pouvez :
 
 - **Itératif (récursif) :** prédire un pas, le réinjecter en entrée, recommencer. Simple, mais les erreurs s'accumulent.
-- **Direct / multi-sortie :** prédire les $H$ pas d'un coup. Plus stable sur les longs horizons — et c'est exactement ainsi que **KUN** produit sa prévision.
+- **Direct / multi-sortie :** prédire les $$H$$ pas d'un coup. Plus stable sur les longs horizons — et c'est exactement ainsi que **KUN** produit sa prévision.
 
 Le flux de travail et le vocabulaire en place, vous êtes prêt à rencontrer le modèle lui-même.
