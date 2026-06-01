@@ -47,23 +47,31 @@ lead: "从 1927 年 Yule 的自回归到今天的深度学习与基础模型—�
 <tr class="r-ctrl"><td class="yr">1948</td><td><span class="badge d-ctrl">控制</span></td><td>Wiener</td><td>《控制论》、Wiener–Hopf 最优滤波器</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1949</td><td><span class="badge d-math">数学</span></td><td>Kac · Feynman</td><td>Feynman–Kac / 路径积分：PDE 解 = 路径期望</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">1950s</td><td><span class="badge d-cs">计算机</span></td><td>Brown</td><td>简单指数平滑 SES（在线 O(1) 更新）</td><td><a href="03/">3</a></td></tr>
+<tr class="r-phys"><td class="yr">1951</td><td><span class="badge d-phys">物理</span></td><td>Hurst</td><td>R/S 重标极差、长程依赖（尼罗河洪水）</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1953</td><td><span class="badge d-math">数学</span></td><td>Doob</td><td>鞅理论：公平游戏 → 有效市场 / 无套利定价</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1957</td><td><span class="badge d-ctrl">控制</span></td><td>Holt</td><td>Holt 线性趋势法（水平 + 趋势递推）</td><td><a href="03/">3</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1960</td><td><span class="badge d-ctrl">控制</span></td><td>Kálmán</td><td>卡尔曼滤波、状态空间模型（预测—更新）</td><td><a href="04/">4</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1960</td><td><span class="badge d-ctrl">控制</span></td><td>Winters</td><td>Holt–Winters 季节性指数平滑</td><td><a href="04/">4</a></td></tr>
 <tr class="r-math"><td class="yr">1963</td><td><span class="badge d-math">数学</span></td><td>Mandelbrot</td><td>金融收益重尾、分数布朗运动与长记忆</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-phys"><td class="yr">1963</td><td><span class="badge d-phys">物理</span></td><td>Lorenz</td><td>确定性混沌、洛伦兹吸引子（可预测性极限）</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">1970</td><td><span class="badge d-cs">计算机</span></td><td>Box · Jenkins</td><td>ARIMA/SARIMA 与三阶段建模方法论</td><td><a href="05/">5</a></td></tr>
 <tr class="r-math"><td class="yr">1973</td><td><span class="badge d-math">数学</span></td><td>Black · Scholes · Merton</td><td>期权定价：几何布朗运动 + Itô 引理</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1976</td><td><span class="badge d-math">数学</span></td><td>Malliavin</td><td>Malliavin 微积分：对随机性求导，SDE 密度与 Greeks</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1970s–80s</td><td><span class="badge d-ctrl">控制</span></td><td>Åström · Ljung</td><td>系统辨识：从输入输出拟合 ARX/ARMAX</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-phys"><td class="yr">1981</td><td><span class="badge d-phys">物理</span></td><td>Takens</td><td>延迟嵌入定理：单变量序列重构相空间</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">1982</td><td><span class="badge d-cs">计算机</span></td><td>Engle</td><td>ARCH：让条件方差随时间变化</td><td><a href="06/">6</a></td></tr>
+<tr class="r-phys"><td class="yr">1983</td><td><span class="badge d-phys">物理</span></td><td>Grassberger · Procaccia</td><td>关联维数：从序列估计吸引子分形维</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">1986</td><td><span class="badge d-cs">计算机</span></td><td>Bollerslev</td><td>GARCH(1,1)：更简洁的波动率模型</td><td><a href="06/">6</a></td></tr>
 <tr class="r-cs"><td class="yr">1987</td><td><span class="badge d-cs">计算机</span></td><td>Engle · Granger</td><td>协整、误差修正模型、ADF 单位根检验</td><td><a href="06/">6</a></td></tr>
+<tr class="r-phys"><td class="yr">1990</td><td><span class="badge d-phys">物理</span></td><td>Sugihara · May</td><td>非线性预测：区分混沌与噪声（后启 CCM 因果）</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-phys"><td class="yr">1994</td><td><span class="badge d-phys">物理</span></td><td>Peng et al.</td><td>DFA 去趋势波动分析：提取长程相关</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">1990s</td><td><span class="badge d-cs">计算机</span></td><td>RNN</td><td>循环神经网络、BPTT 与梯度消失问题</td><td><a href="07/">7</a></td></tr>
 <tr class="r-cs"><td class="yr">1997</td><td><span class="badge d-cs">计算机</span></td><td>Hochreiter · Schmidhuber</td><td>LSTM：门控 + 细胞状态（常误差环）</td><td><a href="07/">7</a></td></tr>
 <tr class="r-math"><td class="yr">1998</td><td><span class="badge d-math">数学</span></td><td>Lyons</td><td>粗糙路径理论 + 路径签名：序列的通用特征映射</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-phys"><td class="yr">1999</td><td><span class="badge d-phys">物理</span></td><td>Mantegna · Stanley</td><td>经济物理：金融序列的标度律、幂律与胖尾</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">2000s</td><td><span class="badge d-cs">计算机</span></td><td>SVR</td><td>支持向量回归：ε-不敏感损失 + 核技巧</td><td><a href="08/">8</a></td></tr>
 <tr class="r-cs"><td class="yr">2001</td><td><span class="badge d-cs">计算机</span></td><td>Friedman</td><td>梯度提升 GBDT（函数空间梯度下降）</td><td><a href="08/">8</a></td></tr>
+<tr class="r-phys"><td class="yr">2005–10</td><td><span class="badge d-phys">物理</span></td><td>Mezić · Schmid</td><td>Koopman 算子 / 动态模态分解：高维序列的相干模态</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">2014–18</td><td><span class="badge d-math">数学</span></td><td>Gatheral · Jaisson · Rosenbaum</td><td>粗糙波动率：波动率轨迹是 H&lt;½ 的分数布朗运动</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">2017</td><td><span class="badge d-cs">计算机</span></td><td>Vaswani et al.</td><td>Transformer：自注意力，任意位置直接交互</td><td><a href="09/">9</a></td></tr>
 <tr class="r-cs"><td class="yr">2017–19</td><td><span class="badge d-cs">计算机</span></td><td>Amazon DeepAR</td><td>自回归 RNN 概率预测、跨序列全局模型</td><td><a href="09/">9</a></td></tr>
