@@ -47,6 +47,7 @@ lead: "从 1927 年 Yule 的自回归到今天的深度学习与基础模型—�
 <tr class="r-math"><td class="yr">1944</td><td><span class="badge d-math">数学</span></td><td>Itô</td><td>随机微积分、Itô 引理 → 连续时间金融的引擎</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1945</td><td><span class="badge d-math">数学</span></td><td>Wald</td><td>序贯分析 / SPRT、最优停时（变点检测之源）</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1948</td><td><span class="badge d-ctrl">控制</span></td><td>Wiener</td><td>《控制论》、Wiener–Hopf 最优滤波器</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-ctrl"><td class="yr">1948</td><td><span class="badge d-ctrl">控制</span></td><td>Shannon</td><td>信息论：熵、信道容量、Nyquist–Shannon 采样定理</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1949</td><td><span class="badge d-math">数学</span></td><td>Kac · Feynman</td><td>Feynman–Kac / 路径积分：PDE 解 = 路径期望</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">1950s</td><td><span class="badge d-cs">计算机</span></td><td>Brown</td><td>简单指数平滑 SES（在线 O(1) 更新）</td><td><a href="03/">3</a></td></tr>
 <tr class="r-phys"><td class="yr">1951</td><td><span class="badge d-phys">物理</span></td><td>Hurst</td><td>R/S 重标极差、长程依赖（尼罗河洪水）</td><td><a href="foundations/">序</a></td></tr>
@@ -58,10 +59,12 @@ lead: "从 1927 年 Yule 的自回归到今天的深度学习与基础模型—�
 <tr class="r-ctrl"><td class="yr">1960</td><td><span class="badge d-ctrl">控制</span></td><td>Winters</td><td>Holt–Winters 季节性指数平滑</td><td><a href="04/">4</a></td></tr>
 <tr class="r-math"><td class="yr">1963</td><td><span class="badge d-math">数学</span></td><td>Mandelbrot</td><td>金融收益重尾、分数布朗运动与长记忆</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-phys"><td class="yr">1963</td><td><span class="badge d-phys">物理</span></td><td>Lorenz</td><td>确定性混沌、洛伦兹吸引子（可预测性极限）</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-ctrl"><td class="yr">1967</td><td><span class="badge d-ctrl">控制</span></td><td>Viterbi</td><td>维特比算法：HMM / 卷积码的动态规划解码</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">1970</td><td><span class="badge d-cs">计算机</span></td><td>Box · Jenkins</td><td>ARIMA/SARIMA 与三阶段建模方法论</td><td><a href="05/">5</a></td></tr>
 <tr class="r-math"><td class="yr">1973</td><td><span class="badge d-math">数学</span></td><td>Black · Scholes · Merton</td><td>期权定价：几何布朗运动 + Itô 引理</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1976</td><td><span class="badge d-math">数学</span></td><td>Malliavin</td><td>Malliavin 微积分：对随机性求导，SDE 密度与 Greeks</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1970s–80s</td><td><span class="badge d-ctrl">控制</span></td><td>Åström · Ljung</td><td>系统辨识：从输入输出拟合 ARX/ARMAX</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-ctrl"><td class="yr">1980</td><td><span class="badge d-ctrl">控制</span></td><td>Cutler · Ramaker</td><td>模型预测控制 MPC：用滚动预测做闭环决策</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-phys"><td class="yr">1981</td><td><span class="badge d-phys">物理</span></td><td>Takens</td><td>延迟嵌入定理：单变量序列重构相空间</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">1982</td><td><span class="badge d-cs">计算机</span></td><td>Engle</td><td>ARCH：让条件方差随时间变化</td><td><a href="06/">6</a></td></tr>
 <tr class="r-phys"><td class="yr">1983</td><td><span class="badge d-phys">物理</span></td><td>Grassberger · Procaccia</td><td>关联维数：从序列估计吸引子分形维</td><td><a href="foundations/">序</a></td></tr>
@@ -69,6 +72,8 @@ lead: "从 1927 年 Yule 的自回归到今天的深度学习与基础模型—�
 <tr class="r-cs"><td class="yr">1987</td><td><span class="badge d-cs">计算机</span></td><td>Engle · Granger</td><td>协整、误差修正模型、ADF 单位根检验</td><td><a href="06/">6</a></td></tr>
 <tr class="r-cs"><td class="yr">1988–89</td><td><span class="badge d-cs">计算机</span></td><td>Sutton · Barto · Watkins</td><td>强化学习：时序差分 (TD) 与 Q-learning</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-phys"><td class="yr">1990</td><td><span class="badge d-phys">物理</span></td><td>Sugihara · May</td><td>非线性预测：区分混沌与噪声（后启 CCM 因果）</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-ctrl"><td class="yr">1993</td><td><span class="badge d-ctrl">控制</span></td><td>Gordon et al.</td><td>粒子滤波 / 序贯蒙特卡洛：非线性非高斯状态估计</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-ctrl"><td class="yr">1994</td><td><span class="badge d-ctrl">控制</span></td><td>Evensen</td><td>集合卡尔曼滤波 EnKF：数值天气预报的数据同化</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-phys"><td class="yr">1994</td><td><span class="badge d-phys">物理</span></td><td>Peng et al.</td><td>DFA 去趋势波动分析：提取长程相关</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">1990s</td><td><span class="badge d-cs">计算机</span></td><td>RNN</td><td>循环神经网络、BPTT 与梯度消失问题</td><td><a href="07/">7</a></td></tr>
 <tr class="r-cs"><td class="yr">1997</td><td><span class="badge d-cs">计算机</span></td><td>Hochreiter · Schmidhuber</td><td>LSTM：门控 + 细胞状态（常误差环）</td><td><a href="07/">7</a></td></tr>
@@ -84,9 +89,11 @@ lead: "从 1927 年 Yule 的自回归到今天的深度学习与基础模型—�
 <tr class="r-cs"><td class="yr">2019</td><td><span class="badge d-cs">计算机</span></td><td>N-BEATS</td><td>纯前馈 + 残差堆叠的可解释深度模型</td><td><a href="09/">9</a></td></tr>
 <tr class="r-phys"><td class="yr">2019</td><td><span class="badge d-phys">物理</span></td><td>Raissi · Lu</td><td>PINN 物理信息网络、DeepONet 神经算子（解 PDE）</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-phys"><td class="yr">2020</td><td><span class="badge d-phys">物理</span></td><td>Li et al.</td><td>傅里叶神经算子 FNO：学习函数到函数的映射</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-ctrl"><td class="yr">2020–21</td><td><span class="badge d-ctrl">控制</span></td><td>Gu et al. (HiPPO · S4)</td><td>深度状态空间模型：Kalman 状态空间反超 Transformer</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">2022</td><td><span class="badge d-cs">计算机</span></td><td>DLinear</td><td>分解 + 单层线性，竟超越复杂 Transformer</td><td><a href="10/">10</a></td></tr>
 <tr class="r-cs"><td class="yr">2023</td><td><span class="badge d-cs">计算机</span></td><td>PatchTST</td><td>分块 token + 通道独立，降维并保留局部语义</td><td><a href="10/">10</a></td></tr>
 <tr class="r-phys"><td class="yr">2022–23</td><td><span class="badge d-phys">物理</span></td><td>FourCastNet · GraphCast</td><td>数据驱动天气预报 = 全球尺度时空时间序列预测</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-ctrl"><td class="yr">2023</td><td><span class="badge d-ctrl">控制</span></td><td>Mamba (Gu · Dao)</td><td>选择性状态空间模型：线性时间扫描的长序列建模</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">2020s</td><td><span class="badge d-math">数学</span></td><td>Neural CDE · 签名核</td><td>粗糙路径/签名用于不规则、缺失值序列的机器学习</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">2020s</td><td><span class="badge d-cs">计算机</span></td><td>Kernel U-Net (KUN)</td><td>层次化 U 形 + 可插拔核（线性/MLP/注意力）</td><td><a href="10/">10</a></td></tr>
 <tr class="r-cs"><td class="yr">2020s</td><td><span class="badge d-cs">计算机</span></td><td>TimesFM · Chronos · Moirai</td><td>海量预训练的时间序列基础模型（零样本预测）</td><td><a href="10/">10</a></td></tr>
