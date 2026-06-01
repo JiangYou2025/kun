@@ -32,6 +32,7 @@ lead: "从 1927 年 Yule 的自回归到今天的深度学习与基础模型—�
 <table class="tl-table">
 <thead><tr><th>年份</th><th>领域</th><th>人物</th><th>关键贡献</th><th>章</th></tr></thead>
 <tbody>
+<tr class="r-math"><td class="yr">1900</td><td><span class="badge d-math">数学</span></td><td>Bachelier</td><td>随机游走为股价建模：数理金融与布朗运动之始</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-phys"><td class="yr">1905</td><td><span class="badge d-phys">物理</span></td><td>Einstein · Smoluchowski</td><td>布朗运动理论 → 数学上的 Wiener 过程</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-phys"><td class="yr">1908</td><td><span class="badge d-phys">物理</span></td><td>Langevin</td><td>Langevin 方程：摩擦项 + 随机力</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1927</td><td><span class="badge d-math">数学</span></td><td>Yule · Walker</td><td>自回归 AR(p)、Yule–Walker 方程</td><td><a href="01/">1</a></td></tr>
@@ -39,14 +40,19 @@ lead: "从 1927 年 Yule 的自回归到今天的深度学习与基础模型—�
 <tr class="r-phys"><td class="yr">1930</td><td><span class="badge d-phys">物理</span></td><td>Ornstein · Uhlenbeck</td><td>均值回复随机过程，离散化即 AR(1)</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1933</td><td><span class="badge d-math">数学</span></td><td>Kolmogorov</td><td>概率论公理化、遍历定理（时间均值=系综均值）</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1934</td><td><span class="badge d-math">数学</span></td><td>Khinchin</td><td>Wiener–Khinchin 定理：自协方差 ↔ 功率谱</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-math"><td class="yr">1934</td><td><span class="badge d-math">数学</span></td><td>Lévy</td><td>Lévy 过程、稳定分布（重尾）、鞅理论奠基</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1938</td><td><span class="badge d-math">数学</span></td><td>Wold</td><td>Wold 分解：平稳过程 = 确定项 + MA(∞)</td><td><a href="02/">2</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1940s</td><td><span class="badge d-ctrl">控制</span></td><td>Wiener · Kolmogorov</td><td>最优线性预测 = 条件期望（投影）</td><td><a href="02/">2</a></td></tr>
+<tr class="r-math"><td class="yr">1944</td><td><span class="badge d-math">数学</span></td><td>Itô</td><td>随机微积分、Itô 引理 → 连续时间金融的引擎</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1948</td><td><span class="badge d-ctrl">控制</span></td><td>Wiener</td><td>《控制论》、Wiener–Hopf 最优滤波器</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">1950s</td><td><span class="badge d-cs">计算机</span></td><td>Brown</td><td>简单指数平滑 SES（在线 O(1) 更新）</td><td><a href="03/">3</a></td></tr>
+<tr class="r-math"><td class="yr">1953</td><td><span class="badge d-math">数学</span></td><td>Doob</td><td>鞅理论：公平游戏 → 有效市场 / 无套利定价</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1957</td><td><span class="badge d-ctrl">控制</span></td><td>Holt</td><td>Holt 线性趋势法（水平 + 趋势递推）</td><td><a href="03/">3</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1960</td><td><span class="badge d-ctrl">控制</span></td><td>Kálmán</td><td>卡尔曼滤波、状态空间模型（预测—更新）</td><td><a href="04/">4</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1960</td><td><span class="badge d-ctrl">控制</span></td><td>Winters</td><td>Holt–Winters 季节性指数平滑</td><td><a href="04/">4</a></td></tr>
+<tr class="r-math"><td class="yr">1963</td><td><span class="badge d-math">数学</span></td><td>Mandelbrot</td><td>金融收益重尾、分数布朗运动与长记忆</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">1970</td><td><span class="badge d-cs">计算机</span></td><td>Box · Jenkins</td><td>ARIMA/SARIMA 与三阶段建模方法论</td><td><a href="05/">5</a></td></tr>
+<tr class="r-math"><td class="yr">1973</td><td><span class="badge d-math">数学</span></td><td>Black · Scholes · Merton</td><td>期权定价：几何布朗运动 + Itô 引理</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1970s–80s</td><td><span class="badge d-ctrl">控制</span></td><td>Åström · Ljung</td><td>系统辨识：从输入输出拟合 ARX/ARMAX</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">1982</td><td><span class="badge d-cs">计算机</span></td><td>Engle</td><td>ARCH：让条件方差随时间变化</td><td><a href="06/">6</a></td></tr>
 <tr class="r-cs"><td class="yr">1986</td><td><span class="badge d-cs">计算机</span></td><td>Bollerslev</td><td>GARCH(1,1)：更简洁的波动率模型</td><td><a href="06/">6</a></td></tr>
