@@ -69,6 +69,12 @@ $$ S(\omega)=\sum_{k=-\infty}^{\infty}\gamma_k\, e^{-i\omega k} $$
 
 **从随机过程到金融数学，再回到时间序列。** 这套机器——Bachelier 的随机游走、Lévy 的重尾、Doob 的鞅、Itô 的随机微积分——在 1970 年代结出**数理金融**的果实：几何布朗运动 + Itô 引理给出 **Black–Scholes–Merton 期权定价**，Ornstein–Uhlenbeck 过程给出 **Vasicek 利率模型**，而 Harrison–Kreps–Pliska（1979–81）用**等价鞅测度**证明"无套利 ⟺ 存在使贴现价格为鞅的测度"，奠定**资产定价基本定理**。回到离散时间的时间序列，同一批思想以另一种语言重现：**随机游走 / 鞅 → 单位根与有效市场检验**（[第 6 章](06/)的 ADF、协整），**OU 过程 → AR(1) 的均值回复**，**Lévy 重尾 → 波动率聚集与 ARCH/GARCH**，**Mandelbrot 的分数布朗运动与长程相关 → ARFIMA 长记忆模型**。数理金融与时间序列，本就是同一棵随机过程之树上的两根枝条。
 
+**21 世纪的新数学：路径、签名与粗糙性。** 随机分析并未止步。**Feynman–Kac 公式**（Kac，1949，源自 Feynman 的**路径积分**）把抛物型 PDE 的解写成对随机路径的期望，使 Black–Scholes PDE 与鞅定价成为一枚硬币的两面；**Malliavin 微积分**（1976）则发展出"对随机性求导"的工具，用来刻画 SDE 解的密度、计算对冲灵敏度（Greeks）。进入 21 世纪，**Terry Lyons 的粗糙路径理论 (rough paths，1998)** 为被极不规则信号驱动的微分方程提供严格框架，其核心对象是路径的**签名 (signature)**——一串迭代积分张量：
+
+$$ S(X)_{0,t} = \Big(\,1,\ \int dX,\ \iint dX\otimes dX,\ \iiint dX\otimes dX\otimes dX,\ \dots\Big) $$
+
+它把一段轨迹编码成**通用特征**：任何路径泛函都能由签名线性逼近。这条线如今直接反哺时间序列机器学习——**签名核 (signature kernel)** 与 **Neural CDE / 神经粗糙微分方程**（Kidger、Salvi、Cass、Oberhauser 等，2020s）用它优雅地处理**不规则采样与缺失值**的序列；而 **粗糙波动率 (rough volatility，Gatheral–Jaisson–Rosenbaum，2014–2018)** 发现市场波动率的轨迹竟是 Hurst 指数 $$H<\tfrac12$$ 的**分数布朗运动**，把 Mandelbrot 半个世纪前的重尾与长记忆直觉重新带回金融建模的最前沿。从 Bachelier 的随机游走到 Lyons 的签名，随机过程这条数学主线，仍在为今天的时间序列源源不断地提供新工具。
+
 ---
 
 ## 二、物理学家：随机动力学与均值回复 (Physicists)
@@ -113,7 +119,7 @@ $$S_{xx}$$ 是输入（信号+噪声）的功率谱，$$S_{xy}$$ 是输入与目
 
 | 来源 | 代表人物 | 贡献 | 留给时间序列的遗产 |
 |------|----------|------|----------------------|
-| 数学 | Bachelier, Kolmogorov, Lévy, Doob, Itô | 随机游走、概率公理化、鞅、随机微积分、谱表示 | 平稳性、可推断性、有效市场/无套利、连续时间金融 |
+| 数学 | Bachelier, Kolmogorov, Lévy, Doob, Itô, Lyons | 随机游走、概率公理化、鞅、随机微积分、谱表示、粗糙路径与签名 | 平稳性、可推断性、有效市场/无套利、连续时间金融、序列的通用特征 |
 | 物理 | Einstein, Langevin, Uhlenbeck | 布朗运动、随机微分方程、均值回复 | 连续时间模型、AR(1) 的物理意义 |
 | 控制/通信 | Wiener, Kalman, Åström | 最优滤波、状态空间、系统辨识 | 递归估计、在线/自适应、反馈 |
 
@@ -121,4 +127,4 @@ $$S_{xx}$$ 是输入（信号+噪声）的功率谱，$$S_{xy}$$ 是输入与目
 
 ---
 
-**关键术语 (Key terms):** 平稳性 · 遍历定理 · 马尔可夫性 · 鞅 (martingale) · Lévy 过程与重尾 · 随机微积分 / Itô 引理 · 几何布朗运动 · 有效市场假说 · Wiener–Khinchin 定理 · Wiener 过程 · Ornstein–Uhlenbeck 过程 · Langevin 方程 · Wiener 滤波 · 系统辨识
+**关键术语 (Key terms):** 平稳性 · 遍历定理 · 马尔可夫性 · 鞅 (martingale) · Lévy 过程与重尾 · 随机微积分 / Itô 引理 · 几何布朗运动 · 有效市场假说 · 路径积分 / Feynman–Kac · 粗糙路径与路径签名 · 粗糙波动率 · Wiener–Khinchin 定理 · Wiener 过程 · Ornstein–Uhlenbeck 过程 · Langevin 方程 · Wiener 滤波 · 系统辨识
