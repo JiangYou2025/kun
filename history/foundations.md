@@ -141,6 +141,8 @@ $$S_{xx}$$ 是输入（信号+噪声）的功率谱，$$S_{xy}$$ 是输入与目
 
 **用预测来控制：模型预测控制 (MPC)。** 1970s–80s 工业界提出 **MPC**（DMC，Cutler–Ramaker 1980）：每一步用动态模型**向前预测一段**，求解未来最优控制序列、只执行第一步、再滚动重复。它把"时间序列预测"直接嵌进闭环决策，至今主导化工、能源与机器人；**子空间辨识 (N4SID，Van Overschee–De Moor 1994)** 则从数据直接估计状态空间矩阵。
 
+**2000 年代的承前启后。** 进入 21 世纪，控制与信号处理继续推进时间序列的边界：**回声状态网络 / 储备池计算 (Jaeger 2001；Jaeger–Haas 2004)** 用一个随机固定的动态"水库" + 一层线性读出，以极低训练成本预测混沌序列，把动力系统直觉注入循环网络；**压缩感知 (compressed sensing，Donoho、Candès–Romberg–Tao，2006)** 证明稀疏信号能由远低于 Nyquist 的采样精确重构，重塑了信号采集与去噪；**粒子 MCMC (Andrieu–Doucet–Holenstein，2010)** 把序贯蒙特卡洛嵌进 MCMC，让非线性状态空间模型的参数推断变得可行。这些工作承接 Kalman–粒子滤波的状态估计传统，也为下一波"深度状态空间"埋下伏笔。
+
 **控制论的回归：深度状态空间模型 (S4、Mamba)。** 最引人注目的"新进展"，是控制论思想在深度学习里的复活。**HiPPO（Gu 等，2020）** 用最优多项式投影推导出能在线压缩长历史的连续时间状态方程 $$\dot{\mathbf x}(t)=A\mathbf x(t)+B u(t)$$；**S4（2021）** 把这种**线性状态空间模型 (SSM)** 离散化、变成可用 FFT 高效计算的深度层，在**超长序列**基准上反超 Transformer；**Mamba（2023）** 进一步引入**选择性**（让 $$A,B,C$$ 随输入变化）并实现线性时间扫描，成为长序列建模的主力之一。Kalman 在 1960 年写下的状态空间，绕了六十年又回到时间序列的最前沿——只是这一次，矩阵不再靠物理推导，而是由梯度下降**学**出来。
 
 控制论留给时间序列的核心思想——**状态空间 + 递归滤波**（[第 4 章](04/)由 Kalman 集大成）、**反馈与在线更新**、**用预测闭环决策**——让时间序列从"离线拟合"一路走向"实时、自适应、可控"。而"反馈"再往前一步就是**决策**：序列还没结束时该做什么，正是下一节的主题。
@@ -193,4 +195,4 @@ $$ \frac{\partial \mathbf u}{\partial t}+(\mathbf u\cdot\nabla)\mathbf u=-\frac1
 
 ---
 
-**关键术语 (Key terms):** 平稳性 · 遍历定理 · 马尔可夫性 · 鞅 (martingale) · Lévy 过程与重尾 · 随机微积分 / Itô 引理 · 几何布朗运动 · 有效市场假说 · 路径积分 / Feynman–Kac · 粗糙路径与路径签名 · 粗糙波动率 · Wiener–Khinchin 定理 · Wiener 过程 · Ornstein–Uhlenbeck 过程 · Langevin 方程 · 确定性混沌 · Lyapunov 指数 · Takens 延迟嵌入 · 关联维数 · 长程相关 / Hurst 指数 · DFA · 1/f 噪声 · 经济物理 · Koopman 算子 / DMD · Wiener 滤波 · 系统辨识 · 信息论 / 采样定理 (Shannon) · Viterbi 算法 · 粒子滤波 / SMC · 集合卡尔曼 / 数据同化 · 模型预测控制 (MPC) · 深度状态空间模型 (HiPPO / S4 / Mamba) · 马尔可夫决策过程 · 序贯分析 / 最优停时 · 多臂赌博机 · 动态规划 / Bellman 方程 · 强化学习 · 偏微分方程 / Navier–Stokes · 物理信息神经网络 (PINN) · 神经算子 (DeepONet / FNO) · 数据驱动天气预报
+**关键术语 (Key terms):** 平稳性 · 遍历定理 · 马尔可夫性 · 鞅 (martingale) · Lévy 过程与重尾 · 随机微积分 / Itô 引理 · 几何布朗运动 · 有效市场假说 · 路径积分 / Feynman–Kac · 粗糙路径与路径签名 · 粗糙波动率 · Wiener–Khinchin 定理 · Wiener 过程 · Ornstein–Uhlenbeck 过程 · Langevin 方程 · 确定性混沌 · Lyapunov 指数 · Takens 延迟嵌入 · 关联维数 · 长程相关 / Hurst 指数 · DFA · 1/f 噪声 · 经济物理 · Koopman 算子 / DMD · Wiener 滤波 · 系统辨识 · 信息论 / 采样定理 (Shannon) · Viterbi 算法 · 粒子滤波 / SMC · 集合卡尔曼 / 数据同化 · 模型预测控制 (MPC) · 回声状态网络 / 储备池计算 · 压缩感知 · 粒子 MCMC · 深度状态空间模型 (HiPPO / S4 / Mamba) · 马尔可夫决策过程 · 序贯分析 / 最优停时 · 多臂赌博机 · 动态规划 / Bellman 方程 · 强化学习 · 偏微分方程 / Navier–Stokes · 物理信息神经网络 (PINN) · 神经算子 (DeepONet / FNO) · 数据驱动天气预报

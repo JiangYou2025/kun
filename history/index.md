@@ -81,7 +81,10 @@ lead: "从 1927 年 Yule 的自回归到今天的深度学习与基础模型—�
 <tr class="r-phys"><td class="yr">1999</td><td><span class="badge d-phys">物理</span></td><td>Mantegna · Stanley</td><td>经济物理：金融序列的标度律、幂律与胖尾</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">2000s</td><td><span class="badge d-cs">计算机</span></td><td>SVR</td><td>支持向量回归：ε-不敏感损失 + 核技巧</td><td><a href="08/">8</a></td></tr>
 <tr class="r-cs"><td class="yr">2001</td><td><span class="badge d-cs">计算机</span></td><td>Friedman</td><td>梯度提升 GBDT（函数空间梯度下降）</td><td><a href="08/">8</a></td></tr>
+<tr class="r-ctrl"><td class="yr">2001–04</td><td><span class="badge d-ctrl">控制</span></td><td>Jaeger</td><td>回声状态网络 / 储备池计算：低成本预测混沌序列</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-phys"><td class="yr">2005–10</td><td><span class="badge d-phys">物理</span></td><td>Mezić · Schmid</td><td>Koopman 算子 / 动态模态分解：高维序列的相干模态</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-ctrl"><td class="yr">2006</td><td><span class="badge d-ctrl">控制</span></td><td>Donoho · Candès · Tao</td><td>压缩感知：稀疏信号的亚奈奎斯特采样与重构</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-ctrl"><td class="yr">2010</td><td><span class="badge d-ctrl">控制</span></td><td>Andrieu et al.</td><td>粒子 MCMC：非线性状态空间模型的参数推断</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">2014–18</td><td><span class="badge d-math">数学</span></td><td>Gatheral · Jaisson · Rosenbaum</td><td>粗糙波动率：波动率轨迹是 H&lt;½ 的分数布朗运动</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">2015–16</td><td><span class="badge d-cs">计算机</span></td><td>DQN · AlphaGo</td><td>深度强化学习（Atari、围棋）= 决策化的序列学习</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">2017</td><td><span class="badge d-cs">计算机</span></td><td>Vaswani et al.</td><td>Transformer：自注意力，任意位置直接交互</td><td><a href="09/">9</a></td></tr>
