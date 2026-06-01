@@ -95,6 +95,44 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:5px
 .site-footer .bar{justify-content:center;gap:16px;color:var(--muted);font-size:14px;padding:22px 20px}
 .muted{color:var(--muted)}
 
+/* Filterable timeline (pure-CSS, radio :checked hack) */
+.tl{margin:1.4em 0}
+.tl-radio{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.tl-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tl-tabs label{cursor:pointer;user-select:none;font-size:.9rem;font-weight:600;
+  padding:6px 14px;border-radius:999px;border:1px solid var(--border);
+  background:var(--surface);color:var(--muted);transition:border-color .15s,color .15s,background .15s}
+.tl-tabs label:hover{border-color:var(--accent);color:var(--text)}
+.tl-tabs label .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.tl-table{margin:0}
+.tl-table td .badge{display:inline-block;font-size:.78rem;font-weight:600;padding:1px 9px;border-radius:999px;white-space:nowrap}
+.tl-table td.yr{white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums}
+/* domain colors */
+.d-math{--d:#5eead4}.d-phys{--d:#818cf8}.d-ctrl{--d:#f0abfc}.d-cs{--d:#fbbf24}
+.tl-tabs label .dot{background:var(--d,var(--muted))}
+.badge.d-math,.badge.d-phys,.badge.d-ctrl,.badge.d-cs{
+  color:var(--d);background:color-mix(in srgb,var(--d) 16%,transparent);border:1px solid color-mix(in srgb,var(--d) 40%,transparent)}
+/* checked tab highlight */
+#tl-all:checked~.tl-tabs label[for="tl-all"],
+#tl-math:checked~.tl-tabs label[for="tl-math"],
+#tl-phys:checked~.tl-tabs label[for="tl-phys"],
+#tl-ctrl:checked~.tl-tabs label[for="tl-ctrl"],
+#tl-cs:checked~.tl-tabs label[for="tl-cs"]{
+  background:var(--accent);color:#06231f;border-color:transparent}
+#tl-math:checked~.tl-tabs label[for="tl-math"],
+#tl-phys:checked~.tl-tabs label[for="tl-phys"],
+#tl-ctrl:checked~.tl-tabs label[for="tl-ctrl"],
+#tl-cs:checked~.tl-tabs label[for="tl-cs"]{background:var(--d-active);color:#0f1117}
+#tl-math:checked~.tl-tabs{--d-active:#5eead4}
+#tl-phys:checked~.tl-tabs{--d-active:#818cf8}
+#tl-ctrl:checked~.tl-tabs{--d-active:#f0abfc}
+#tl-cs:checked~.tl-tabs{--d-active:#fbbf24}
+/* row filtering */
+#tl-math:checked~.tl-table tbody tr:not(.r-math),
+#tl-phys:checked~.tl-table tbody tr:not(.r-phys),
+#tl-ctrl:checked~.tl-table tbody tr:not(.r-ctrl),
+#tl-cs:checked~.tl-table tbody tr:not(.r-cs){display:none}
+
 /* Mobile nav */
 @media (max-width:720px){
   .nav-toggle-label{display:block;margin-left:auto;cursor:pointer;width:26px;height:20px;position:relative}
