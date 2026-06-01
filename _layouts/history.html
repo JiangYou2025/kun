@@ -19,7 +19,7 @@
 </head>
 <body>
 <header class="site-header">
-  <div class="bar">
+  <div class="bar bar--wide">
     <a class="brand" href="{{ '/history/' | relative_url }}"><span class="logo">⨃</span> <strong>时间序列百年史</strong></a>
     <nav class="site-nav">
       <a href="{{ '/history/' | relative_url }}">目录</a>
@@ -30,19 +30,40 @@
   </div>
 </header>
 
-<main class="content">
-  {% if page.era %}<p class="lead" style="margin-bottom:.2em;color:var(--accent)">{{ page.era }}</p>{% endif %}
-  {% if page.title %}<h1 class="page-title">{{ page.title }}</h1>{% endif %}
-  {% if page.lead %}<p class="lead">{{ page.lead }}</p>{% endif %}
-  {{ content }}
+{% assign u = page.url %}
+<div class="hist-wrap">
+  <aside class="chapter-nav">
+    <p class="side-title">章节目录</p>
+    <ul>
+      <li><a href="{{ '/history/' | relative_url }}" {% if u == '/history/' %}class="active"{% endif %}><span class="num">目</span>总目录</a></li>
+      <li><a href="{{ '/history/foundations/' | relative_url }}" {% if u == '/history/foundations/' %}class="active"{% endif %}><span class="num">序</span>跨学科源头</a></li>
+      <li><a href="{{ '/history/01/' | relative_url }}" {% if u == '/history/01/' %}class="active"{% endif %}><span class="num">1</span>自回归 · 1920s</a></li>
+      <li><a href="{{ '/history/02/' | relative_url }}" {% if u == '/history/02/' %}class="active"{% endif %}><span class="num">2</span>理论奠基 · 1930s–40s</a></li>
+      <li><a href="{{ '/history/03/' | relative_url }}" {% if u == '/history/03/' %}class="active"{% endif %}><span class="num">3</span>指数平滑 · 1950s</a></li>
+      <li><a href="{{ '/history/04/' | relative_url }}" {% if u == '/history/04/' %}class="active"{% endif %}><span class="num">4</span>卡尔曼滤波 · 1960s</a></li>
+      <li><a href="{{ '/history/05/' | relative_url }}" {% if u == '/history/05/' %}class="active"{% endif %}><span class="num">5</span>ARIMA · 1970s</a></li>
+      <li><a href="{{ '/history/06/' | relative_url }}" {% if u == '/history/06/' %}class="active"{% endif %}><span class="num">6</span>波动率与协整 · 1980s</a></li>
+      <li><a href="{{ '/history/07/' | relative_url }}" {% if u == '/history/07/' %}class="active"{% endif %}><span class="num">7</span>神经网络 · 1990s</a></li>
+      <li><a href="{{ '/history/08/' | relative_url }}" {% if u == '/history/08/' %}class="active"{% endif %}><span class="num">8</span>机器学习 · 2000s</a></li>
+      <li><a href="{{ '/history/09/' | relative_url }}" {% if u == '/history/09/' %}class="active"{% endif %}><span class="num">9</span>深度学习 · 2010s</a></li>
+      <li><a href="{{ '/history/10/' | relative_url }}" {% if u == '/history/10/' %}class="active"{% endif %}><span class="num">10</span>大模型与 KUN · 2020s</a></li>
+    </ul>
+  </aside>
 
-  {% if page.prev or page.next %}
-  <nav class="pager">
-    {% if page.prev %}<a class="prev" href="{{ page.prev | relative_url }}">← 上一章</a>{% endif %}
-    {% if page.next %}<a class="next" href="{{ page.next | relative_url }}">下一章 →</a>{% endif %}
-  </nav>
-  {% endif %}
-</main>
+  <main class="content">
+    {% if page.era %}<p class="lead" style="margin-bottom:.2em;color:var(--accent)">{{ page.era }}</p>{% endif %}
+    {% if page.title %}<h1 class="page-title">{{ page.title }}</h1>{% endif %}
+    {% if page.lead %}<p class="lead">{{ page.lead }}</p>{% endif %}
+    {{ content }}
+
+    {% if page.prev or page.next %}
+    <nav class="pager">
+      {% if page.prev %}<a class="prev" href="{{ page.prev | relative_url }}">← 上一章</a>{% endif %}
+      {% if page.next %}<a class="next" href="{{ page.next | relative_url }}">下一章 →</a>{% endif %}
+    </nav>
+    {% endif %}
+  </main>
+</div>
 
 <footer class="site-footer">
   <div class="bar"><span>© Jiang You · 时间序列百年史</span><span class="muted">由 Jekyll 构建 · 托管于 GitHub Pages</span></div>

@@ -95,6 +95,30 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:5px
 .site-footer .bar{justify-content:center;gap:16px;color:var(--muted);font-size:14px;padding:22px 20px}
 .muted{color:var(--muted)}
 
+/* History layout with left sidebar */
+.bar--wide{max-width:1100px}
+.hist-wrap{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:236px minmax(0,1fr);gap:36px;padding:0 20px}
+.hist-wrap .content{max-width:none;margin:0;padding:40px 0 80px}
+.chapter-nav{position:sticky;top:62px;align-self:start;max-height:calc(100vh - 62px);overflow:auto;padding:36px 0 40px}
+.chapter-nav .side-title{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:0 0 12px;padding-left:14px}
+.chapter-nav ul{list-style:none;margin:0;padding:0}
+.chapter-nav a{display:flex;align-items:baseline;gap:8px;padding:6px 12px 6px 14px;border-left:2px solid transparent;color:var(--muted);font-size:.88rem;line-height:1.35}
+.chapter-nav a:hover{color:var(--text);background:var(--surface);text-decoration:none}
+.chapter-nav a.active{color:var(--accent);border-left-color:var(--accent);background:var(--surface);font-weight:600}
+.chapter-nav .num{flex:0 0 auto;min-width:1.4em;text-align:center;color:var(--accent-2);font-size:.78rem;font-variant-numeric:tabular-nums}
+.chapter-nav a.active .num{color:var(--accent)}
+
+@media (max-width:900px){
+  .hist-wrap{grid-template-columns:1fr;gap:0;padding:0 16px}
+  .hist-wrap .content{padding:20px 0 60px}
+  .chapter-nav{position:static;max-height:none;overflow:visible;padding:12px 0;margin:0 -16px;border-bottom:1px solid var(--border)}
+  .chapter-nav .side-title{display:none}
+  .chapter-nav ul{display:flex;gap:8px;overflow-x:auto;padding:0 16px 4px;-webkit-overflow-scrolling:touch}
+  .chapter-nav li{flex:0 0 auto}
+  .chapter-nav a{border-left:none;border:1px solid var(--border);border-radius:999px;padding:5px 12px;white-space:nowrap;font-size:.82rem}
+  .chapter-nav a.active{border-color:var(--accent)}
+}
+
 /* Filterable timeline (pure-CSS, radio :checked hack) */
 .tl{margin:1.4em 0}
 .tl-radio{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
