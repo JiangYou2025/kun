@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if page.title %}{{ page.title }} · 时间序列百年史{% else %}时间序列百年史{% endif %}</title>
+  <title>{% if page.title %}{{ page.title }} · 时间序列发展史{% else %}时间序列发展史{% endif %}</title>
   <meta name="description" content="{{ page.lead | default: '时间序列分析与预测的百年历史 (A Century of Time Series)' }}">
   <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
   <link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
@@ -20,7 +20,7 @@
 <body>
 <header class="site-header">
   <div class="bar bar--wide">
-    <a class="brand" href="{{ '/history/' | relative_url }}"><span class="logo">⨃</span> <strong>时间序列百年史</strong></a>
+    <a class="brand" href="{{ '/history/' | relative_url }}"><span class="logo">⨃</span> <strong>时间序列发展史</strong></a>
     <nav class="site-nav">
       <a href="{{ '/history/' | relative_url }}">目录</a>
       <a href="{{ '/course/' | relative_url }}">讲义</a>
@@ -48,6 +48,12 @@
       <li><a href="{{ '/history/09/' | relative_url }}" {% if u == '/history/09/' %}class="active"{% endif %}><span class="num">9</span>深度学习 · 2010s</a></li>
       <li><a href="{{ '/history/10/' | relative_url }}" {% if u == '/history/10/' %}class="active"{% endif %}><span class="num">10</span>大模型与 KUN · 2020s</a></li>
     </ul>
+    <p class="side-title">专题</p>
+    <ul>
+      <li><a href="{{ '/history/prehistory/' | relative_url }}" {% if u == '/history/prehistory/' %}class="active"{% endif %}><span class="num">附</span>史前史与应用</a></li>
+      <li><a href="{{ '/history/nature-of-time/' | relative_url }}" {% if u == '/history/nature-of-time/' %}class="active"{% endif %}><span class="num">附</span>时间的本质</a></li>
+      <li><a href="{{ '/history/paradoxes/' | relative_url }}" {% if u == '/history/paradoxes/' %}class="active"{% endif %}><span class="num">附</span>时间悖论</a></li>
+    </ul>
   </aside>
 
   <main class="content">
@@ -66,7 +72,7 @@
 </div>
 
 <footer class="site-footer">
-  <div class="bar"><span>© Jiang You · 时间序列百年史</span><span class="muted">由 Jekyll 构建 · 托管于 GitHub Pages</span></div>
+  <div class="bar"><span>© Jiang You · 时间序列发展史</span><span class="muted">由 Jekyll 构建 · 托管于 GitHub Pages</span></div>
 </footer>
 </body>
 </html>
