@@ -22,13 +22,20 @@ import re
 import sys
 from pathlib import Path
 
-# 要删除的标题文字（# 后面的部分）。按需增删，例如再加：
-#   "背景与思潮", "主张与方法", "结果与意义", "余响",  # nature-of-time
-#   "时代背景", "影响与遗产",                          # history
+# 要删除的标题文字（# 后面的部分）。按需增删。
 LABELS = {
+    # paradoxes / prehistory
     "背景与难题",
     "求解",
     "意义",
+    # nature-of-time
+    "背景与思潮",
+    "主张与方法",
+    "结果与意义",
+    "余响",
+    # history
+    "时代背景",
+    "影响与遗产",
 }
 
 ROOT = Path(__file__).resolve().parent.parent
