@@ -82,6 +82,13 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:5px
 .card p{color:var(--muted);margin:0;font-size:.95rem}
 .card .step{font-size:.8rem;color:var(--accent);letter-spacing:.08em;text-transform:uppercase}
 
+/* Figures (illustration-first pages) */
+.fig{margin:1.8em 0;text-align:center}
+.fig svg{max-width:100%;height:auto;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px}
+.figcap{color:var(--muted);font-size:.92rem;margin:.7em auto 0;line-height:1.55;max-width:640px}
+.fig-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin:1.8em 0}
+.fig-2 .fig{margin:0}
+
 .note{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent-2);border-radius:0 10px 10px 0;padding:14px 18px;margin:1.6em 0}
 .note strong{color:var(--accent-2)}
 
