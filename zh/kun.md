@@ -28,6 +28,42 @@ KUN 借用了图像分割中 **U-Net** 的形状：一个不断压缩输入的**
 
 让 KUN 得名的关键之处在于：在 U 形的每个节点上，执行的运算是一个**可插拔的核（kernel）**，而不是固定的卷积。一个核就是一个把片段映射到片段的小函数——它可以是**线性层、MLP、RNN 或注意力模块**。你为每个层级选择核，于是同一套骨架既可以做得很轻量，也可以做得很有表达力。
 
+## 什么是“多尺度”的序列
+
+要理解 KUN 为什么长成 U 形，先要看清一件事：**一条真实的时间序列，往往同时藏着好几个“尺度”。**
+
+<figure class="fig" markdown="0">
+<svg viewBox="0 0 720 380" role="img" aria-label="一条序列分解成多个尺度">
+  <text x="12" y="40" fill="var(--muted)" font-size="13">原始序列</text>
+  <text x="12" y="56" fill="var(--muted)" font-size="11">（你看到的）</text>
+  <polyline fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"
+    points="175,72 222,58 269,66 316,44 363,58 410,36 457,50 504,28 551,44 598,22 645,36 690,16"/>
+  <text x="430" y="116" fill="var(--muted)" font-size="13" text-anchor="middle">拆开看 ＝ 多个尺度叠加 ↓</text>
+  <line x1="160" y1="128" x2="700" y2="128" stroke="var(--border)"/>
+
+  <text x="12" y="178" fill="var(--accent)" font-size="13">粗尺度</text>
+  <text x="12" y="194" fill="var(--muted)" font-size="11">长期趋势</text>
+  <line x1="175" y1="200" x2="690" y2="200" stroke="var(--border)" stroke-dasharray="3 4"/>
+  <polyline fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"
+    points="175,190 269,180 363,164 457,146 551,130 645,114 690,106"/>
+
+  <text x="12" y="262" fill="var(--accent-2)" font-size="13">中尺度</text>
+  <text x="12" y="278" fill="var(--muted)" font-size="11">周期</text>
+  <line x1="175" y1="262" x2="690" y2="262" stroke="var(--border)" stroke-dasharray="3 4"/>
+  <polyline fill="none" stroke="var(--accent-2)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"
+    points="175,262 222,238 269,262 316,286 363,262 410,238 457,262 504,286 551,262 598,238 645,262 690,286"/>
+
+  <text x="12" y="340" fill="#fbbf24" font-size="13">细尺度</text>
+  <text x="12" y="356" fill="var(--muted)" font-size="11">高频细节</text>
+  <line x1="175" y1="338" x2="690" y2="338" stroke="var(--border)" stroke-dasharray="3 4"/>
+  <polyline fill="none" stroke="#fbbf24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"
+    points="175,338 215,324 255,350 295,328 335,352 375,322 415,346 455,330 495,352 535,326 575,348 615,330 655,346 690,332"/>
+</svg>
+<figcaption class="figcap">同一条序列里同时叠着：<strong>粗</strong>的长期趋势、<strong>中</strong>等的周期、<strong>细</strong>的高频起伏。只盯着任何一个尺度都不完整——这就是说一条序列是<strong>多尺度 (multi-scale)</strong> 的。</figcaption>
+</figure>
+
+近处的细节（明天比今天高一点点）和远处的轮廓（这一年整体在涨）是**两种不同粒度**的信息，它们需要被分别看清、再合起来。这正是 KUN 的 U 形所做的事：编码器把序列一层层**变粗**（先看细节、再看大轮廓），解码器再一层层**变细**地重建出预测——一次把所有尺度都照顾到。下一节就讲为什么这个设计有效。
+
 ## 为什么这个设计有效
 
 - **层次结构匹配时间。** 靠近输入的短 patch 捕捉局部、高频的细节；更深的层级看到更长、更粗的上下文。一条序列很少只存在于单一尺度上，而 U 形一次就能捕捉多个尺度。

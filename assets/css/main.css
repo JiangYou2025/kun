@@ -92,6 +92,18 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:5px
 .note{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent-2);border-radius:0 10px 10px 0;padding:14px 18px;margin:1.6em 0}
 .note strong{color:var(--accent-2)}
 
+/* Interactive "guess the next point" game */
+.game{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin:1.8em 0}
+.game h3{margin:.1em 0 .3em}
+.game .hint{color:var(--muted);font-size:.92rem;margin:.2em 0 .9em}
+.game svg{width:100%;height:auto;touch-action:none;cursor:crosshair;background:var(--bg);border:1px solid var(--border);border-radius:10px}
+.game .verdict{min-height:1.5em;margin:.8em 0 0;font-size:1rem}
+.game .verdict b{color:var(--accent)}
+.game .bar2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:.7em}
+.game button{font:inherit;font-weight:600;cursor:pointer;padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);color:var(--text)}
+.game button:hover{border-color:var(--accent)}
+.game .score{color:var(--muted);font-size:.9rem;margin-left:auto}
+
 .pager{display:flex;justify-content:space-between;margin-top:48px;padding-top:20px;border-top:1px solid var(--border);gap:12px}
 .pager a{padding:10px 16px;border:1px solid var(--border);border-radius:10px;color:var(--text)}
 .pager a:hover{border-color:var(--accent);text-decoration:none}
