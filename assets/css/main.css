@@ -176,16 +176,84 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:5px
 #tl-ctrl:checked~.tl-table tbody tr:not(.r-ctrl),
 #tl-cs:checked~.tl-table tbody tr:not(.r-cs){display:none}
 
-/* Mobile nav */
+/* ═══ Mobile-first responsive ═══ */
+
+/* Tablet (≤900px) — already handled for hist-wrap above */
+
+/* Mobile nav + layout (≤720px) */
 @media (max-width:720px){
+  /* Hamburger menu */
   .nav-toggle-label{display:block;margin-left:auto;cursor:pointer;width:26px;height:20px;position:relative}
   .nav-toggle-label span,.nav-toggle-label span::before,.nav-toggle-label span::after{
     content:"";position:absolute;left:0;width:26px;height:2px;background:var(--text);transition:.2s}
   .nav-toggle-label span{top:9px}
   .nav-toggle-label span::before{top:-7px}
   .nav-toggle-label span::after{top:7px}
+  .nav-toggle:checked ~ .nav-toggle-label span{background:transparent}
+  .nav-toggle:checked ~ .nav-toggle-label span::before{top:0;transform:rotate(45deg)}
+  .nav-toggle:checked ~ .nav-toggle-label span::after{top:0;transform:rotate(-45deg)}
   .site-nav{display:none;flex-basis:100%;flex-direction:column;align-items:flex-start;gap:12px;margin:8px 0 4px}
   .nav-toggle:checked ~ .site-nav{display:flex}
   .lang-switch{border-left:none;padding-left:0;margin-left:0}
-  .hero h1{font-size:2rem}
+
+  /* Typography */
+  .hero h1{font-size:1.8rem}
+  .hero p{font-size:1rem}
+  .page-title{font-size:1.5rem}
+  .content h2{font-size:1.25rem}
+  .content h3{font-size:1.05rem}
+  .lead{font-size:1rem}
+
+  /* Content spacing */
+  .content{padding:20px 16px 60px}
+  .bar{padding:10px 16px;gap:12px}
+
+  /* Cards: single column on phone */
+  .cards{grid-template-columns:1fr;gap:12px;margin:20px 0}
+  .card{padding:16px}
+
+  /* Buttons */
+  .btn-row{gap:8px;margin:20px 0}
+  .btn{padding:10px 14px;font-size:.9rem;width:100%;text-align:center}
+
+  /* Tables: horizontal scroll */
+  .content table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
+
+  /* Figures */
+  .fig-2{grid-template-columns:1fr;gap:12px}
+  .fig svg{padding:8px}
+
+  /* Code blocks */
+  pre{padding:12px 14px;font-size:.82em;border-radius:8px}
+  code{font-size:.85em}
+
+  /* Blockquote */
+  blockquote{padding:.5em .8em;margin:1em 0}
+
+  /* Pager (prev/next) */
+  .pager{flex-direction:column;gap:8px}
+  .pager a{text-align:center}
+  .pager .next{margin-left:0}
+
+  /* Footer */
+  .site-footer .bar{flex-direction:column;gap:8px;text-align:center;padding:16px}
+
+  /* Game widget */
+  .game{padding:14px}
+  .game .bar2{flex-direction:column;align-items:stretch}
+  .game .score{margin-left:0;text-align:center}
+
+  /* Timeline filters */
+  .tl-tabs{gap:6px}
+  .tl-tabs label{padding:5px 10px;font-size:.82rem}
+}
+
+/* Small phone (≤400px) */
+@media (max-width:400px){
+  .hero h1{font-size:1.5rem}
+  .brand strong{font-size:16px}
+  .brand-sub{display:none}
+  .content{padding:16px 12px 48px}
+  .card{padding:12px}
+  pre{font-size:.78em;padding:10px}
 }
