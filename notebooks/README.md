@@ -1,4 +1,4 @@
-# 动手案例 (Hands-on notebooks)
+# 动手案例
 
 配合「[时间序列入门](https://jiangyou2025.github.io/kun/course/)」讲义的可运行 Jupyter 案例。全部使用**合成数据**，无需下载任何数据集，克隆即可运行。
 
