@@ -62,10 +62,30 @@
       <li><a href="{{ '/nature-of-time/' | relative_url }}"><span class="num">附</span>时间的本质</a></li>
       <li><a href="{{ '/history/' | relative_url }}"><span class="num">←</span>回发展史</a></li>
     </ul>
-  {% elsif u == '/prehistory/' or u == '/nature-of-time/' %}
+  {% elsif u contains '/prehistory/' %}
+    <p class="side-title">史前史故事</p>
+    <ul>
+      <li><a href="{{ '/prehistory/' | relative_url }}" {% if u == '/prehistory/' %}class="active"{% endif %}><span class="num">目</span>史前史目录</a></li>
+      <li><a href="{{ '/prehistory/nilometer/' | relative_url }}" {% if u == '/prehistory/nilometer/' %}class="active"{% endif %}><span class="num">1</span>尼罗河水位计</a></li>
+      <li><a href="{{ '/prehistory/babylon-diaries/' | relative_url }}" {% if u == '/prehistory/babylon-diaries/' %}class="active"{% endif %}><span class="num">2</span>巴比伦天文日记</a></li>
+      <li><a href="{{ '/prehistory/antikythera/' | relative_url }}" {% if u == '/prehistory/antikythera/' %}class="active"{% endif %}><span class="num">3</span>安提基特拉机械</a></li>
+      <li><a href="{{ '/prehistory/kepler-mars/' | relative_url }}" {% if u == '/prehistory/kepler-mars/' %}class="active"{% endif %}><span class="num">4</span>开普勒与火星</a></li>
+      <li><a href="{{ '/prehistory/graunt-life-table/' | relative_url }}" {% if u == '/prehistory/graunt-life-table/' %}class="active"{% endif %}><span class="num">5</span>第一张生命表</a></li>
+      <li><a href="{{ '/prehistory/halley-comet/' | relative_url }}" {% if u == '/prehistory/halley-comet/' %}class="active"{% endif %}><span class="num">6</span>哈雷彗星</a></li>
+      <li><a href="{{ '/prehistory/playfair-chart/' | relative_url }}" {% if u == '/prehistory/playfair-chart/' %}class="active"{% endif %}><span class="num">7</span>折线图</a></li>
+      <li><a href="{{ '/prehistory/ceres-least-squares/' | relative_url }}" {% if u == '/prehistory/ceres-least-squares/' %}class="active"{% endif %}><span class="num">8</span>谷神星与最小二乘</a></li>
+      <li><a href="{{ '/prehistory/sunspot-cycle/' | relative_url }}" {% if u == '/prehistory/sunspot-cycle/' %}class="active"{% endif %}><span class="num">9</span>太阳黑子周期</a></li>
+    </ul>
+    <p class="side-title">更多专题</p>
+    <ul>
+      <li><a href="{{ '/nature-of-time/' | relative_url }}"><span class="num">附</span>时间的本质</a></li>
+      <li><a href="{{ '/paradoxes/' | relative_url }}"><span class="num">附</span>时间悖论</a></li>
+      <li><a href="{{ '/history/' | relative_url }}"><span class="num">←</span>回发展史</a></li>
+    </ul>
+  {% elsif u == '/nature-of-time/' %}
     <p class="side-title">专题</p>
     <ul>
-      <li><a href="{{ '/prehistory/' | relative_url }}" {% if u == '/prehistory/' %}class="active"{% endif %}><span class="num">附</span>史前史与应用</a></li>
+      <li><a href="{{ '/prehistory/' | relative_url }}"><span class="num">附</span>史前史与应用</a></li>
       <li><a href="{{ '/nature-of-time/' | relative_url }}" {% if u == '/nature-of-time/' %}class="active"{% endif %}><span class="num">附</span>时间的本质</a></li>
       <li><a href="{{ '/paradoxes/' | relative_url }}"><span class="num">附</span>时间悖论</a></li>
     </ul>

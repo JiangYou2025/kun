@@ -1,0 +1,28 @@
+---
+updated: "2026-06-03"
+layout: history
+lang: zh
+era: "史前史故事 7 · 方法"
+permalink: /prehistory/playfair-chart/
+title: "普莱费尔与折线图 (Playfair's Line Chart)"
+lead: "在 1786 年以前，数据是一张张数字表格。一个苏格兰人突发奇想：要是把时间放在横轴、把数值连成一条线呢？——于是“趋势”第一次变得可以被“看见”。"
+math: false
+prev: /prehistory/halley-comet/
+next: /prehistory/ceres-least-squares/
+---
+
+> 这是[史前史与应用](../)的一则小故事。
+
+## 背景与难题 (Background & Puzzle)
+
+威廉·普莱费尔(William Playfair)在 1786 年的《商业与政治图集》里，首次大规模使用折线图与柱状图来呈现经济数据。
+
+难处看似平凡却根本：一长串数字里的涨落、趋势与转折，靠逐行读表极难把握——数据**有结构，但人看不见**。
+
+## 求解 (Resolution)
+
+普莱费尔的办法是把时间序列画成"**随时间变化的曲线**"：横轴是时间，纵轴是数值，点连成线。趋势、周期与异常一下子跃入眼帘，无需任何计算。
+
+## 意义 (Why It Matters)
+
+可视化本身成了一种分析方法。今天每一张预测图、每一条走势线、每一个仪表盘，都是这一步的后裔——它让"看时间序列"从读数字变成了读图形。
