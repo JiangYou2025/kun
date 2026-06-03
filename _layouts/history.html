@@ -82,16 +82,39 @@
       <li><a href="{{ '/paradoxes/' | relative_url }}"><span class="num">附</span>时间悖论</a></li>
       <li><a href="{{ '/history/' | relative_url }}"><span class="num">←</span>回发展史</a></li>
     </ul>
-  {% elsif u == '/nature-of-time/' %}
-    <p class="side-title">专题</p>
+  {% elsif u contains '/nature-of-time/' %}
+    <p class="side-title">时间的本质</p>
+    <ul>
+      <li><a href="{{ '/nature-of-time/' | relative_url }}" {% if u == '/nature-of-time/' %}class="active"{% endif %}><span class="num">目</span>本质目录</a></li>
+      <li><a href="{{ '/nature-of-time/cyclic-time/' | relative_url }}" {% if u == '/nature-of-time/cyclic-time/' %}class="active"{% endif %}><span class="num">1</span>循环时间</a></li>
+      <li><a href="{{ '/nature-of-time/heraclitus/' | relative_url }}" {% if u == '/nature-of-time/heraclitus/' %}class="active"{% endif %}><span class="num">2</span>赫拉克利特</a></li>
+      <li><a href="{{ '/nature-of-time/zeno-divisibility/' | relative_url }}" {% if u == '/nature-of-time/zeno-divisibility/' %}class="active"{% endif %}><span class="num">3</span>芝诺·可分</a></li>
+      <li><a href="{{ '/nature-of-time/aristotle/' | relative_url }}" {% if u == '/nature-of-time/aristotle/' %}class="active"{% endif %}><span class="num">4</span>亚里士多德</a></li>
+      <li><a href="{{ '/nature-of-time/augustine/' | relative_url }}" {% if u == '/nature-of-time/augustine/' %}class="active"{% endif %}><span class="num">5</span>奥古斯丁</a></li>
+      <li><a href="{{ '/nature-of-time/newton/' | relative_url }}" {% if u == '/nature-of-time/newton/' %}class="active"{% endif %}><span class="num">6</span>牛顿·绝对</a></li>
+      <li><a href="{{ '/nature-of-time/leibniz/' | relative_url }}" {% if u == '/nature-of-time/leibniz/' %}class="active"{% endif %}><span class="num">7</span>莱布尼茨</a></li>
+      <li><a href="{{ '/nature-of-time/kant/' | relative_url }}" {% if u == '/nature-of-time/kant/' %}class="active"{% endif %}><span class="num">8</span>康德</a></li>
+      <li><a href="{{ '/nature-of-time/arrow-of-time/' | relative_url }}" {% if u == '/nature-of-time/arrow-of-time/' %}class="active"{% endif %}><span class="num">9</span>时间之箭</a></li>
+      <li><a href="{{ '/nature-of-time/bergson/' | relative_url }}" {% if u == '/nature-of-time/bergson/' %}class="active"{% endif %}><span class="num">10</span>柏格森</a></li>
+      <li><a href="{{ '/nature-of-time/wells/' | relative_url }}" {% if u == '/nature-of-time/wells/' %}class="active"{% endif %}><span class="num">11</span>时间机器</a></li>
+      <li><a href="{{ '/nature-of-time/einstein/' | relative_url }}" {% if u == '/nature-of-time/einstein/' %}class="active"{% endif %}><span class="num">12</span>爱因斯坦</a></li>
+      <li><a href="{{ '/nature-of-time/minkowski/' | relative_url }}" {% if u == '/nature-of-time/minkowski/' %}class="active"{% endif %}><span class="num">13</span>闵可夫斯基</a></li>
+      <li><a href="{{ '/nature-of-time/mctaggart/' | relative_url }}" {% if u == '/nature-of-time/mctaggart/' %}class="active"{% endif %}><span class="num">14</span>McTaggart</a></li>
+      <li><a href="{{ '/nature-of-time/proust/' | relative_url }}" {% if u == '/nature-of-time/proust/' %}class="active"{% endif %}><span class="num">15</span>普鲁斯特</a></li>
+      <li><a href="{{ '/nature-of-time/black-hole-time/' | relative_url }}" {% if u == '/nature-of-time/black-hole-time/' %}class="active"{% endif %}><span class="num">16</span>黑洞</a></li>
+      <li><a href="{{ '/nature-of-time/heidegger/' | relative_url }}" {% if u == '/nature-of-time/heidegger/' %}class="active"{% endif %}><span class="num">17</span>海德格尔</a></li>
+      <li><a href="{{ '/nature-of-time/dali/' | relative_url }}" {% if u == '/nature-of-time/dali/' %}class="active"{% endif %}><span class="num">18</span>达利</a></li>
+      <li><a href="{{ '/nature-of-time/borges/' | relative_url }}" {% if u == '/nature-of-time/borges/' %}class="active"{% endif %}><span class="num">19</span>博尔赫斯</a></li>
+      <li><a href="{{ '/nature-of-time/godel/' | relative_url }}" {% if u == '/nature-of-time/godel/' %}class="active"{% endif %}><span class="num">20</span>哥德尔</a></li>
+      <li><a href="{{ '/nature-of-time/problem-of-time/' | relative_url }}" {% if u == '/nature-of-time/problem-of-time/' %}class="active"{% endif %}><span class="num">21</span>时间问题</a></li>
+      <li><a href="{{ '/nature-of-time/hawking/' | relative_url }}" {% if u == '/nature-of-time/hawking/' %}class="active"{% endif %}><span class="num">22</span>霍金</a></li>
+      <li><a href="{{ '/nature-of-time/rovelli/' | relative_url }}" {% if u == '/nature-of-time/rovelli/' %}class="active"{% endif %}><span class="num">23</span>罗韦利</a></li>
+    </ul>
+    <p class="side-title">更多专题</p>
     <ul>
       <li><a href="{{ '/prehistory/' | relative_url }}"><span class="num">附</span>史前史与应用</a></li>
-      <li><a href="{{ '/nature-of-time/' | relative_url }}" {% if u == '/nature-of-time/' %}class="active"{% endif %}><span class="num">附</span>时间的本质</a></li>
       <li><a href="{{ '/paradoxes/' | relative_url }}"><span class="num">附</span>时间悖论</a></li>
-    </ul>
-    <p class="side-title">发展史</p>
-    <ul>
-      <li><a href="{{ '/history/' | relative_url }}"><span class="num">←</span>回总目录</a></li>
+      <li><a href="{{ '/history/' | relative_url }}"><span class="num">←</span>回发展史</a></li>
     </ul>
   {% else %}
     <p class="side-title">章节目录</p>
