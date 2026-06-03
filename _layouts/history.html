@@ -25,6 +25,7 @@
     <label for="nav-toggle" class="nav-toggle-label" aria-label="Menu"><span></span></label>
     <nav class="site-nav">
       <a href="{{ '/history/' | relative_url }}">发展史</a>
+      <a href="{{ '/tasks/' | relative_url }}">任务史</a>
       <a href="{{ '/prehistory/' | relative_url }}">史前史</a>
       <a href="{{ '/nature-of-time/' | relative_url }}">时间的本质</a>
       <a href="{{ '/paradoxes/' | relative_url }}">时间悖论</a>
@@ -44,6 +45,8 @@
   <label for="chap-toggle" class="chap-toggle-label">史前史故事</label>
   {% elsif u contains '/nature-of-time/' %}
   <label for="chap-toggle" class="chap-toggle-label">时间的本质</label>
+  {% elsif u contains '/tasks/' %}
+  <label for="chap-toggle" class="chap-toggle-label">任务史</label>
   {% else %}
   <label for="chap-toggle" class="chap-toggle-label">章节目录</label>
   {% endif %}
@@ -109,6 +112,12 @@
       <li><a href="{{ '/nature-of-time/problem-of-time/' | relative_url }}" {% if u == '/nature-of-time/problem-of-time/' %}class="active"{% endif %}><span class="num">21</span>时间问题</a></li>
       <li><a href="{{ '/nature-of-time/hawking/' | relative_url }}" {% if u == '/nature-of-time/hawking/' %}class="active"{% endif %}><span class="num">22</span>霍金</a></li>
       <li><a href="{{ '/nature-of-time/rovelli/' | relative_url }}" {% if u == '/nature-of-time/rovelli/' %}class="active"{% endif %}><span class="num">23</span>罗韦利</a></li>
+    </ul>
+  {% elsif u contains '/tasks/' %}
+    <p class="side-title">任务史</p>
+    <ul>
+      <li><a href="{{ '/tasks/' | relative_url }}" class="active"><span class="num">目</span>任务史全文</a></li>
+      <li><a href="{{ '/history/' | relative_url }}"><span class="num">←</span>回发展史</a></li>
     </ul>
   {% else %}
     <p class="side-title">章节目录</p>
