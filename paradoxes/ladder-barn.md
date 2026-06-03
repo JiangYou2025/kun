@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 4 · 物理 · 狭义相对论"
-permalink: /history/paradoxes/ladder-barn/
+permalink: /paradoxes/ladder-barn/
 title: "谷仓–杆 (梯子) 悖论 (The Ladder/Barn Paradox)"
 lead: "一根静止时比谷仓长的杆，高速冲进一座两端都有门的谷仓。地面上的人因“动尺缩短”看到杆变短了，可以瞬间把两扇门同时关上、把杆整个关在里面；可在杆自己看来，缩短的是谷仓，它怎么也装不进去。两扇门到底关没关住一根杆？"
 math: true
-prev: /history/paradoxes/twin/
-next: /history/paradoxes/loschmidt/
+prev: /paradoxes/twin/
+next: /paradoxes/loschmidt/
 ---
 
 > 这是[时间悖论](../)的一则。

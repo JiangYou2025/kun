@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 9 · 时间旅行"
-permalink: /history/paradoxes/predestination/
+permalink: /paradoxes/predestination/
 title: "命定悖论 (The Predestination Paradox)"
 lead: "你回到过去，想阻止一场悲剧；结果你的种种努力，恰恰是促成这场悲剧的原因。你不是改变了过去，而是一直就是过去的一部分——你越挣扎，越坐实了它。"
 math: false
-prev: /history/paradoxes/grandfather/
-next: /history/paradoxes/bootstrap/
+prev: /paradoxes/grandfather/
+next: /paradoxes/bootstrap/
 ---
 
 > 这是[时间悖论](../)的一则。

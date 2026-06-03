@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 5 · 物理 · 热力学"
-permalink: /history/paradoxes/loschmidt/
+permalink: /paradoxes/loschmidt/
 title: "Loschmidt 可逆性佯谬 (Loschmidt's Reversibility Paradox)"
 lead: "支配每个分子的微观定律在时间反演下完全对称——把所有速度反向，它们会严丝合缝地倒着演化回去。可我们从没见过打碎的杯子自己拼好、扩散的墨水自己缩回。如果底层规律不分过去与未来，宏观世界的“时间之箭”是从哪冒出来的？"
 math: true
-prev: /history/paradoxes/ladder-barn/
-next: /history/paradoxes/maxwell-demon/
+prev: /paradoxes/ladder-barn/
+next: /paradoxes/maxwell-demon/
 ---
 
 > 这是[时间悖论](../)的一则。

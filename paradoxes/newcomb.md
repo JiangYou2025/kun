@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 15 · 决策论"
-permalink: /history/paradoxes/newcomb/
+permalink: /paradoxes/newcomb/
 title: "Newcomb 悖论 (Newcomb's Paradox)"
 lead: "面前两个盒子。A 透明，装着 $1000；B 不透明，要么装 $100 万、要么空着。你可以“两个都拿”，或“只拿 B”。规则是：一个近乎完美的预测者已经预判了你的选择——若它料定你只拿 B，就预先在 B 里放了 $100 万；若料定你两个都拿，就让 B 空着。钱早已放好，不再改变。你怎么选？"
 math: false
-prev: /history/paradoxes/mctaggart/
-next: /history/paradoxes/
+prev: /paradoxes/mctaggart/
+next: /paradoxes/
 ---
 
 > 这是[时间悖论](../)的一则，也是这组故事的收尾。

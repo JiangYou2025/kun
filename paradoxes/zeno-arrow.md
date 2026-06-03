@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 1 · 哲学"
-permalink: /history/paradoxes/zeno-arrow/
+permalink: /paradoxes/zeno-arrow/
 title: "飞矢不动 (Zeno's Arrow)"
 lead: "一支正在飞的箭，在任意一个“瞬间”里都停在一个确定的位置上——既然它每一刻都是静止的，那由无数个静止时刻拼起来的飞行，又怎么可能是“运动”？"
 math: true
-prev: /history/paradoxes/
-next: /history/paradoxes/achilles-tortoise/
+prev: /paradoxes/
+next: /paradoxes/achilles-tortoise/
 ---
 
 > 这是[时间悖论](../)的一则。

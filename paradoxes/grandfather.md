@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 8 · 时间旅行"
-permalink: /history/paradoxes/grandfather/
+permalink: /paradoxes/grandfather/
 title: "祖父悖论 (The Grandfather Paradox)"
 lead: "你坐时间机器回到过去，在祖父尚未成家时杀了他。那你父亲不会出生，你也不会出生——可你不出生，又是谁回去杀了祖父？"
 math: false
-prev: /history/paradoxes/boltzmann-brain/
-next: /history/paradoxes/predestination/
+prev: /paradoxes/boltzmann-brain/
+next: /paradoxes/predestination/
 ---
 
 > 这是[时间悖论](../)的一则。

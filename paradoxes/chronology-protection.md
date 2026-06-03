@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 13 · 物理"
-permalink: /history/paradoxes/chronology-protection/
+permalink: /paradoxes/chronology-protection/
 title: "时序保护猜想 (Chronology Protection Conjecture)"
 lead: "广义相对论的某些解（旋转宇宙、虫洞、无限旋转柱）在数学上允许“闭合类时曲线”——也就是回到过去的路径。那现实里为什么从没发生过时间旅行？是不是有某条物理定律，专门站出来禁止它？"
 math: false
-prev: /history/paradoxes/light-travel-time/
-next: /history/paradoxes/mctaggart/
+prev: /paradoxes/light-travel-time/
+next: /paradoxes/mctaggart/
 ---
 
 > 这是[时间悖论](../)的一则。

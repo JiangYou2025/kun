@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 11 · 物理 · 相对论"
-permalink: /history/paradoxes/tachyonic-antitelephone/
+permalink: /paradoxes/tachyonic-antitelephone/
 title: "超光速反向电话 (The Tachyonic Antitelephone)"
 lead: "如果能发出超光速信号，那么对某些以相对速度运动的观察者来说，这个信号是“先被收到、后被发出”的。把两台超光速发射机一来一回接上，你就能给“过去的自己”打电话——甚至在发信之前就劝自己别发。因果还能成立吗？"
 math: true
-prev: /history/paradoxes/bootstrap/
-next: /history/paradoxes/light-travel-time/
+prev: /paradoxes/bootstrap/
+next: /paradoxes/light-travel-time/
 ---
 
 > 这是[时间悖论](../)的一则。

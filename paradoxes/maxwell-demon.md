@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 6 · 物理 · 热力学"
-permalink: /history/paradoxes/maxwell-demon/
+permalink: /paradoxes/maxwell-demon/
 title: "麦克斯韦妖 (Maxwell's Demon)"
 lead: "设想一个小妖守在隔板的活门旁，只放快分子去一侧、慢分子去另一侧。它不做功，却让一侧变热、一侧变冷，凭空制造出温差——这不就违反了第二定律？"
 math: true
-prev: /history/paradoxes/loschmidt/
-next: /history/paradoxes/boltzmann-brain/
+prev: /paradoxes/loschmidt/
+next: /paradoxes/boltzmann-brain/
 ---
 
 > 这是[时间悖论](../)的一则。

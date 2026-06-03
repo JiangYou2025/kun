@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 12 · 物理 · 天文"
-permalink: /history/paradoxes/light-travel-time/
+permalink: /paradoxes/light-travel-time/
 title: "光程时序倒错 (Light-Travel-Time Ordering)"
 lead: "遥远天体发出的光，沿不同路径、走不同的程长才抵达我们。于是同一串事件，到达地球的先后可能被打乱——你甚至可能“先看到果、再看到因”。难道因果真的乱了？"
 math: true
-prev: /history/paradoxes/tachyonic-antitelephone/
-next: /history/paradoxes/chronology-protection/
+prev: /paradoxes/tachyonic-antitelephone/
+next: /paradoxes/chronology-protection/
 ---
 
 > 这是[时间悖论](../)的一则。

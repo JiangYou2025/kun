@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 7 · 物理 · 宇宙学"
-permalink: /history/paradoxes/boltzmann-brain/
+permalink: /paradoxes/boltzmann-brain/
 title: "玻尔兹曼大脑 (Boltzmann Brain)"
 lead: "如果我们的有序宇宙只是一次罕见的随机涨落，那么按概率，凭空涨落出一个“带着完整记忆、漂浮在虚空里的孤立大脑”，要比涨落出整个有序宇宙容易得多。那你凭什么相信自己不是这样一个大脑？"
 math: false
-prev: /history/paradoxes/maxwell-demon/
-next: /history/paradoxes/grandfather/
+prev: /paradoxes/maxwell-demon/
+next: /paradoxes/grandfather/
 ---
 
 > 这是[时间悖论](../)的一则。

@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 10 · 时间旅行"
-permalink: /history/paradoxes/bootstrap/
+permalink: /paradoxes/bootstrap/
 title: "引导 / 自举悖论 (The Bootstrap Paradox)"
 lead: "一位旅人从未来带回一份乐谱，交给年轻的作曲家；作曲家照着“创作”并发表，这份乐谱后来又被带回过去交给他。那么——这段旋律究竟是谁写的？它从未被任何人真正创作，却存在着。"
 math: false
-prev: /history/paradoxes/predestination/
-next: /history/paradoxes/tachyonic-antitelephone/
+prev: /paradoxes/predestination/
+next: /paradoxes/tachyonic-antitelephone/
 ---
 
 > 这是[时间悖论](../)的一则。

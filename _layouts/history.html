@@ -22,7 +22,10 @@
   <div class="bar bar--wide">
     <a class="brand" href="{{ '/history/' | relative_url }}"><span class="logo">⨃</span> <strong>时间序列发展史</strong></a>
     <nav class="site-nav">
-      <a href="{{ '/history/' | relative_url }}">目录</a>
+      <a href="{{ '/history/' | relative_url }}">发展史</a>
+      <a href="{{ '/prehistory/' | relative_url }}">史前史</a>
+      <a href="{{ '/nature-of-time/' | relative_url }}">时间的本质</a>
+      <a href="{{ '/paradoxes/' | relative_url }}">时间悖论</a>
       <a href="{{ '/course/' | relative_url }}">讲义</a>
       <a href="{{ '/zh/' | relative_url }}">KUN 站点</a>
       <a href="https://github.com/JiangYou2025/kun">GitHub</a>
@@ -33,38 +36,38 @@
 {% assign u = page.url %}
 <div class="hist-wrap">
   <aside class="chapter-nav">
-  {% if u contains '/history/paradoxes/' %}
+  {% if u contains '/paradoxes/' %}
     <p class="side-title">时间悖论</p>
     <ul>
-      <li><a href="{{ '/history/paradoxes/' | relative_url }}" {% if u == '/history/paradoxes/' %}class="active"{% endif %}><span class="num">目</span>悖论目录</a></li>
-      <li><a href="{{ '/history/paradoxes/zeno-arrow/' | relative_url }}" {% if u == '/history/paradoxes/zeno-arrow/' %}class="active"{% endif %}><span class="num">1</span>飞矢不动</a></li>
-      <li><a href="{{ '/history/paradoxes/achilles-tortoise/' | relative_url }}" {% if u == '/history/paradoxes/achilles-tortoise/' %}class="active"{% endif %}><span class="num">2</span>阿基里斯追龟</a></li>
-      <li><a href="{{ '/history/paradoxes/twin/' | relative_url }}" {% if u == '/history/paradoxes/twin/' %}class="active"{% endif %}><span class="num">3</span>双生子佯谬</a></li>
-      <li><a href="{{ '/history/paradoxes/ladder-barn/' | relative_url }}" {% if u == '/history/paradoxes/ladder-barn/' %}class="active"{% endif %}><span class="num">4</span>谷仓–杆悖论</a></li>
-      <li><a href="{{ '/history/paradoxes/loschmidt/' | relative_url }}" {% if u == '/history/paradoxes/loschmidt/' %}class="active"{% endif %}><span class="num">5</span>Loschmidt 佯谬</a></li>
-      <li><a href="{{ '/history/paradoxes/maxwell-demon/' | relative_url }}" {% if u == '/history/paradoxes/maxwell-demon/' %}class="active"{% endif %}><span class="num">6</span>麦克斯韦妖</a></li>
-      <li><a href="{{ '/history/paradoxes/boltzmann-brain/' | relative_url }}" {% if u == '/history/paradoxes/boltzmann-brain/' %}class="active"{% endif %}><span class="num">7</span>玻尔兹曼大脑</a></li>
-      <li><a href="{{ '/history/paradoxes/grandfather/' | relative_url }}" {% if u == '/history/paradoxes/grandfather/' %}class="active"{% endif %}><span class="num">8</span>祖父悖论</a></li>
-      <li><a href="{{ '/history/paradoxes/predestination/' | relative_url }}" {% if u == '/history/paradoxes/predestination/' %}class="active"{% endif %}><span class="num">9</span>命定悖论</a></li>
-      <li><a href="{{ '/history/paradoxes/bootstrap/' | relative_url }}" {% if u == '/history/paradoxes/bootstrap/' %}class="active"{% endif %}><span class="num">10</span>自举悖论</a></li>
-      <li><a href="{{ '/history/paradoxes/tachyonic-antitelephone/' | relative_url }}" {% if u == '/history/paradoxes/tachyonic-antitelephone/' %}class="active"{% endif %}><span class="num">11</span>反向电话</a></li>
-      <li><a href="{{ '/history/paradoxes/light-travel-time/' | relative_url }}" {% if u == '/history/paradoxes/light-travel-time/' %}class="active"{% endif %}><span class="num">12</span>光程时序倒错</a></li>
-      <li><a href="{{ '/history/paradoxes/chronology-protection/' | relative_url }}" {% if u == '/history/paradoxes/chronology-protection/' %}class="active"{% endif %}><span class="num">13</span>时序保护猜想</a></li>
-      <li><a href="{{ '/history/paradoxes/mctaggart/' | relative_url }}" {% if u == '/history/paradoxes/mctaggart/' %}class="active"{% endif %}><span class="num">14</span>McTaggart 悖论</a></li>
-      <li><a href="{{ '/history/paradoxes/newcomb/' | relative_url }}" {% if u == '/history/paradoxes/newcomb/' %}class="active"{% endif %}><span class="num">15</span>Newcomb 悖论</a></li>
+      <li><a href="{{ '/paradoxes/' | relative_url }}" {% if u == '/paradoxes/' %}class="active"{% endif %}><span class="num">目</span>悖论目录</a></li>
+      <li><a href="{{ '/paradoxes/zeno-arrow/' | relative_url }}" {% if u == '/paradoxes/zeno-arrow/' %}class="active"{% endif %}><span class="num">1</span>飞矢不动</a></li>
+      <li><a href="{{ '/paradoxes/achilles-tortoise/' | relative_url }}" {% if u == '/paradoxes/achilles-tortoise/' %}class="active"{% endif %}><span class="num">2</span>阿基里斯追龟</a></li>
+      <li><a href="{{ '/paradoxes/twin/' | relative_url }}" {% if u == '/paradoxes/twin/' %}class="active"{% endif %}><span class="num">3</span>双生子佯谬</a></li>
+      <li><a href="{{ '/paradoxes/ladder-barn/' | relative_url }}" {% if u == '/paradoxes/ladder-barn/' %}class="active"{% endif %}><span class="num">4</span>谷仓–杆悖论</a></li>
+      <li><a href="{{ '/paradoxes/loschmidt/' | relative_url }}" {% if u == '/paradoxes/loschmidt/' %}class="active"{% endif %}><span class="num">5</span>Loschmidt 佯谬</a></li>
+      <li><a href="{{ '/paradoxes/maxwell-demon/' | relative_url }}" {% if u == '/paradoxes/maxwell-demon/' %}class="active"{% endif %}><span class="num">6</span>麦克斯韦妖</a></li>
+      <li><a href="{{ '/paradoxes/boltzmann-brain/' | relative_url }}" {% if u == '/paradoxes/boltzmann-brain/' %}class="active"{% endif %}><span class="num">7</span>玻尔兹曼大脑</a></li>
+      <li><a href="{{ '/paradoxes/grandfather/' | relative_url }}" {% if u == '/paradoxes/grandfather/' %}class="active"{% endif %}><span class="num">8</span>祖父悖论</a></li>
+      <li><a href="{{ '/paradoxes/predestination/' | relative_url }}" {% if u == '/paradoxes/predestination/' %}class="active"{% endif %}><span class="num">9</span>命定悖论</a></li>
+      <li><a href="{{ '/paradoxes/bootstrap/' | relative_url }}" {% if u == '/paradoxes/bootstrap/' %}class="active"{% endif %}><span class="num">10</span>自举悖论</a></li>
+      <li><a href="{{ '/paradoxes/tachyonic-antitelephone/' | relative_url }}" {% if u == '/paradoxes/tachyonic-antitelephone/' %}class="active"{% endif %}><span class="num">11</span>反向电话</a></li>
+      <li><a href="{{ '/paradoxes/light-travel-time/' | relative_url }}" {% if u == '/paradoxes/light-travel-time/' %}class="active"{% endif %}><span class="num">12</span>光程时序倒错</a></li>
+      <li><a href="{{ '/paradoxes/chronology-protection/' | relative_url }}" {% if u == '/paradoxes/chronology-protection/' %}class="active"{% endif %}><span class="num">13</span>时序保护猜想</a></li>
+      <li><a href="{{ '/paradoxes/mctaggart/' | relative_url }}" {% if u == '/paradoxes/mctaggart/' %}class="active"{% endif %}><span class="num">14</span>McTaggart 悖论</a></li>
+      <li><a href="{{ '/paradoxes/newcomb/' | relative_url }}" {% if u == '/paradoxes/newcomb/' %}class="active"{% endif %}><span class="num">15</span>Newcomb 悖论</a></li>
     </ul>
     <p class="side-title">更多专题</p>
     <ul>
-      <li><a href="{{ '/history/prehistory/' | relative_url }}"><span class="num">附</span>史前史与应用</a></li>
-      <li><a href="{{ '/history/nature-of-time/' | relative_url }}"><span class="num">附</span>时间的本质</a></li>
+      <li><a href="{{ '/prehistory/' | relative_url }}"><span class="num">附</span>史前史与应用</a></li>
+      <li><a href="{{ '/nature-of-time/' | relative_url }}"><span class="num">附</span>时间的本质</a></li>
       <li><a href="{{ '/history/' | relative_url }}"><span class="num">←</span>回发展史</a></li>
     </ul>
-  {% elsif u == '/history/prehistory/' or u == '/history/nature-of-time/' %}
+  {% elsif u == '/prehistory/' or u == '/nature-of-time/' %}
     <p class="side-title">专题</p>
     <ul>
-      <li><a href="{{ '/history/prehistory/' | relative_url }}" {% if u == '/history/prehistory/' %}class="active"{% endif %}><span class="num">附</span>史前史与应用</a></li>
-      <li><a href="{{ '/history/nature-of-time/' | relative_url }}" {% if u == '/history/nature-of-time/' %}class="active"{% endif %}><span class="num">附</span>时间的本质</a></li>
-      <li><a href="{{ '/history/paradoxes/' | relative_url }}"><span class="num">附</span>时间悖论</a></li>
+      <li><a href="{{ '/prehistory/' | relative_url }}" {% if u == '/prehistory/' %}class="active"{% endif %}><span class="num">附</span>史前史与应用</a></li>
+      <li><a href="{{ '/nature-of-time/' | relative_url }}" {% if u == '/nature-of-time/' %}class="active"{% endif %}><span class="num">附</span>时间的本质</a></li>
+      <li><a href="{{ '/paradoxes/' | relative_url }}"><span class="num">附</span>时间悖论</a></li>
     </ul>
     <p class="side-title">发展史</p>
     <ul>
@@ -88,9 +91,9 @@
     </ul>
     <p class="side-title">专题</p>
     <ul>
-      <li><a href="{{ '/history/prehistory/' | relative_url }}"><span class="num">附</span>史前史与应用</a></li>
-      <li><a href="{{ '/history/nature-of-time/' | relative_url }}"><span class="num">附</span>时间的本质</a></li>
-      <li><a href="{{ '/history/paradoxes/' | relative_url }}"><span class="num">附</span>时间悖论</a></li>
+      <li><a href="{{ '/prehistory/' | relative_url }}"><span class="num">附</span>史前史与应用</a></li>
+      <li><a href="{{ '/nature-of-time/' | relative_url }}"><span class="num">附</span>时间的本质</a></li>
+      <li><a href="{{ '/paradoxes/' | relative_url }}"><span class="num">附</span>时间悖论</a></li>
     </ul>
   {% endif %}
   </aside>

@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 2 · 哲学"
-permalink: /history/paradoxes/achilles-tortoise/
+permalink: /paradoxes/achilles-tortoise/
 title: "阿基里斯追龟 (Achilles and the Tortoise)"
 lead: "让乌龟先跑一段，飞毛腿阿基里斯去追。等他到达乌龟的出发点，乌龟已经又往前挪了一点；等他赶到那个新点，乌龟又挪了更小的一点……他似乎永远要先到对方“刚才”的位置，于是永远追不上。可现实里他一步就超过去了——错在哪？"
 math: true
-prev: /history/paradoxes/zeno-arrow/
-next: /history/paradoxes/twin/
+prev: /paradoxes/zeno-arrow/
+next: /paradoxes/twin/
 ---
 
 > 这是[时间悖论](../)的一则。

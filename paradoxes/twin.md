@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 3 · 物理 · 狭义相对论"
-permalink: /history/paradoxes/twin/
+permalink: /paradoxes/twin/
 title: "双生子佯谬 (The Twin Paradox)"
 lead: "一对双胞胎，一个留在地球，一个乘近光速飞船远行后归来。狭义相对论说“运动的钟变慢”，于是回来的那个更年轻。可运动是相对的——在飞船看来是地球在远去，为什么不能反过来说地球上的那个更年轻？"
 math: true
-prev: /history/paradoxes/achilles-tortoise/
-next: /history/paradoxes/ladder-barn/
+prev: /paradoxes/achilles-tortoise/
+next: /paradoxes/ladder-barn/
 ---
 
 > 这是[时间悖论](../)的一则。

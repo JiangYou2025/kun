@@ -3,12 +3,12 @@ updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 14 · 哲学"
-permalink: /history/paradoxes/mctaggart/
+permalink: /paradoxes/mctaggart/
 title: "McTaggart 悖论 (McTaggart's Paradox)"
 lead: "我们用两种方式谈时间：一种说事件是“过去/现在/未来”（会变——明天的事今天还是未来，到了明天就成现在），一种说事件之间是“在先/在后”（永不改变）。McTaggart 说：前者自相矛盾，而时间又离不开它——所以时间根本不真实。"
 math: false
-prev: /history/paradoxes/chronology-protection/
-next: /history/paradoxes/newcomb/
+prev: /paradoxes/chronology-protection/
+next: /paradoxes/newcomb/
 ---
 
 > 这是[时间悖论](../)的一则。
