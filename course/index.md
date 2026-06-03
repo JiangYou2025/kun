@@ -7,7 +7,7 @@ title: "时间序列入门 · 讲义目录"
 lead: "一门关于时间序列分析与预测的入门课程，共 15 讲。本页只列出框架与标题，内容随后逐讲补充。参考 tsamardzic/nlp_intro 的讲义形式编排。"
 ---
 
-## 课程简介 (About)
+## 课程简介
 
 本讲义带你从零开始理解**时间序列 (time series)**：它是什么、如何分析、如何做**预测 (forecasting)**，并最终走到现代深度学习模型，包括本仓库的 **Kernel U-Net (KUN)**。
 
@@ -15,7 +15,7 @@ lead: "一门关于时间序列分析与预测的入门课程，共 15 讲。本
 >
 > 想了解方法的来龙去脉？见 [时间序列发展史](../history/)。
 
-## 讲义目录 (Table of Contents)
+## 讲义目录
 
 | # | 讲题 | 主题 |
 |---|------|------|
@@ -35,7 +35,7 @@ lead: "一门关于时间序列分析与预测的入门课程，共 15 讲。本
 | 14 | [现代预测模型：DLinear、N-BEATS 与 Kernel U-Net](14/) | Modern forecasters & KUN |
 | 15 | [概率预测、多变量与实战流程](15/) | Probabilistic & pipeline |
 
-## 动手案例 (Hands-on notebooks)
+## 动手案例
 
 配套的可运行 Jupyter 案例（合成数据，克隆即跑）放在仓库的 [`notebooks/`](https://github.com/JiangYou2025/kun/tree/main/notebooks) 目录：
 
@@ -43,7 +43,7 @@ lead: "一门关于时间序列分析与预测的入门课程，共 15 讲。本
 2. [预测基线与评估](https://github.com/JiangYou2025/kun/blob/main/notebooks/02_forecasting_baselines.ipynb) — 第 7、8 讲
 3. [滑动窗口神经网络预测（KUN 思想）](https://github.com/JiangYou2025/kun/blob/main/notebooks/03_kun_style_window_forecast.ipynb) — 第 11、14 讲
 
-## 如何使用 (How to use)
+## 如何使用
 
 - 按顺序阅读，每一讲都建立在前一讲之上。
 - 每讲只列**标题与小节框架**，便于先建立全局地图，再逐步填充细节。
