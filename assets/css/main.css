@@ -260,22 +260,26 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:5px
   .hist-wrap{padding:0 12px;gap:0}
   .hist-wrap .content{padding:16px 0 48px}
 
-  /* Chapter nav: vertical collapsible, not horizontal scroll */
+  /* Chapter nav: vertical collapsible via checkbox toggle */
   .chapter-nav{
     position:static;max-height:none;overflow:visible;
     padding:0;margin:0 -12px;
     border-bottom:1px solid var(--border);
   }
-  .chapter-nav .side-title{
+  .chap-toggle{display:none}
+  .chap-toggle-label{
     display:block;font-size:.78rem;padding:10px 16px 6px;margin:0;
-    color:var(--accent);cursor:pointer;
+    color:var(--accent);cursor:pointer;user-select:none;
   }
-  .chapter-nav .side-title::after{content:" ▾";font-size:.7rem}
+  .chap-toggle-label::after{content:" ▾";font-size:.7rem;transition:transform .2s}
+  .chap-toggle:checked ~ .chap-toggle-label::after{content:" ▴"}
+  .chapter-nav .side-title{display:none}
   .chapter-nav ul{
     list-style:none;display:flex;flex-direction:column;gap:0;
     padding:0 0 6px;margin:0;
     max-height:0;overflow:hidden;transition:max-height .3s ease;
   }
+  .chap-toggle:checked ~ .chapter-nav ul{max-height:3000px}
   .chapter-nav li{flex:none}
   .chapter-nav a{
     display:flex;align-items:baseline;gap:8px;
@@ -283,13 +287,6 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:5px
     padding:6px 16px;font-size:.84rem;white-space:normal;line-height:1.4;
   }
   .chapter-nav a.active{border-left-color:var(--accent);background:var(--surface)}
-  /* Expand on hover/focus (tap on mobile triggers focus-within) */
-  .chapter-nav:focus-within ul,
-  .chapter-nav:hover ul{max-height:3000px}
-  /* Fallback: scrollable if :has not supported */
-  @supports not selector(:has(a)){
-    .chapter-nav ul{max-height:200px;overflow-y:auto}
-  }
 
   /* Page title + lead */
   .hist-wrap .page-title{font-size:1.35rem;line-height:1.3}

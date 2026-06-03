@@ -37,6 +37,16 @@
 
 {% assign u = page.url %}
 <div class="hist-wrap">
+  <input type="checkbox" id="chap-toggle" class="chap-toggle">
+  {% if u contains '/paradoxes/' %}
+  <label for="chap-toggle" class="chap-toggle-label">时间悖论</label>
+  {% elsif u contains '/prehistory/' %}
+  <label for="chap-toggle" class="chap-toggle-label">史前史故事</label>
+  {% elsif u contains '/nature-of-time/' %}
+  <label for="chap-toggle" class="chap-toggle-label">时间的本质</label>
+  {% else %}
+  <label for="chap-toggle" class="chap-toggle-label">章节目录</label>
+  {% endif %}
   <aside class="chapter-nav">
   {% if u contains '/paradoxes/' %}
     <p class="side-title">时间悖论</p>
