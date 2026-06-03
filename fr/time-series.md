@@ -1,4 +1,5 @@
 ---
+updated: "2026-06-01"
 lang: fr
 ref: time-series
 permalink: /fr/time-series/

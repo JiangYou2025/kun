@@ -1,4 +1,5 @@
 ---
+updated: "2026-06-01"
 layout: history
 lang: zh
 era: "序章 · 跨学科源头（1900–今）"

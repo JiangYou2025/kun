@@ -71,6 +71,7 @@
   <div class="bar">
     <span>© {{ site.author }} · KUN</span>
     <a href="https://github.com/JiangYou2025/kun">{{ t.edit }}</a>
+    {% if page.updated %}<span class="muted">{{ t.updated }} {{ page.updated }}</span>{% endif %}
     <span class="muted">{{ t.built_with }}</span>
   </div>
 </footer>

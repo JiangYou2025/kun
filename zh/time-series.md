@@ -1,4 +1,5 @@
 ---
+updated: "2026-06-03"
 lang: zh
 ref: time-series
 permalink: /zh/time-series/

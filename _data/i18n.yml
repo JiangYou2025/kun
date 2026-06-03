@@ -12,6 +12,7 @@ en:
   next: "Next"
   prev: "Previous"
   edit: "Edit on GitHub"
+  updated: "Updated"
   built_with: "Built with Jekyll · Hosted on GitHub Pages"
 
 zh:
@@ -28,6 +29,7 @@ zh:
   next: "下一篇"
   prev: "上一篇"
   edit: "在 GitHub 上编辑"
+  updated: "最后编辑"
   built_with: "由 Jekyll 构建 · 托管于 GitHub Pages"
 
 fr:
@@ -44,4 +46,5 @@ fr:
   next: "Suivant"
   prev: "Précédent"
   edit: "Modifier sur GitHub"
+  updated: "Mis à jour"
   built_with: "Conçu avec Jekyll · Hébergé sur GitHub Pages"

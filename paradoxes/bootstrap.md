@@ -1,4 +1,5 @@
 ---
+updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 10 · 时间旅行"

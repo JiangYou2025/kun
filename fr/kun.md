@@ -1,4 +1,5 @@
 ---
+updated: "2026-05-31"
 lang: fr
 ref: kun
 permalink: /fr/kun/

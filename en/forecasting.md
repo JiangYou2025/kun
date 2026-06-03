@@ -1,4 +1,5 @@
 ---
+updated: "2026-06-01"
 lang: en
 ref: forecasting
 permalink: /en/forecasting/

@@ -1,4 +1,5 @@
 ---
+updated: "2026-06-03"
 lang: zh
 ref: forecasting
 permalink: /zh/forecasting/

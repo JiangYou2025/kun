@@ -1,4 +1,5 @@
 ---
+updated: "2026-06-03"
 layout: history
 lang: zh
 era: "时间悖论 3 · 物理 · 狭义相对论"
