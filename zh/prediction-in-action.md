@@ -24,7 +24,7 @@ next: wave-types
 
 <div class="game" markdown="0">
   <h3 style="margin-top:0">调整大炮，命中目标！</h3>
-  <p class="hint">画面中有 <strong>蓝色观测点</strong>（已知弹道数据）和一个 <strong>红色靶心</strong>（目标）。拖动滑块调整大炮的<strong>水平位置</strong>和<strong>发射角度</strong>，让抛物线穿过蓝色点并命中靶心。速度固定，大炮在地面发射。共 3 关。</p>
+  <p class="hint">画面中有 <strong>蓝色观测点</strong>（已知弹道数据）和一个 <strong>红色靶心</strong>（目标）。拖动滑块调整大炮的<strong>水平位置</strong>和<strong>发射角度</strong>。辅助线只显示前半段弹道——后半段落在哪里，靠你自己判断！共 3 关。</p>
 
   <canvas id="art-canvas" width="560" height="260" style="width:100%;max-width:560px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:crosshair"></canvas>
 
@@ -138,12 +138,14 @@ next: wave-types
       ctx.lineTo(cannonX+Math.cos(ca)*24,GND-3-Math.sin(ca)*24);
       ctx.strokeStyle='#e6e8ee';ctx.lineWidth=3;ctx.stroke();
 
-      // 预览虚线
+      // 预览虚线（只画前半段）
       if(!ut){
         var pv=traj(cx0,parseFloat(angleS.value));
+        var half=Math.floor(pv.length/2);
         ctx.setLineDash([5,4]);ctx.strokeStyle='#818cf8';ctx.lineWidth=1.5;ctx.beginPath();
-        pv.forEach(function(p,i){if(i===0)ctx.moveTo(sx(p.x),sy(p.y));else ctx.lineTo(sx(p.x),sy(p.y));});
+        for(var hi=0;hi<half;hi++){if(hi===0)ctx.moveTo(sx(pv[hi].x),sy(pv[hi].y));else ctx.lineTo(sx(pv[hi].x),sy(pv[hi].y));}
         ctx.stroke();ctx.setLineDash([]);
+        if(half>0){var hp=pv[half-1];ctx.fillStyle='#818cf8';ctx.font='bold 16px sans-serif';ctx.fillText('?',sx(hp.x)+6,sy(hp.y)-2);}
       }
 
       // 发射后轨迹（实线）
