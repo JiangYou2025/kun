@@ -1,5 +1,7 @@
 # KUN · Kernel U-Net — documentation & learning site
 
+**🔗 在线访问 / Live site: <https://jiangyou2025.github.io/kun/zh/>** （中文）  ·  [English](https://jiangyou2025.github.io/kun/en/)  ·  [Français](https://jiangyou2025.github.io/kun/fr/)
+
 A [Jekyll](https://jekyllrb.com/) site about **time series, forecasting and the Kernel U-Net (KUN) model**. It has grown from a small trilingual intro into a small library:
 
 - **Trilingual KUN intro** (English / 中文 / Français) — what a time series is, how to forecast, and how to use KUN.
@@ -11,7 +13,12 @@ A [Jekyll](https://jekyllrb.com/) site about **time series, forecasting and the 
   - **时间悖论** (`/paradoxes/`) — 15 famous paradoxes of time.
 - **Runnable notebooks** (`/notebooks/`) — synthetic-data Jupyter examples.
 
-Served by **GitHub Pages** at `https://jiangyou2025.github.io/kun/`.
+Served by **GitHub Pages**. Entry points:
+
+- 中文首页 — <https://jiangyou2025.github.io/kun/zh/>
+- 入门讲义 — <https://jiangyou2025.github.io/kun/course/>
+- 时间序列发展史 — <https://jiangyou2025.github.io/kun/history/>
+- 专题：[史前史与应用](https://jiangyou2025.github.io/kun/prehistory/) · [时间的本质](https://jiangyou2025.github.io/kun/nature-of-time/) · [时间悖论](https://jiangyou2025.github.io/kun/paradoxes/)
 
 ## Site map
 
