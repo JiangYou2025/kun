@@ -35,6 +35,7 @@ lead: "从 1927 年 Yule 的自回归到今天的深度学习与基础模型—�
 <table class="tl-table">
 <thead><tr><th>年份</th><th>领域</th><th>人物</th><th>关键贡献</th><th>章</th></tr></thead>
 <tbody>
+<tr class="r-math"><td class="yr">1807</td><td><span class="badge d-math">数学</span></td><td>Fourier</td><td>傅里叶级数与傅里叶变换：任意信号分解为正弦波叠加，频域分析之始</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1900</td><td><span class="badge d-math">数学</span></td><td>Bachelier</td><td>随机游走为股价建模：数理金融与布朗运动之始</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-phys"><td class="yr">1905</td><td><span class="badge d-phys">物理</span></td><td>Einstein · Smoluchowski</td><td>布朗运动理论 → 数学上的 Wiener 过程</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1906</td><td><span class="badge d-math">数学</span></td><td>Markov</td><td>马尔可夫链：无记忆性（AR/HMM/MDP/MCMC 的骨架）</td><td><a href="foundations/">序</a></td></tr>
@@ -49,6 +50,7 @@ lead: "从 1927 年 Yule 的自回归到今天的深度学习与基础模型—�
 <tr class="r-ctrl"><td class="yr">1940s</td><td><span class="badge d-ctrl">控制</span></td><td>Wiener · Kolmogorov</td><td>最优线性预测 = 条件期望（投影）</td><td><a href="02/">2</a></td></tr>
 <tr class="r-math"><td class="yr">1944</td><td><span class="badge d-math">数学</span></td><td>Itô</td><td>随机微积分、Itô 引理 → 连续时间金融的引擎</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1945</td><td><span class="badge d-math">数学</span></td><td>Wald</td><td>序贯分析 / SPRT、最优停时（变点检测之源）</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-ctrl"><td class="yr">1946</td><td><span class="badge d-ctrl">控制</span></td><td>Gabor</td><td>短时傅里叶变换 (STFT)：加窗傅里叶，兼顾时间与频率局部化</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1948</td><td><span class="badge d-ctrl">控制</span></td><td>Wiener</td><td>《控制论》、Wiener–Hopf 最优滤波器</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1948</td><td><span class="badge d-ctrl">控制</span></td><td>Shannon</td><td>信息论：熵、信道容量、Nyquist–Shannon 采样定理</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-math"><td class="yr">1949</td><td><span class="badge d-math">数学</span></td><td>Kac · Feynman</td><td>Feynman–Kac / 路径积分：PDE 解 = 路径期望</td><td><a href="foundations/">序</a></td></tr>
@@ -62,6 +64,7 @@ lead: "从 1927 年 Yule 的自回归到今天的深度学习与基础模型—�
 <tr class="r-ctrl"><td class="yr">1960</td><td><span class="badge d-ctrl">控制</span></td><td>Winters</td><td>Holt–Winters 季节性指数平滑</td><td><a href="04/">4</a></td></tr>
 <tr class="r-math"><td class="yr">1963</td><td><span class="badge d-math">数学</span></td><td>Mandelbrot</td><td>金融收益重尾、分数布朗运动与长记忆</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-phys"><td class="yr">1963</td><td><span class="badge d-phys">物理</span></td><td>Lorenz</td><td>确定性混沌、洛伦兹吸引子（可预测性极限）</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-cs"><td class="yr">1965</td><td><span class="badge d-cs">计算机</span></td><td>Cooley · Tukey</td><td>快速傅里叶变换 (FFT)：O(N log N) 算法，让频谱分析大规模可行</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1967</td><td><span class="badge d-ctrl">控制</span></td><td>Viterbi</td><td>维特比算法：HMM / 卷积码的动态规划解码</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-cs"><td class="yr">1970</td><td><span class="badge d-cs">计算机</span></td><td>Box · Jenkins</td><td>ARIMA/SARIMA 与三阶段建模方法论</td><td><a href="05/">5</a></td></tr>
 <tr class="r-math"><td class="yr">1973</td><td><span class="badge d-math">数学</span></td><td>Black · Scholes · Merton</td><td>期权定价：几何布朗运动 + Itô 引理</td><td><a href="foundations/">序</a></td></tr>
@@ -74,6 +77,7 @@ lead: "从 1927 年 Yule 的自回归到今天的深度学习与基础模型—�
 <tr class="r-cs"><td class="yr">1986</td><td><span class="badge d-cs">计算机</span></td><td>Bollerslev</td><td>GARCH(1,1)：更简洁的波动率模型</td><td><a href="06/">6</a></td></tr>
 <tr class="r-cs"><td class="yr">1987</td><td><span class="badge d-cs">计算机</span></td><td>Engle · Granger</td><td>协整、误差修正模型、ADF 单位根检验</td><td><a href="06/">6</a></td></tr>
 <tr class="r-cs"><td class="yr">1988–89</td><td><span class="badge d-cs">计算机</span></td><td>Sutton · Barto · Watkins</td><td>强化学习：时序差分 (TD) 与 Q-learning</td><td><a href="foundations/">序</a></td></tr>
+<tr class="r-math"><td class="yr">1989</td><td><span class="badge d-math">数学</span></td><td>Mallat</td><td>小波多分辨率分析 (MRA)：正交小波基 + 快速小波变换，时频自适应分辨率</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-phys"><td class="yr">1990</td><td><span class="badge d-phys">物理</span></td><td>Sugihara · May</td><td>非线性预测：区分混沌与噪声（后启 CCM 因果）</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1993</td><td><span class="badge d-ctrl">控制</span></td><td>Gordon et al.</td><td>粒子滤波 / 序贯蒙特卡洛：非线性非高斯状态估计</td><td><a href="foundations/">序</a></td></tr>
 <tr class="r-ctrl"><td class="yr">1994</td><td><span class="badge d-ctrl">控制</span></td><td>Evensen</td><td>集合卡尔曼滤波 EnKF：数值天气预报的数据同化</td><td><a href="foundations/">序</a></td></tr>
