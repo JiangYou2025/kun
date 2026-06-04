@@ -238,9 +238,9 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:5px
   blockquote{padding:.5em .8em;margin:1em 0}
 
   /* Pager (prev/next) */
-  .pager{flex-direction:column;gap:8px}
-  .pager a{text-align:center}
-  .pager .next{margin-left:0}
+  .pager{flex-direction:row;gap:8px}
+  .pager a{text-align:center;font-size:.85rem;padding:8px 10px;flex:1}
+  .pager .next{margin-left:auto}
 
   /* Footer */
   .site-footer .bar{flex-direction:column;gap:8px;text-align:center;padding:16px}
