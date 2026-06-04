@@ -320,3 +320,7 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:5px
   .chapter-nav a{padding:3px 8px;font-size:.74rem}
   .hist-wrap .page-title{font-size:1.2rem}
 }
+
+/* Reactions / Giscus */
+.page-reactions{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)}
+.page-reactions h2{font-size:1.1rem;margin-bottom:1rem;color:var(--muted)}
