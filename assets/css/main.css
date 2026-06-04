@@ -243,7 +243,7 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:5px
   .pager .next{margin-left:auto}
 
   /* Footer */
-  .site-footer .bar{flex-direction:column;gap:8px;text-align:center;padding:16px}
+  .site-footer .bar{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:6px 14px;text-align:center;padding:14px 16px;font-size:13px}
 
   /* Game widget */
   .game{padding:14px}

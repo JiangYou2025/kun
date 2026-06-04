@@ -104,14 +104,16 @@
 </main>
 
 <footer class="site-footer">
-  <div class="bar">
+  <div class="bar" style="flex-wrap:wrap;justify-content:center;gap:8px 16px">
     <span>© {{ site.author }} · KUN</span>
-    <a id="foot-email" style="color:var(--muted)" href="#" title="Email">✉</a><script>!function(){var a="jiang.you",b="esiee.fr",e=document.getElementById("foot-email");e.href="mai"+"lto:"+a+"@"+b}()</script>
-    <a href="https://scholar.google.com/citations?user=9V6G_CYAAAAJ&hl=zh-CN" target="_blank" rel="noopener" style="color:var(--muted)">Google Scholar</a>
-    <a href="https://github.com/JiangYou2025/kun">{{ t.edit }}</a>
-    {% if page.updated %}<span class="muted">{{ t.updated }} {{ page.updated }}</span>{% endif %}
-    <span class="muted">{{ t.built_with }}</span>
+    <span style="display:inline-flex;gap:12px">
+      <a id="foot-email" style="color:var(--muted)" href="#" title="Email">✉</a>
+      <a href="https://scholar.google.com/citations?user=9V6G_CYAAAAJ&hl=zh-CN" target="_blank" rel="noopener" style="color:var(--muted)" title="Google Scholar">🎓</a>
+      <a href="https://github.com/JiangYou2025/kun" style="color:var(--muted)" title="GitHub">⌨</a>
+    </span>
+    {% if page.updated %}<span class="muted" style="width:100%;text-align:center;font-size:12px">{{ t.updated }} {{ page.updated }}</span>{% endif %}
   </div>
 </footer>
+<script>!function(){var a="jiang.you",b="esiee.fr",e=document.getElementById("foot-email");e.href="mai"+"lto:"+a+"@"+b}()</script>
 </body>
 </html>

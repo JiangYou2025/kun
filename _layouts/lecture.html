@@ -82,7 +82,16 @@
 </main>
 
 <footer class="site-footer">
-  <div class="bar"><span>© Jiang You · 时间序列入门</span><a id="lect-email" style="color:var(--muted)" href="#" title="Email">✉</a><script>!function(){var a="jiang.you",b="esiee.fr",e=document.getElementById("lect-email");e.href="mai"+"lto:"+a+"@"+b}()</script><a href="https://scholar.google.com/citations?user=9V6G_CYAAAAJ&hl=zh-CN" target="_blank" rel="noopener" style="color:var(--muted)">Google Scholar</a>{% if page.updated %}<span class="muted">最后编辑 {{ page.updated }}</span>{% endif %}<span class="muted">由 Jekyll 构建 · 托管于 GitHub Pages</span></div>
+  <div class="bar" style="flex-wrap:wrap;justify-content:center;gap:8px 16px">
+    <span>© Jiang You · 时间序列入门</span>
+    <span style="display:inline-flex;gap:12px">
+      <a id="lect-email" style="color:var(--muted)" href="#" title="Email">✉</a>
+      <a href="https://scholar.google.com/citations?user=9V6G_CYAAAAJ&hl=zh-CN" target="_blank" rel="noopener" style="color:var(--muted)" title="Google Scholar">🎓</a>
+      <a href="https://github.com/JiangYou2025/kun" style="color:var(--muted)" title="GitHub">⌨</a>
+    </span>
+    {% if page.updated %}<span class="muted" style="width:100%;text-align:center;font-size:12px">最后编辑 {{ page.updated }}</span>{% endif %}
+  </div>
 </footer>
+<script>!function(){var a="jiang.you",b="esiee.fr",e=document.getElementById("lect-email");e.href="mai"+"lto:"+a+"@"+b}()</script>
 </body>
 </html>
