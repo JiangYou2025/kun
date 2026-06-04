@@ -149,34 +149,34 @@ next: kun
 
 <div class="cards" markdown="0">
   <div class="card">
-    <svg viewBox="0 0 120 56" aria-hidden="true"><polyline points="8,38 28,30 48,34 68,22 88,26" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><polyline points="88,26 104,18 116,22" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-dasharray="4 3" stroke-linecap="round"/></svg>
+    <div style="font-size:2.2rem;text-align:center;margin-bottom:4px">🌦️</div>
     <h3>天气 · 气候</h3>
-    <p>明天会不会下雨、风有多大，下个季节是旱是涝。</p>
+    <p>气象员最怕的是突发暴雨漏报——提前 6 小时精准预测降水量，能挽救一座城市的排水系统和数十亿财产损失。</p>
   </div>
   <div class="card">
-    <svg viewBox="0 0 120 56" aria-hidden="true"><polyline points="8,40 24,22 40,42 56,24 72,40 88,26" fill="none" stroke="var(--accent-2)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><polyline points="88,26 104,38 116,28" fill="none" stroke="var(--accent-2)" stroke-width="2.4" stroke-dasharray="4 3" stroke-linecap="round"/></svg>
+    <div style="font-size:2.2rem;text-align:center;margin-bottom:4px">⚡</div>
     <h3>用电 · 能源</h3>
-    <p>电网明早的负荷有多高，风电、光伏能出多少力。</p>
+    <p>电网调度员每天面对供需毫秒级平衡的压力——准确预测明早负荷峰值，能避免拉闸限电，也能少烧上千万的调峰成本。</p>
   </div>
   <div class="card">
-    <svg viewBox="0 0 120 56" aria-hidden="true"><polyline points="8,42 28,40 48,32 68,34 88,24" fill="none" stroke="#fbbf24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><polyline points="88,24 104,20 116,24" fill="none" stroke="#fbbf24" stroke-width="2.4" stroke-dasharray="4 3" stroke-linecap="round"/></svg>
+    <div style="font-size:2.2rem;text-align:center;margin-bottom:4px">📦</div>
     <h3>销量 · 库存</h3>
-    <p>下周该备多少货、补多少仓，才不缺货也不积压。</p>
+    <p>供应链经理最头疼的是"备多了压资金，备少了丢订单"——预测下周每个 SKU 的销量，直接决定千万级的库存周转效率。</p>
   </div>
   <div class="card">
-    <svg viewBox="0 0 120 56" aria-hidden="true"><polyline points="8,28 28,40 48,26 68,38 88,30" fill="none" stroke="#f0abfc" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><polyline points="88,30 104,40 116,32" fill="none" stroke="#f0abfc" stroke-width="2.4" stroke-dasharray="4 3" stroke-linecap="round"/></svg>
+    <div style="font-size:2.2rem;text-align:center;margin-bottom:4px">🚗</div>
     <h3>交通 · 出行</h3>
-    <p>半小时后这条路堵不堵，地铁这班车有多挤。</p>
+    <p>交通指挥中心要在拥堵发生前 30 分钟做出信号灯调度——预测路段流量能把通勤时间缩短 15%，每天影响百万人的出行体验。</p>
   </div>
   <div class="card">
-    <svg viewBox="0 0 120 56" aria-hidden="true"><polyline points="8,42 24,40 40,30 56,18 72,28 88,40" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><polyline points="88,40 104,44 116,42" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-dasharray="4 3" stroke-linecap="round"/></svg>
+    <div style="font-size:2.2rem;text-align:center;margin-bottom:4px">🏥</div>
     <h3>健康 · 疾病</h3>
-    <p>下个月病例是涨是落，ICU、药品需求要准备多少。</p>
+    <p>公共卫生官员面对的是"ICU 床位明天够不够"的生死题——提前两周预测病例趋势，能让医院从容调配人力和药品，而不是被动等挤兑。</p>
   </div>
   <div class="card">
-    <svg viewBox="0 0 120 56" aria-hidden="true"><polyline points="8,32 22,40 36,20 50,36 64,24 78,42 92,28" fill="none" stroke="var(--accent-2)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><polyline points="92,28 106,36 116,30" fill="none" stroke="var(--accent-2)" stroke-width="2.4" stroke-dasharray="4 3" stroke-linecap="round"/></svg>
+    <div style="font-size:2.2rem;text-align:center;margin-bottom:4px">📈</div>
     <h3>金融 · 风险</h3>
-    <p>价格往哪走、波动有多大，风险敞口该留多少缓冲。</p>
+    <p>风控经理最怕的不是亏，而是不知道可能亏多少——预测波动率和尾部风险，决定了一家机构是安全过关还是爆仓出局。</p>
   </div>
 </div>
 
