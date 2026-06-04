@@ -88,7 +88,7 @@ next: wave-types
       for(var i=0;i<nObs;i++){
         var idx=Math.floor((i+0.5)*n/nObs);
         var p=real[idx];
-        obs.push({x:p.x+(Math.random()-0.5)*noise,y:p.y+(Math.random()-0.5)*noise});
+        obs.push({x:p.x,y:p.y+(Math.random()-0.5)*noise});
       }
       var last=real[real.length-1];
       // 自动缩放：让整条弹道+靶心都在画面内
