@@ -30,7 +30,7 @@ next: frontier-2026
   <button class="wave-btn" data-wave="noise">噪声</button>
 </div>
 
-<canvas id="wave-canvas" width="700" height="280" style="width:100%;border-radius:10px;border:1px solid var(--border);background:var(--surface)"></canvas>
+<canvas id="wave-canvas" width="560" height="260" style="width:100%;max-width:560px;border-radius:10px;border:1px solid var(--border);background:var(--surface)"></canvas>
 <p id="wave-desc" style="margin-top:10px;font-size:.93rem;color:var(--muted)"></p>
 
 <style>
@@ -44,7 +44,7 @@ next: frontier-2026
   var canvas=document.getElementById('wave-canvas');
   if(!canvas)return;
   var ctx=canvas.getContext('2d');
-  var W=700,H=280,mid=H/2;
+  var W=560,H=260,mid=H/2;
   var descEl=document.getElementById('wave-desc');
   var btns=document.querySelectorAll('.wave-btn');
 
@@ -56,7 +56,7 @@ next: frontier-2026
       pred:'✅ 极易预测：只要确定周期和幅度'
     },
     trend:{
-      fn:function(x){return -60+x*0.55+Math.sin(x*0.08)*15;},
+      fn:function(x){return -80+x*0.3+Math.sin(x*0.08)*12;},
       color:'#fbbf24',
       desc:'📈 趋势 — 值随时间持续上升或下降。GDP 增长、全球气温升高、摩尔定律下的芯片性能，都带有明显趋势。趋势可以是线性的、指数的、甚至对数的。预测趋势的关键是判断趋势会持续还是会反转。',
       pred:'⚠️ 中等难度：趋势何时反转是最大不确定性'
@@ -74,7 +74,7 @@ next: frontier-2026
       pred:'✅ 若周期固定则易预测，不规则切换则难'
     },
     composite:{
-      fn:function(x){return Math.sin(x*0.03)*40+Math.sin(x*0.12)*25+x*0.15-30+Math.sin(x*0.007)*50;},
+      fn:function(x){return Math.sin(x*0.03)*35+Math.sin(x*0.12)*20+x*0.08-20+Math.sin(x*0.007)*30;},
       color:'#818cf8',
       desc:'🎼 复合波 — 多种频率 + 趋势的叠加，这才是现实数据最常见的形态。用电量 = 年周期 + 周周期 + 日周期 + 长期趋势 + 随机波动。分解复合波是时间序列分析的核心技术（傅里叶变换、小波分解、STL 分解等）。',
       pred:'⚠️ 需要分解后分别预测各成分，再合并'
