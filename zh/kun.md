@@ -5,7 +5,7 @@ ref: kun
 permalink: /zh/kun/
 title: "使用 KUN —— Kernel U-Net"
 lead: "KUN（Kernel U-Net）是一个用于长时域、多变量时间序列预测的层次化、对称式架构。本页解释它背后的思想，并给出在你自己数据上运行它的分步教程。"
-prev: prediction-in-action
+prev: frontier-2026
 math: true
 ---
 

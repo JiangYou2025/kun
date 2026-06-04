@@ -4,265 +4,185 @@ lang: zh
 ref: prediction-in-action
 permalink: /zh/prediction-in-action/
 title: "一次成功的预测"
-lead: "上一篇我们知道了预测是什么。这一篇，你来亲手完成一次预测——用炮兵射击的方式，体会'观察已有数据 → 拟合规律 → 命中目标'的完整过程。"
+lead: "预测的本质是什么？根据已有的观测数据，找到一条规律，然后把它延伸到未看到的地方。这一页用一个炮兵射击小游戏让你亲手体验：调整参数 → 拟合弹道 → 命中目标。"
 prev: forecasting
-next: kun
+next: wave-types
 ---
 
-## 预测的本质：拟合 + 外推
+## 预测 = 拟合 + 外推
 
-所有预测都在做同一件事：
+上一页我们知道了预测无处不在。但"预测"到底怎么做？
 
-1. **观察**——收集已有的数据点
-2. **拟合**——找到一条穿过这些点的规律（曲线）
-3. **外推**——沿着这条规律，推算出还没发生的未来
+最朴素的思路只有两步：
 
-这跟炮兵校射是一个道理：前几发炮弹的落点就是"历史数据"，你调整炮的位置和角度就是在"拟合模型"，最后一发命中目标就是"预测成功"。
+1. **拟合 (Fit)**：找到一条曲线，尽量穿过已有的数据点。
+2. **外推 (Extrapolate)**：把这条曲线延伸到未来，得到预测值。
 
-## 来玩：炮兵校射
+这和炮兵射击一模一样——你观察到几枚炮弹的落点轨迹，调整大炮的**起始位置**和**发射角度**，让弹道曲线拟合这些观测点，最终命中远处的目标。
 
-规则很简单：
+## 🎯 炮兵射击：你来预测弹道
 
-- 画布上有**一个目标**（红色圆点）和**几个已知落点**（蓝色圆点）
-- 拖动**炮的位置**（左侧滑块）和**发射角度**（右侧滑块）
-- 调整好后点**发射**，你的炮弹会画出一条抛物线
-- 目标：让炮弹的落点尽可能接近目标
-- **共 3 关**，每关的目标位置和已知落点不同
+<div class="game" markdown="0">
+  <h3 style="margin-top:0">调整大炮，命中目标！</h3>
+  <p class="hint">画面中有 <strong>蓝色观测点</strong>（已知弹道数据）和一个 <strong>红色靶心</strong>（目标）。拖动滑块调整<strong>发射角度</strong>、<strong>速度</strong>和<strong>高度</strong>，让抛物线穿过蓝色点并命中靶心。点击"发射"看结果。共 3 关。</p>
 
-关键体会：已知落点越多、分布越好，你就越容易找到正确的角度——这就是为什么**数据越充分，预测越准**。
+  <canvas id="art-canvas" width="700" height="360" style="width:100%;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:crosshair"></canvas>
 
-<div class="game" id="artillery-game" markdown="0">
-  <h3 style="margin-top:0">🎯 炮兵校射</h3>
-  <p class="hint" id="art-hint">调整炮的高度和发射角度，让炮弹命中红色目标。蓝色点是前几发的落点记录，供你参考。</p>
-  <svg id="art-svg" viewBox="0 0 640 360" style="width:100%;background:var(--surface,#161922);border-radius:8px">
-    <!-- ground -->
-    <rect x="0" y="320" width="640" height="40" fill="color-mix(in srgb,var(--accent) 15%,transparent)"/>
-    <line x1="0" y1="320" x2="640" y2="320" stroke="var(--muted)" stroke-width="1"/>
-    <!-- dynamic content -->
-    <g id="art-dyn"></g>
-  </svg>
-
-  <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:12px;align-items:center">
+  <div style="display:flex;flex-wrap:wrap;gap:18px;margin:14px 0;align-items:center">
     <label style="flex:1;min-width:200px">
-      <span style="font-size:.88rem;color:var(--muted)">炮的高度 <strong id="art-y-val">50%</strong></span>
-      <input type="range" id="art-y" min="10" max="90" value="50" style="width:100%">
+      <span style="font-size:.9rem;color:var(--muted)">发射角度 θ</span>
+      <input type="range" id="art-angle" min="20" max="75" value="45" step="0.5" style="width:100%">
+      <span id="art-angle-val" style="font-size:.85rem;font-weight:600">45°</span>
     </label>
     <label style="flex:1;min-width:200px">
-      <span style="font-size:.88rem;color:var(--muted)">发射角度 <strong id="art-a-val">45°</strong></span>
-      <input type="range" id="art-a" min="10" max="80" value="45" style="width:100%">
+      <span style="font-size:.9rem;color:var(--muted)">发射速度 v₀</span>
+      <input type="range" id="art-speed" min="60" max="160" value="100" step="1" style="width:100%">
+      <span id="art-speed-val" style="font-size:.85rem;font-weight:600">100</span>
     </label>
-    <button id="art-fire" type="button" style="padding:8px 24px;border-radius:6px;background:var(--accent);color:var(--bg);border:none;font-weight:600;font-size:.95rem;cursor:pointer">发射 🚀</button>
+    <label style="flex:1;min-width:200px">
+      <span style="font-size:.9rem;color:var(--muted)">发射高度 y₀</span>
+      <input type="range" id="art-y0" min="0" max="120" value="20" step="1" style="width:100%">
+      <span id="art-y0-val" style="font-size:.85rem;font-weight:600">20</span>
+    </label>
   </div>
-
-  <p class="verdict" id="art-verdict" style="margin-top:8px;font-weight:600"></p>
-  <div class="bar2" style="margin-top:4px">
-    <button id="art-next" type="button" disabled style="padding:6px 18px;border-radius:6px;border:1px solid var(--border);background:var(--surface-2,#1d212c);color:var(--text);cursor:pointer">下一关 →</button>
-    <span id="art-score" style="font-size:.9rem;color:var(--muted)"></span>
+  <div class="bar2" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+    <button id="art-fire" type="button" style="padding:8px 24px;font-size:1rem;font-weight:600;border-radius:6px;background:var(--accent);color:var(--bg);border:none;cursor:pointer">🚀 发射！</button>
+    <span id="art-msg" style="font-size:.95rem"></span>
+    <span id="art-score" style="margin-left:auto;font-size:.9rem;color:var(--muted)"></span>
   </div>
 
   <script>
   (function(){
-    var NS='http://www.w3.org/2000/svg';
-    var svg=document.getElementById('art-svg');
-    var dyn=document.getElementById('art-dyn');
-    var sliderY=document.getElementById('art-y');
-    var sliderA=document.getElementById('art-a');
-    var yVal=document.getElementById('art-y-val');
-    var aVal=document.getElementById('art-a-val');
-    var fireBtn=document.getElementById('art-fire');
-    var nextBtn=document.getElementById('art-next');
-    var verdict=document.getElementById('art-verdict');
-    var scoreEl=document.getElementById('art-score');
-    var hint=document.getElementById('art-hint');
+    var canvas=document.getElementById('art-canvas');
+    if(!canvas)return;
+    var ctx=canvas.getContext('2d');
+    var W=700,H=360,g=9.8,scale=2.8;
+    var angleS=document.getElementById('art-angle'),speedS=document.getElementById('art-speed'),y0S=document.getElementById('art-y0');
+    var angleV=document.getElementById('art-angle-val'),speedV=document.getElementById('art-speed-val'),y0V=document.getElementById('art-y0-val');
+    var fireBtn=document.getElementById('art-fire'),msgEl=document.getElementById('art-msg'),scoreEl=document.getElementById('art-score');
 
-    var GROUND=320, CANNON_X=40, G=9.8, SCALE=3.2;
     var levels=[
-      {target:{x:420,y:260}, refs:[{x:200,y:290},{x:300,y:270},{x:350,y:265}]},
-      {target:{x:500,y:230}, refs:[{x:180,y:300},{x:280,y:280},{x:380,y:255}]},
-      {target:{x:550,y:200}, refs:[{x:150,y:310},{x:250,y:295},{x:400,y:240},{x:480,y:215}]}
+      {angle:42,speed:110,y0:30,name:'平原射击'},
+      {angle:58,speed:90,y0:60,name:'高地射击'},
+      {angle:35,speed:140,y0:10,name:'远程轰炸'}
     ];
-    var lvl=0, shots=0, totalScore=0, fired=false;
+    var cur=0,total=0,fired=false;
 
-    function el(tag,a){var e=document.createElementNS(NS,tag);for(var k in a)e.setAttribute(k,a[k]);return e;}
-
-    function cannonY(){return GROUND-((+sliderY.value)/100)*(GROUND-40);}
-    function angle(){return (+sliderA.value)*Math.PI/180;}
-
-    function drawCannon(){
-      var cy=cannonY(), a=angle();
-      // cannon body
-      var bx=CANNON_X+30*Math.cos(a), by=cy-30*Math.sin(a);
-      dyn.appendChild(el('line',{x1:CANNON_X,y1:cy,x2:bx,y2:by,stroke:'var(--text)','stroke-width':4,'stroke-linecap':'round'}));
-      // cannon base
-      dyn.appendChild(el('circle',{cx:CANNON_X,cy:cy,r:8,fill:'var(--text)'}));
-      // wheels
-      dyn.appendChild(el('circle',{cx:CANNON_X-6,cy:cy+8,r:5,fill:'none',stroke:'var(--muted)','stroke-width':1.5}));
-      dyn.appendChild(el('circle',{cx:CANNON_X+6,cy:cy+8,r:5,fill:'none',stroke:'var(--muted)','stroke-width':1.5}));
+    function rad(d){return d*Math.PI/180;}
+    function traj(a,v,y0,n){
+      var r=rad(a),vx=v*Math.cos(r),vy=v*Math.sin(r),pts=[];
+      for(var i=0;i<=n;i++){var t=i*0.06;var x=vx*t,y=y0+vy*t-0.5*g*t*t;if(y<0){pts.push({x:x,y:0});break;}pts.push({x:x,y:y});}
+      return pts;
     }
+    function genLv(){
+      var lv=levels[cur],real=traj(lv.angle,lv.speed,lv.y0,300);
+      var n=Math.floor(real.length*0.55),obs=[];
+      for(var i=0;i<5;i++){var idx=Math.floor((i+0.5)*n/5);var p=real[idx];obs.push({x:p.x+(Math.random()-0.5)*3,y:p.y+(Math.random()-0.5)*3});}
+      var last=real[real.length-1];
+      return {obs:obs,target:{x:last.x,y:0},real:real,name:lv.name};
+    }
+    var lv=genLv();
+    function sx(x){return 40+x*scale;}
+    function sy(y){return H-30-y*scale;}
 
-    function render(){
-      fired=false; fireBtn.disabled=false; nextBtn.disabled=true;
-      while(dyn.firstChild) dyn.removeChild(dyn.firstChild);
+    function draw(ut,showR){
+      ctx.clearRect(0,0,W,H);
+      // 地面
+      ctx.fillStyle='rgba(94,234,212,0.06)';ctx.fillRect(0,H-28,W,28);
+      ctx.strokeStyle='#262b38';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,H-28);ctx.lineTo(W,H-28);ctx.stroke();
+      ctx.fillStyle='#9aa3b2';ctx.font='12px sans-serif';ctx.fillText('距离 →',W-60,H-8);ctx.fillText('高度',8,22);
 
-      var L=levels[lvl];
-      // target
-      dyn.appendChild(el('circle',{cx:L.target.x,cy:L.target.y,r:10,fill:'#ef4444',opacity:0.9}));
-      dyn.appendChild(el('circle',{cx:L.target.x,cy:L.target.y,r:4,fill:'#fff'}));
-      var tl=el('text',{x:L.target.x,y:L.target.y-16,fill:'#ef4444','font-size':12,'text-anchor':'middle'}); tl.textContent='目标'; dyn.appendChild(tl);
-
-      // reference points
-      L.refs.forEach(function(p,i){
-        dyn.appendChild(el('circle',{cx:p.x,cy:p.y,r:5,fill:'var(--accent)',opacity:0.8}));
-        var lb=el('text',{x:p.x,y:p.y-10,fill:'var(--accent)','font-size':10,'text-anchor':'middle'}); lb.textContent='落点'+(i+1); dyn.appendChild(lb);
+      // 观测点
+      lv.obs.forEach(function(p){
+        ctx.beginPath();ctx.arc(sx(p.x),sy(p.y),6,0,Math.PI*2);ctx.fillStyle='#5eead4';ctx.fill();
+        ctx.strokeStyle='#0f1117';ctx.lineWidth=2;ctx.stroke();
       });
+      // 靶心
+      var tx=sx(lv.target.x),ty=sy(lv.target.y);
+      ctx.beginPath();ctx.arc(tx,ty,14,0,Math.PI*2);ctx.fillStyle='rgba(239,68,68,0.15)';ctx.fill();
+      ctx.strokeStyle='#ef4444';ctx.lineWidth=2.5;ctx.stroke();
+      ctx.beginPath();ctx.arc(tx,ty,4,0,Math.PI*2);ctx.fillStyle='#ef4444';ctx.fill();
+      ctx.fillStyle='#ef4444';ctx.font='bold 11px sans-serif';ctx.fillText('目标',tx+18,ty+4);
 
-      // label
-      var ll=el('text',{x:320,y:16,fill:'var(--muted)','font-size':13,'text-anchor':'middle'});
-      ll.textContent='第 '+(lvl+1)+' 关 / '+levels.length;
-      dyn.appendChild(ll);
+      // 大炮
+      var cy0=parseFloat(y0S.value),ca=rad(parseFloat(angleS.value));
+      ctx.fillStyle='#e6e8ee';ctx.fillRect(sx(0)-8,sy(cy0)-4,16,8);
+      ctx.beginPath();ctx.moveTo(sx(0),sy(cy0));ctx.lineTo(sx(0)+Math.cos(ca)*28,sy(cy0)-Math.sin(ca)*28);
+      ctx.strokeStyle='#e6e8ee';ctx.lineWidth=3;ctx.stroke();
 
-      drawCannon();
+      // 预览虚线
+      if(!ut){
+        var pv=traj(parseFloat(angleS.value),parseFloat(speedS.value),parseFloat(y0S.value),300);
+        ctx.setLineDash([5,4]);ctx.strokeStyle='#818cf8';ctx.lineWidth=1.5;ctx.beginPath();
+        pv.forEach(function(p,i){if(i===0)ctx.moveTo(sx(p.x),sy(p.y));else ctx.lineTo(sx(p.x),sy(p.y));});
+        ctx.stroke();ctx.setLineDash([]);
+      }
+      // 发射轨迹
+      if(ut){
+        ctx.strokeStyle='#818cf8';ctx.lineWidth=2.5;ctx.beginPath();
+        ut.forEach(function(p,i){if(i===0)ctx.moveTo(sx(p.x),sy(p.y));else ctx.lineTo(sx(p.x),sy(p.y));});
+        ctx.stroke();
+        var lp=ut[ut.length-1];ctx.beginPath();ctx.arc(sx(lp.x),sy(lp.y),5,0,Math.PI*2);ctx.fillStyle='#818cf8';ctx.fill();
+      }
+      // 真实弹道
+      if(showR){
+        ctx.setLineDash([3,3]);ctx.strokeStyle='#5eead4';ctx.lineWidth=1.5;ctx.beginPath();
+        lv.real.forEach(function(p,i){if(i===0)ctx.moveTo(sx(p.x),sy(p.y));else ctx.lineTo(sx(p.x),sy(p.y));});
+        ctx.stroke();ctx.setLineDash([]);
+      }
+      ctx.fillStyle='#9aa3b2';ctx.font='13px sans-serif';ctx.fillText('第 '+(cur+1)+'/'+levels.length+' 关：'+lv.name,50,22);
     }
 
-    function updateCannon(){
-      if(fired) return;
-      // redraw without clearing everything - just re-render
-      render();
+    function fitErr(){
+      var t=traj(parseFloat(angleS.value),parseFloat(speedS.value),parseFloat(y0S.value),300),err=0;
+      lv.obs.forEach(function(o){var m=Infinity;t.forEach(function(p){var d=Math.hypot(p.x-o.x,p.y-o.y);if(d<m)m=d;});err+=m;});
+      return err/lv.obs.length;
     }
 
-    sliderY.addEventListener('input',function(){yVal.textContent=sliderY.value+'%'; updateCannon();});
-    sliderA.addEventListener('input',function(){aVal.textContent=sliderA.value+'°'; updateCannon();});
+    function upd(){angleV.textContent=angleS.value+'°';speedV.textContent=speedS.value;y0V.textContent=y0S.value;if(!fired)draw(null,false);}
+    angleS.addEventListener('input',upd);speedS.addEventListener('input',upd);y0S.addEventListener('input',upd);
 
-    function fire(){
-      if(fired) return;
-      fired=true; fireBtn.disabled=true; shots++;
-
-      var cy=cannonY(), a=angle();
-      var v0=48; // initial velocity
-      var vx=v0*Math.cos(a), vy=v0*Math.sin(a);
-
-      // compute trajectory
-      var pts=[];
-      for(var t=0;t<200;t++){
-        var dt=t*0.06;
-        var px=CANNON_X+vx*dt*SCALE;
-        var py=cy-( vy*dt - 0.5*G*dt*dt )*SCALE;
-        if(py>GROUND){
-          // interpolate ground hit
-          var tPrev=(t-1)*0.06;
-          var pyPrev=cy-( vy*tPrev - 0.5*G*tPrev*tPrev )*SCALE;
-          var frac=(GROUND-pyPrev)/(py-pyPrev);
-          px=CANNON_X+vx*(tPrev+frac*0.06)*SCALE;
-          py=GROUND;
-          pts.push(px+','+py);
-          break;
-        }
-        pts.push(px+','+py);
-        if(px>650) break;
-      }
-
-      // draw trajectory
-      dyn.appendChild(el('polyline',{points:pts.join(' '),fill:'none',stroke:'#fbbf24','stroke-width':2,'stroke-dasharray':'4 3','stroke-linecap':'round'}));
-
-      // landing point
-      var last=pts[pts.length-1].split(',');
-      var lx=parseFloat(last[0]), ly=parseFloat(last[1]);
-      dyn.appendChild(el('circle',{cx:lx,cy:ly,r:6,fill:'#fbbf24'}));
-
-      // check distance to target
-      var L=levels[lvl];
-      var dx=lx-L.target.x, dy=ly-L.target.y;
-      var dist=Math.sqrt(dx*dx+dy*dy);
-
-      var msg, score;
-      if(dist<15){
-        msg='🎯 命中！偏差仅 '+Math.round(dist)+' 像素，完美预测！';
-        score=100;
-      } else if(dist<40){
-        msg='👏 接近了！偏差 '+Math.round(dist)+' 像素，几乎命中。';
-        score=Math.max(0, 80-Math.round(dist));
-      } else if(dist<100){
-        msg='🔍 还差一点，偏差 '+Math.round(dist)+' 像素。再试试？';
-        score=Math.max(0, 50-Math.round(dist/3));
-        fired=false; fireBtn.disabled=false;
-        verdict.innerHTML=msg;
-        return;
-      } else {
-        msg='💨 偏了不少，偏差 '+Math.round(dist)+' 像素。调整角度和高度再来。';
-        score=0;
-        fired=false; fireBtn.disabled=false;
-        verdict.innerHTML=msg;
-        return;
-      }
-
-      totalScore+=score;
-      verdict.innerHTML=msg;
-
-      if(lvl<levels.length-1){
-        nextBtn.disabled=false;
-        scoreEl.textContent='累计得分 '+totalScore+' / '+(levels.length*100);
-      } else {
-        // final
-        var avg=Math.round(totalScore/levels.length);
-        var pass=avg>=60;
-        verdict.innerHTML+=('<br>'+(pass
-          ? '🎉 <b>通关！</b>总分 '+totalScore+'/'+levels.length*100+'。你已经掌握了"观察→拟合→命中"的预测思维！'
-          : '🔁 <b>还差一点。</b>总分 '+totalScore+'/'+levels.length*100+'。点"重新开始"再来一次。'));
-        nextBtn.textContent='重新开始';
-        nextBtn.disabled=false;
-        nextBtn.dataset.mode='reset';
-        scoreEl.textContent='最终得分 '+totalScore+'/'+levels.length*100;
+    function doFire(){
+      if(fired)return;fired=true;
+      var t=traj(parseFloat(angleS.value),parseFloat(speedS.value),parseFloat(y0S.value),300);
+      var lp=t[t.length-1],dist=Math.abs(lp.x-lv.target.x),fe=fitErr();
+      draw(t,true);
+      var hs=Math.max(0,100-Math.round(dist*2)),fs=Math.max(0,100-Math.round(fe*5));
+      var rs=Math.round(hs*0.6+fs*0.4);total+=rs;
+      var hm=dist<5?'🎯 完美命中！':dist<15?'👍 很接近！':dist<30?'还行，差一点。':'💥 偏了不少。';
+      msgEl.innerHTML=hm+' 落点偏差 '+Math.round(dist)+' 米，拟合误差 '+Math.round(fe)+' 米。本关 <b>'+rs+'/100</b>';
+      if(cur<levels.length-1){
+        fireBtn.textContent='下一关 →';
+        fireBtn.onclick=function(){cur++;lv=genLv();fired=false;msgEl.innerHTML='';fireBtn.textContent='🚀 发射！';fireBtn.onclick=doFire;angleS.value=45;speedS.value=100;y0S.value=20;upd();};
+      }else{
+        var avg=Math.round(total/levels.length);
+        scoreEl.innerHTML='🏆 总分 <b>'+total+'/'+(levels.length*100)+'</b>，平均 '+avg;
+        fireBtn.textContent='重新开始';
+        fireBtn.onclick=function(){cur=0;total=0;lv=genLv();fired=false;msgEl.innerHTML='';scoreEl.innerHTML='';fireBtn.textContent='🚀 发射！';fireBtn.onclick=doFire;angleS.value=45;speedS.value=100;y0S.value=20;upd();};
       }
     }
-
-    fireBtn.addEventListener('click',fire);
-    nextBtn.addEventListener('click',function(){
-      if(nextBtn.dataset.mode==='reset'){
-        lvl=0; totalScore=0; shots=0;
-        nextBtn.textContent='下一关 →';
-        nextBtn.dataset.mode='next';
-        scoreEl.textContent='';
-      } else {
-        lvl++;
-      }
-      verdict.innerHTML='';
-      render();
-    });
-
-    render();
+    fireBtn.onclick=doFire;
+    upd();
   })();
   </script>
 </div>
 
-## 从炮弹到预测：完全同构
+## 这和时间序列预测有什么关系？
 
-刚才的游戏里，你在不知不觉中完成了一次预测的全流程：
+你刚才做的事，和时间序列预测的本质完全一样：
 
-| 炮兵校射 | 时间序列预测 |
-|----------|-------------|
-| 前几发炮弹的落点 | 历史数据 $x_1, x_2, \dots, x_T$ |
-| 调整炮的高度和角度 | 拟合模型参数 $\theta$ |
-| 抛物线方程 $y = v_0 t \sin\alpha - \frac{1}{2}g t^2$ | 预测模型 $\hat{x}_{T+h} = f_\theta(x_{1:T})$ |
-| 命中目标 | 预测值接近真实值 |
-| 偏差（像素距离） | 预测误差（MAE / RMSE） |
+| 炮兵射击 | 时间序列预测 |
+|---------|------------|
+| 蓝色观测点 | 历史数据（已知的过去） |
+| 调整角度、速度、高度 | 调整模型参数（权重、超参） |
+| 抛物线穿过观测点 | 模型拟合历史数据 |
+| 抛物线延伸到靶心 | 模型外推到未来 |
+| 命中靶心 | 预测准确 |
 
-**核心一句话：** 预测就是先用已有数据"校准"一个模型，再让这个模型去"命中"还没出现的值。
+**三个关键洞察：**
 
-## 为什么有时打不准？
+- **参数够用就好。** 三个滑块（角度、速度、高度）足以描述一条抛物线。时间序列模型也是——参数太多反而会"过拟合"，在训练数据上完美，在新数据上崩溃。
+- **观测点的覆盖范围很重要。** 如果所有观测点都挤在起点附近，你很难判断远处的落点。同理，历史数据太短或模式太单一，预测就不可靠。
+- **外推越远越难。** 靶心越远，一点角度偏差就会被放大成巨大的落点误差。预测未来也是如此——预测一天后比预测一个月后容易得多。
 
-在游戏里你可能也发现了：
-
-- **参考点太少**——只有 1–2 个落点时，很难判断正确的角度。数据越少，预测越难。
-- **参考点分布不好**——如果落点都挤在一起，对远处目标的推断就不可靠。这叫**外推风险**。
-- **规律不够稳定**——如果每次发射的重力、风速都在变（真实世界的噪声），同样的参数也可能打偏。
-
-这三个问题，正是时间序列预测中最核心的挑战：**数据量**、**分布**和**噪声**。
-
-## 接下来
-
-你已经用直觉完成了"观察→拟合→命中"的完整预测过程。下一篇，我们来看一个真正的深度学习模型——**Kernel U-Net (KUN)**——是怎么把同样的事情做到极致的。
-
-<div class="note" markdown="1">
-- 回顾预测的概念和应用场景：[什么是预测？](../forecasting/)
-- 直接上手现代模型：[使用 KUN →](../kun/)
-</div>
+> 但现实中的时间序列远不止抛物线那么简单——它们是各种**波形**的叠加。下一页我们来认识波的类型，以及为什么理解波形对预测至关重要。
