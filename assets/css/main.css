@@ -103,6 +103,7 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:5px
 .game .bar2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:.7em}
 .game button{font:inherit;font-weight:600;cursor:pointer;padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);color:var(--text)}
 .game button:hover{border-color:var(--accent)}
+.game button:disabled{opacity:.45;cursor:not-allowed;border-color:var(--border)}
 .game .score{color:var(--muted);font-size:.9rem;margin-left:auto}
 
 .pager{display:flex;justify-content:space-between;margin-top:48px;padding-top:20px;border-top:1px solid var(--border);gap:12px}

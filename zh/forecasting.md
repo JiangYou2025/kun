@@ -54,7 +54,7 @@ next: kun
 
 <div class="game" markdown="0">
   <h3 style="margin-top:0">🎯 猜猜下一个值</h3>
-  <p class="hint">下面是一小段历史。把鼠标（或手指）点在“现在”<strong>右侧</strong>，猜猜下一个值会落在哪里——点完揭晓真实值，看看你差多少。</p>
+  <p class="hint">下面是一小段历史。把鼠标（或手指）点在“现在”<strong>右侧</strong>，猜猜下一个值会落在哪里——点完揭晓真实值。<strong>一共 5 题</strong>，最后给你打个分。</p>
   <svg id="fc-svg" viewBox="0 0 560 280" role="img" aria-label="猜下一个值的小游戏">
     <line x1="34" y1="248" x2="540" y2="248" stroke="var(--muted)" stroke-width="1.3"/>
     <line x1="34" y1="248" x2="34" y2="20" stroke="var(--muted)" stroke-width="1.3"/>
@@ -77,13 +77,17 @@ next: kun
     var rounds=[
       {h:[210,196,188,170,158,142], t:128, n:'奶茶店日销量'},
       {h:[120,92,140,98,150,104],  t:148, n:'周末客流'},
-      {h:[84,98,108,126,140,158],  t:176, n:'某网站访问量'}
+      {h:[84,98,108,126,140,158],  t:176, n:'某网站访问量'},
+      {h:[150,140,150,138,150,140], t:150, n:'机房温度'},
+      {h:[96,120,108,150,140,178],  t:172, n:'App 新增用户'}
     ];
+    var MAX=5;
     var idx=0, answered=false, played=0, totErr=0;
     function el(tag,a){var e=document.createElementNS(NS,tag);for(var k in a)e.setAttribute(k,a[k]);return e;}
     function val(y){return Math.round((bot-y)/2);}
+    function guide(){return '把点击落在“现在”右侧，猜猜下一个值会落在哪里。（共 '+MAX+' 题）';}
     function render(){
-      answered=false; while(dyn.firstChild) dyn.removeChild(dyn.firstChild);
+      answered=false; btn.disabled=true; while(dyn.firstChild) dyn.removeChild(dyn.firstChild);
       var r=rounds[idx];
       var pts=xs.map(function(x,i){return x+','+r.h[i];}).join(' ');
       dyn.appendChild(el('polyline',{points:pts,fill:'none',stroke:'var(--accent)','stroke-width':2.6,'stroke-linejoin':'round','stroke-linecap':'round'}));
@@ -91,11 +95,11 @@ next: kun
       dyn.appendChild(el('line',{x1:nowX,y1:top,x2:nowX,y2:bot,stroke:'var(--accent-2)','stroke-width':1,'stroke-dasharray':'4 3'}));
       var nl=el('text',{x:nowX+4,y:top+12,fill:'var(--muted)','font-size':12}); nl.textContent='现在'; dyn.appendChild(nl);
       var q=el('text',{x:futX,y:140,fill:'var(--muted)','font-size':24,'text-anchor':'middle',id:'fc-q'}); q.textContent='?'; dyn.appendChild(q);
-      var lab=el('text',{x:40,y:18,fill:'var(--muted)','font-size':13}); lab.textContent='场景：'+r.n; dyn.appendChild(lab);
+      var lab=el('text',{x:40,y:18,fill:'var(--muted)','font-size':13}); lab.textContent='场景 '+(played+1)+'/'+MAX+'：'+r.n; dyn.appendChild(lab);
     }
     function pt(evt){var p=svg.createSVGPoint();var s=evt.touches&&evt.touches[0]?evt.touches[0]:evt;p.x=s.clientX;p.y=s.clientY;return p.matrixTransform(svg.getScreenCTM().inverse());}
     function answer(evt){
-      if(answered) return;
+      if(answered || played>=MAX) return;
       var p=pt(evt);
       if(p.x < nowX-12) return;
       if(evt.cancelable) evt.preventDefault();
@@ -108,16 +112,30 @@ next: kun
       var tl=el('text',{x:futX+12,y:r.t+4,fill:'var(--accent)','font-size':12}); tl.textContent='真实值'; dyn.appendChild(tl);
       var ul=el('text',{x:futX+12,y:uy+4,fill:'var(--accent-2)','font-size':12}); ul.textContent='你的预测'; dyn.appendChild(ul);
       var err=Math.abs(val(uy)-val(r.t)), pct=Math.round(100*err/Math.max(1,val(r.t)));
-      var msg=pct<=5?'神预测！':pct<=15?'很准！':pct<=30?'还不错。':'差了点——换一题再试。';
-      verdict.innerHTML='你的预测和真实值差 <b>'+pct+'%</b>。 '+msg;
+      var msg=pct<=5?'神预测！':pct<=15?'很准！':pct<=30?'还不错。':'差了点。';
       answered=true; played++; totErr+=pct;
-      scoreEl.textContent='已玩 '+played+' 题 · 平均误差 '+Math.round(totErr/played)+'%';
+      if(played<MAX){
+        verdict.innerHTML='第 '+played+' 题：差 <b>'+pct+'%</b>。 '+msg+' 点“下一题”继续。';
+        scoreEl.textContent='进度 '+played+'/'+MAX+' · 当前平均误差 '+Math.round(totErr/played)+'%';
+        btn.textContent='下一题 →'; btn.dataset.mode='next'; btn.disabled=false;
+      } else {
+        finish(pct,msg);
+      }
     }
+    function finish(lastPct,lastMsg){
+      var avg=Math.round(totErr/MAX), sc=Math.max(0,100-avg), pass=avg<=20;
+      verdict.innerHTML='第 '+MAX+' 题：差 <b>'+lastPct+'%</b>。<br>'+(pass
+        ? '🎉 <b>通过！</b>5 题平均误差 '+avg+'%，得分 <b>'+sc+'/100</b>。你已经对“预测”有了不错的直觉，可以继续往下读了。'
+        : '🔁 <b>再试试。</b>5 题平均误差 '+avg+'%，得分 <b>'+sc+'/100</b>——点“重新开始”，多体会几次规律再过关。');
+      scoreEl.textContent='最终得分 '+sc+'/100';
+      btn.textContent='重新开始'; btn.dataset.mode='reset'; btn.disabled=false;
+    }
+    function next(){ idx=(idx+1)%rounds.length; render(); verdict.innerHTML=guide(); }
+    function reset(){ idx=0; played=0; totErr=0; scoreEl.textContent=''; render(); verdict.innerHTML=guide(); btn.textContent='下一题 →'; btn.dataset.mode='next'; }
     svg.addEventListener('click',answer);
     svg.addEventListener('touchstart',answer,{passive:false});
-    btn.addEventListener('click',function(){idx=(idx+1)%rounds.length; render(); verdict.innerHTML='把点击落在“现在”右侧，猜猜下一个值会落在哪里。';});
-    render();
-    verdict.innerHTML='把点击落在“现在”右侧，猜猜下一个值会落在哪里。';
+    btn.addEventListener('click',function(){ if(btn.dataset.mode==='reset') reset(); else next(); });
+    reset();
   })();
   </script>
 </div>
