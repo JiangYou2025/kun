@@ -66,7 +66,7 @@ next: wave-types
       {angle:55,speed:70,y0:40,name:'高地射击'},
       {angle:35,speed:100,y0:8,name:'远程轰炸'}
     ];
-    var cur=0,total=0,fired=false;
+    var cur=0,total=0,fired=false,sc=1;
 
     function rad(d){return d*Math.PI/180;}
     function traj(a,v,y0,n){
@@ -79,14 +79,21 @@ next: wave-types
       var n=Math.floor(real.length*0.55),obs=[];
       for(var i=0;i<5;i++){var idx=Math.floor((i+0.5)*n/5);var p=real[idx];obs.push({x:p.x+(Math.random()-0.5)*3,y:p.y+(Math.random()-0.5)*3});}
       var last=real[real.length-1];
+      // 计算 maxX 和 maxY，让弹道和靶心都在画面内（留 40px 边距）
+      var maxX=last.x,maxY=0;
+      real.forEach(function(p){if(p.x>maxX)maxX=p.x;if(p.y>maxY)maxY=p.y;});
+      var scX=(W-70)/maxX, scY=(H-60)/maxY;
+      sc=Math.min(scX,scY);
       return {obs:obs,target:{x:last.x,y:0},real:real,name:lv.name};
     }
     var lv=genLv();
-    function sx(x){return 30+x*scale;}
-    function sy(y){return H-26-y*scale;}
+    function sx(x){return 30+x*sc;}
+    function sy(y){return H-26-y*sc;}
 
     function draw(ut,showR){
       ctx.clearRect(0,0,W,H);
+      ctx.save();
+      ctx.beginPath();ctx.rect(0,0,W,H);ctx.clip();
       // 地面
       ctx.fillStyle='rgba(94,234,212,0.06)';ctx.fillRect(0,H-24,W,24);
       ctx.strokeStyle='#262b38';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,H-24);ctx.lineTo(W,H-24);ctx.stroke();
@@ -131,6 +138,7 @@ next: wave-types
         ctx.stroke();ctx.setLineDash([]);
       }
       ctx.fillStyle='#9aa3b2';ctx.font='12px sans-serif';ctx.fillText('第 '+(cur+1)+'/'+levels.length+' 关：'+lv.name,40,16);
+      ctx.restore();
     }
 
     function fitErr(){
