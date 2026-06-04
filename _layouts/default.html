@@ -94,7 +94,7 @@
       data-emit-metadata="0"
       data-input-position="top"
       data-theme="preferred_color_scheme"
-      data-lang="{{ lang }}"
+      data-lang="{% if lang == 'zh' %}zh-CN{% elsif lang == 'fr' %}fr{% else %}en{% endif %}"
       data-loading="lazy"
       crossorigin="anonymous"
       async>
