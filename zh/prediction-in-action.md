@@ -26,7 +26,7 @@ next: wave-types
   <h3 style="margin-top:0">调整大炮，命中目标！</h3>
   <p class="hint">画面中有 <strong>蓝色观测点</strong>（已知弹道数据）和一个 <strong>红色靶心</strong>（目标）。拖动滑块调整<strong>发射角度</strong>、<strong>速度</strong>和<strong>高度</strong>，让抛物线穿过蓝色点并命中靶心。点击"发射"看结果。共 3 关。</p>
 
-  <canvas id="art-canvas" width="700" height="360" style="width:100%;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:crosshair"></canvas>
+  <canvas id="art-canvas" width="560" height="280" style="width:100%;max-width:560px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:crosshair"></canvas>
 
   <div style="display:flex;flex-wrap:wrap;gap:18px;margin:14px 0;align-items:center">
     <label style="flex:1;min-width:200px">
@@ -56,15 +56,15 @@ next: wave-types
     var canvas=document.getElementById('art-canvas');
     if(!canvas)return;
     var ctx=canvas.getContext('2d');
-    var W=700,H=360,g=9.8,scale=2.8;
+    var W=560,H=280,g=9.8,scale=1.8;
     var angleS=document.getElementById('art-angle'),speedS=document.getElementById('art-speed'),y0S=document.getElementById('art-y0');
     var angleV=document.getElementById('art-angle-val'),speedV=document.getElementById('art-speed-val'),y0V=document.getElementById('art-y0-val');
     var fireBtn=document.getElementById('art-fire'),msgEl=document.getElementById('art-msg'),scoreEl=document.getElementById('art-score');
 
     var levels=[
-      {angle:42,speed:110,y0:30,name:'平原射击'},
-      {angle:58,speed:90,y0:60,name:'高地射击'},
-      {angle:35,speed:140,y0:10,name:'远程轰炸'}
+      {angle:42,speed:85,y0:20,name:'平原射击'},
+      {angle:55,speed:70,y0:40,name:'高地射击'},
+      {angle:35,speed:100,y0:8,name:'远程轰炸'}
     ];
     var cur=0,total=0,fired=false;
 
@@ -82,15 +82,15 @@ next: wave-types
       return {obs:obs,target:{x:last.x,y:0},real:real,name:lv.name};
     }
     var lv=genLv();
-    function sx(x){return 40+x*scale;}
-    function sy(y){return H-30-y*scale;}
+    function sx(x){return 30+x*scale;}
+    function sy(y){return H-26-y*scale;}
 
     function draw(ut,showR){
       ctx.clearRect(0,0,W,H);
       // 地面
-      ctx.fillStyle='rgba(94,234,212,0.06)';ctx.fillRect(0,H-28,W,28);
-      ctx.strokeStyle='#262b38';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,H-28);ctx.lineTo(W,H-28);ctx.stroke();
-      ctx.fillStyle='#9aa3b2';ctx.font='12px sans-serif';ctx.fillText('距离 →',W-60,H-8);ctx.fillText('高度',8,22);
+      ctx.fillStyle='rgba(94,234,212,0.06)';ctx.fillRect(0,H-24,W,24);
+      ctx.strokeStyle='#262b38';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,H-24);ctx.lineTo(W,H-24);ctx.stroke();
+      ctx.fillStyle='#9aa3b2';ctx.font='11px sans-serif';ctx.fillText('距离 →',W-50,H-6);ctx.fillText('高度',6,18);
 
       // 观测点
       lv.obs.forEach(function(p){
@@ -130,7 +130,7 @@ next: wave-types
         lv.real.forEach(function(p,i){if(i===0)ctx.moveTo(sx(p.x),sy(p.y));else ctx.lineTo(sx(p.x),sy(p.y));});
         ctx.stroke();ctx.setLineDash([]);
       }
-      ctx.fillStyle='#9aa3b2';ctx.font='13px sans-serif';ctx.fillText('第 '+(cur+1)+'/'+levels.length+' 关：'+lv.name,50,22);
+      ctx.fillStyle='#9aa3b2';ctx.font='12px sans-serif';ctx.fillText('第 '+(cur+1)+'/'+levels.length+' 关：'+lv.name,40,16);
     }
 
     function fitErr(){
