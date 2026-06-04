@@ -6,7 +6,7 @@ permalink: /zh/forecasting/
 title: "什么是预测？"
 lead: "预测，就是用已经知道的过去，去猜还不知道的未来。这一页用图、一个小游戏和几个真实场景帮你建立直觉——方法与公式都放在入门讲义里。"
 prev: time-series
-next: kun
+next: prediction-in-action
 ---
 
 一句话：**预测 (forecasting) = 看着一段历史，往后画出还没发生的部分。**
