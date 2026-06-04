@@ -24,7 +24,7 @@ next: wave-types
 
 <div class="game" markdown="0">
   <h3 style="margin-top:0">调整大炮，命中目标！</h3>
-  <p class="hint">画面中有 <strong>蓝色观测点</strong>（已知弹道数据）和一个 <strong>红色靶心</strong>（目标）。拖动滑块调整大炮的<strong>水平位置</strong>和<strong>发射角度</strong>。辅助线只显示前半段弹道——后半段落在哪里，靠你自己判断！共 3 关。</p>
+  <p class="hint">画面中有 <strong>蓝色观测点</strong>（已知弹道数据）和一个 <strong>红色靶心</strong>（目标）。拖动滑块调整大炮的<strong>水平位置</strong>和<strong>发射角度</strong>。辅助线只显示前半段弹道——后半段落在哪里，靠你自己判断！共 5 关，噪声逐关加大。</p>
 
   <canvas id="art-canvas" width="560" height="260" style="width:100%;max-width:560px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:crosshair"></canvas>
 
@@ -58,9 +58,11 @@ next: wave-types
 
     // 每关：真实的 x0 和 angle（速度固定 V0，高度=0）
     var levels=[
-      {x0:10, angle:50, name:'第1关 · 入门', nObs:6, noise:1.5},
-      {x0:30, angle:38, name:'第2关 · 进阶', nObs:4, noise:4},
-      {x0:5,  angle:62, name:'第3关 · 挑战', nObs:3, noise:8}
+      {x0:10, angle:50, name:'第1关 · 精准数据',   nObs:7, noise:1},
+      {x0:25, angle:42, name:'第2关 · 轻微抖动',   nObs:6, noise:4},
+      {x0:5,  angle:62, name:'第3关 · 噪声加大',   nObs:5, noise:10},
+      {x0:35, angle:35, name:'第4关 · 数据稀疏',   nObs:3, noise:12},
+      {x0:15, angle:55, name:'第5关 · 极端噪声',   nObs:3, noise:22}
     ];
     var cur=0,total=0,fired=false,sc=1;
     var GND=H-26; // 地面 y 像素
