@@ -58,9 +58,9 @@ next: wave-types
 
     // 每关：真实的 x0 和 angle（速度固定 V0，高度=0）
     var levels=[
-      {x0:10, angle:50, name:'近距离'},
-      {x0:30, angle:38, name:'中距离'},
-      {x0:5,  angle:62, name:'高抛射'}
+      {x0:10, angle:50, name:'第1关 · 入门', nObs:6, noise:1.5},
+      {x0:30, angle:38, name:'第2关 · 进阶', nObs:4, noise:4},
+      {x0:5,  angle:62, name:'第3关 · 挑战', nObs:3, noise:8}
     ];
     var cur=0,total=0,fired=false,sc=1;
     var GND=H-26; // 地面 y 像素
@@ -81,12 +81,12 @@ next: wave-types
 
     function genLv(){
       var lv=levels[cur], real=traj(lv.x0,lv.angle);
-      // 取 5 个观测点（前 55% 的弹道）
+      var nObs=lv.nObs||5, noise=lv.noise||2;
       var n=Math.floor(real.length*0.55),obs=[];
-      for(var i=0;i<5;i++){
-        var idx=Math.floor((i+0.5)*n/5);
+      for(var i=0;i<nObs;i++){
+        var idx=Math.floor((i+0.5)*n/nObs);
         var p=real[idx];
-        obs.push({x:p.x+(Math.random()-0.5)*2,y:p.y+(Math.random()-0.5)*2});
+        obs.push({x:p.x+(Math.random()-0.5)*noise,y:p.y+(Math.random()-0.5)*noise});
       }
       var last=real[real.length-1];
       // 自动缩放：让整条弹道+靶心都在画面内
