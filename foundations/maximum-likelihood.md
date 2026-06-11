@@ -44,7 +44,7 @@ $$
 \hat\theta_{\text{MLE}}=\arg\max_\theta\ \ell(\theta)
 $$
 
-实践中常等价地**最小化负对数似然**（NLL），这就和损失函数 / [梯度下降](../gradient-descent/)对上了：
+实践中常等价地**最小化负对数似然**（NLL），这就和[损失函数](../loss-function/) / [梯度下降](../gradient-descent/)对上了：
 
 $$
 \hat\theta=\arg\min_\theta\ \Big(-\sum_i\log p(x_i\mid\theta)\Big)
@@ -88,7 +88,7 @@ print(round(ps[np.argmax(ll)], 2))   # 0.7
 ## 常见误区
 
 - 似然**不是**参数的概率：$L(\theta)$ 是"数据的概率随 $\theta$ 变化"，对 $\theta$ 不积分为 1。
-- 小样本时 MLE 可能**过拟合**（如方差估计偏小），这时加先验 / 正则（MAP）更稳。
+- 小样本时 MLE 可能[**过拟合**](../overfitting/)（如方差估计偏小），这时加先验 / 正则（MAP）更稳。
 - 记得用**对数**似然：连乘易下溢，连加更稳定，也便于求导。
 
 [← 数学基础](../math/) · [基础课总览](../)

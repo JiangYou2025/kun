@@ -10,7 +10,7 @@ math: true
 
 > 出自[深度学习基础](../dl/) · [基础课总览](../)
 
-**网络架构（Architecture）** 指神经元如何组织、连接的"骨架设计"。同样是[神经网络](../neural-network/)，为不同数据与任务量身设计的结构差别巨大——本页带你快速纵览 MLP、CNN、RNN / LSTM、Transformer、U-Net，并说明本站主推的 **Kernel U-Net (KUN)** 落在哪个位置。
+**网络架构（Architecture）** 指[神经元](../neuron/)如何组织、连接的"骨架设计"。同样是[神经网络](../neural-network/)，为不同数据与任务量身设计的结构差别巨大——本页带你快速纵览 MLP、CNN、RNN / LSTM、Transformer、U-Net，并说明本站主推的 **Kernel U-Net (KUN)** 落在哪个位置。
 
 **相关：** [MLP](../mlp/) · [CNN](../cnn/) · [RNN](../rnn/) · [LSTM](../lstm/) · [Transformer](../transformer/) · [U-Net](../u-net/)
 

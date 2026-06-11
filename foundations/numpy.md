@@ -9,7 +9,7 @@ no_comments: true
 
 > 出自[计算机基础](../cs/) · [基础课总览](../)
 
-**NumPy** 是 Python 数值计算的基石。它提供了一个高效的多维数组类型 `ndarray`，以及一整套在整块数组上做[向量化](../vectorization/)运算的函数。几乎所有科学计算和机器学习库（Pandas、scikit-learn、PyTorch）都建立在它之上。
+**NumPy** 是 [Python](../python/) 数值计算的基石。它提供了一个高效的多维数组类型 `ndarray`，以及一整套在整块数组上做[向量化](../vectorization/)运算的函数。几乎所有科学计算和[机器学习](../ml/)库（Pandas、scikit-learn、PyTorch）都建立在它之上。
 
 ## 直观理解
 

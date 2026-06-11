@@ -36,7 +36,7 @@ $$
 - $K \in \mathbb{R}^{L \times d_k}$：键矩阵；
 - $V \in \mathbb{R}^{L \times d_v}$：值矩阵；
 - $Q K^{\top} \in \mathbb{R}^{L \times L}$：每个查询和每个键的点积相似度矩阵；
-- $\sqrt{d_k}$：缩放因子，防止点积过大把 softmax 推到梯度极小的饱和区；
+- $\sqrt{d_k}$：缩放因子，防止点积过大把 softmax 推到[梯度](../gradient/)极小的饱和区；
 - $\mathrm{softmax}$：对每一行归一化成和为 1 的权重；
 - 最后乘 $V$：用权重对所有值加权求和。
 

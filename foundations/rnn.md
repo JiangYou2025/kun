@@ -53,7 +53,7 @@ $$
 
 RNN 怎么学习？答案还是[反向传播](../backpropagation/)，只不过要沿着"时间"这条链条往回传，所以叫**时间反向传播**（BPTT, Backpropagation Through Time）。
 
-把 RNN 沿时间"展开"，它就像一个很深的网络：第 $T$ 步的输出依赖 $h_T$，$h_T$ 依赖 $h_{T-1}$，一直串到 $h_1$。求梯度时，链式法则会把一长串导数连乘起来，其中反复出现这一项：
+把 RNN 沿时间"展开"，它就像一个很深的网络：第 $T$ 步的输出依赖 $h_T$，$h_T$ 依赖 $h_{T-1}$，一直串到 $h_1$。求梯度时，[链式法则](../chain-rule/)会把一长串导数连乘起来，其中反复出现这一项：
 
 $$
 \frac{\partial h_t}{\partial h_{t-1}} = W_h^{\top}\,\operatorname{diag}\!\big(\tanh'(\cdot)\big)

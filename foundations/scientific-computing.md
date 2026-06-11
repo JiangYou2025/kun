@@ -9,7 +9,7 @@ no_comments: true
 
 > 出自[计算机基础](../cs/) · [基础课总览](../)
 
-**科学计算栈**指的是 Python 里做数值计算与数据分析的一套配合默契的工具链——以 [NumPy](../numpy/)（数组运算）、[Pandas](../pandas/)（表格/时序处理）和[向量化](../vectorization/)（用整块运算代替循环）为核心，往上还有 Matplotlib、SciPy、scikit-learn、PyTorch 等。
+**科学计算栈**指的是 [Python](../python/) 里做数值计算与数据分析的一套配合默契的工具链——以 [NumPy](../numpy/)（数组运算）、[Pandas](../pandas/)（表格/时序处理）和[向量化](../vectorization/)（用整块运算代替循环）为核心，往上还有 Matplotlib、SciPy、scikit-learn、PyTorch 等。
 
 ## 直观理解
 
@@ -18,7 +18,7 @@ no_comments: true
 - **最底层是 [NumPy](../numpy/)**：紧凑、高速的多维数组，所有数值计算的「地基」。
 - **往上是 [Pandas](../pandas/)**：给数组加上行列标签和时间索引，方便读数据、对齐、清洗。
 - **[向量化](../vectorization/)是贯穿全栈的方法论**：用 `a + b` 这样的整体运算，让底层 C 代码一次算完，而不是写慢吞吞的 Python 循环。
-- **再往上是专用库**：SciPy（科学函数）、scikit-learn（经典机器学习）、PyTorch（深度学习、[GPU](../gpu/) 加速）、Matplotlib（画图）。
+- **再往上是专用库**：SciPy（科学函数）、scikit-learn（经典[机器学习](../ml/)）、PyTorch（[深度学习](../dl/)、[GPU](../gpu/) 加速）、Matplotlib（画图）。
 
 关键在于它们**共享同一种数据表示**（数组），所以能无缝衔接：Pandas 的列就是 NumPy 数组，PyTorch 张量能和 NumPy 互转。**学会底层，整条栈都通了。**
 
@@ -28,8 +28,8 @@ no_comments: true
 |---|---|---|
 | 数组核心 | [NumPy](../numpy/) | 多维数组、向量化数学、广播 |
 | 表格/时序 | [Pandas](../pandas/) | 读取、对齐、重采样、缺失值 |
-| 科学函数 | SciPy | 优化、信号、统计、FFT |
-| 经典 ML | scikit-learn | 回归、聚类、预处理、评估 |
+| 科学函数 | SciPy | [优化](../optimization/)、信号、统计、FFT |
+| 经典 ML | scikit-learn | 回归、[聚类](../clustering/)、预处理、评估 |
 | 深度学习 | PyTorch | 张量、自动求导、GPU 训练 |
 | 可视化 | Matplotlib | 画曲线、分布、热力图 |
 

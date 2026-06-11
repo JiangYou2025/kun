@@ -61,7 +61,7 @@ def fib_dp(n):
 print(fib_dp(50))      # 12586269025，瞬间出结果
 ```
 
-Python 还内置了一行就能记忆化的装饰器：
+[Python](../python/) 还内置了一行就能记忆化的装饰器：
 
 ```python
 from functools import lru_cache

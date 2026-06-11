@@ -9,7 +9,7 @@ no_comments: true
 
 > 出自[计算机基础](../cs/) · [基础课总览](../)
 
-**Python** 是数据科学与机器学习的主力编程语言。它语法简洁、上手快，拥有 [NumPy](../numpy/)、[Pandas](../pandas/)、PyTorch 等极其丰富的生态。本课程所有动手案例都用 Python。
+**Python** 是数据科学与[机器学习](../ml/)的主力编程语言。它语法简洁、上手快，拥有 [NumPy](../numpy/)、[Pandas](../pandas/)、PyTorch 等极其丰富的生态。本课程所有动手案例都用 Python。
 
 ## 直观理解
 
