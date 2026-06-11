@@ -156,6 +156,79 @@ $$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
 - **φ = 1**：变成**随机游走**（下一个值 = 上一个值 + 随机噪声），没有回归的力，股价常被这样近似。
 - **φ > 1 或 φ < −1**（绝对值大于 1）：发散，现实中很少见。
 
+把"均值回复"变成一个能玩的**蛛网图 (cobweb)** 👇
+
+<div class="game" markdown="0">
+<h3 style="margin-top:0">🎯 均值回复小游戏：看蛛网一步步爬回中线</h3>
+<p class="hint">这是 AR(1)：<b>x' = c + φ·x</b>（取 c=4、φ=0.6，长期均值 μ=10）。<strong>载入后蛛网会自动一步步画出来</strong>，也可以<strong>点画布手动迭代一步</strong>：竖线走到 AR 直线（= 算出下一个值），横线回到 <b>y=x 中线</b>。蓝色折线像爬楼梯一样收敛到中线与 AR 直线的交点——那就是均值 μ。点「换个起点」从别处出发，照样回到同一点。</p>
+<canvas id="cw-canvas" width="352" height="344" style="width:100%;max-width:352px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:pointer"></canvas>
+<div style="margin-top:10px"><button id="cw-reset">换个起点</button> <span id="cw-info" style="font-size:.9rem;color:var(--muted)"></span></div>
+
+<style>
+#cw-reset{padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);cursor:pointer;font-size:.86rem}
+#cw-reset:hover{opacity:.85}
+</style>
+
+<script>
+(function(){
+  var cv=document.getElementById('cw-canvas'); if(!cv) return;
+  var ctx=cv.getContext('2d'); var info=document.getElementById('cw-info');
+  var W=352,H=344, ML=38,MR=14,MT=14,MB=30, PW=W-ML-MR, PH=H-MT-MB;
+  var XMAX=20, c=4, phi=0.6, mu=c/(1-phi), TAU=Math.PI*2;
+  function f(x){ return c+phi*x; }
+  function gx(v){ return ML+PW*v/XMAX; }
+  function gy(v){ return MT+PH*(1-v/XMAX); }
+  var pts=[], steps=0;
+
+  function status(){
+    var cur=pts[pts.length-1][0];
+    info.innerHTML='第 '+steps+' 步：x = '+cur.toFixed(2)+'　·　离均值 μ=10 还差 '+Math.abs(cur-mu).toFixed(2);
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(150,160,180,0.25)';ctx.lineWidth=1;ctx.strokeRect(ML,MT,PW,PH);
+    ctx.strokeStyle='rgba(150,160,180,0.75)';ctx.setLineDash([5,4]);ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(gx(0),gy(0));ctx.lineTo(gx(XMAX),gy(XMAX));ctx.stroke();ctx.setLineDash([]);
+    ctx.strokeStyle='#818cf8';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(gx(0),gy(f(0)));ctx.lineTo(gx(XMAX),gy(f(XMAX)));ctx.stroke();
+    ctx.fillStyle='#fbbf24';ctx.beginPath();ctx.arc(gx(mu),gy(mu),5,0,TAU);ctx.fill();
+    ctx.strokeStyle='#5eead4';ctx.lineWidth=1.8;ctx.beginPath();
+    for(var i=0;i<pts.length;i++){ var px=gx(pts[i][0]),py=gy(pts[i][1]); if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+    ctx.stroke();
+    var last=pts[pts.length-1];
+    ctx.fillStyle='#5eead4';ctx.beginPath();ctx.arc(gx(last[0]),gy(last[1]),4,0,TAU);ctx.fill();
+    ctx.font='11px sans-serif';
+    ctx.fillStyle='#9aa3b2';ctx.fillText('y = x',gx(XMAX)-32,gy(XMAX)+13);
+    ctx.fillStyle='#818cf8';ctx.fillText('x → c+φx',gx(XMAX)-60,gy(f(XMAX))-6);
+    ctx.fillStyle='#fbbf24';ctx.fillText('μ',gx(mu)+7,gy(mu)+4);
+    ctx.fillStyle='#9aa3b2';ctx.fillText('x（当前）',ML+PW/2-22,H-9);
+    ctx.save();ctx.translate(12,MT+PH/2+26);ctx.rotate(-TAU/4);ctx.fillText("x'（下一步）",0,0);ctx.restore();
+  }
+  var MAXSTEPS=14, timer=null;
+  function stopAuto(){ if(timer){ clearInterval(timer); timer=null; } }
+  function step(){
+    if(steps>=MAXSTEPS) return;
+    var x=pts[pts.length-1][0], fx=f(x);
+    pts.push([x,fx]); pts.push([fx,fx]); steps++;
+    draw(); status();
+  }
+  function autorun(){
+    stopAuto();
+    timer=setInterval(function(){ step(); if(steps>=MAXSTEPS) stopAuto(); }, 420);
+  }
+  function reset(start){
+    stopAuto();
+    var x0=(start==null)?(2+Math.random()*16):start;
+    pts=[[x0,x0]]; steps=0; draw(); status();
+    autorun();
+  }
+  cv.addEventListener('click',function(){ stopAuto(); step(); });
+  document.getElementById('cw-reset').addEventListener('click',function(){ reset(); });
+  reset(17);
+})();
+</script>
+</div>
+
 ### 它其实就是一个线性回归
 
 把回看窗口当作特征、把下一个值当作标签，AR 就是一个标准的**线性回归**：用 $$(x_{t-1}, \ldots, x_{t-p})$$ 去预测 $$x_t$$ 。让这个窗口在序列上**逐步向后滑动**，就得到一行行训练样本—— $$(x_1,\ldots,x_p)\to x_{p+1}$$ 、 $$(x_2,\ldots,x_{p+1})\to x_{p+2}$$ ，依此类推。
