@@ -26,114 +26,7 @@ $$x_t = c + \phi_1 x_{t-1} + \phi_2 x_{t-2} + \cdots + \phi_p x_{t-p} + \varepsi
 
 $$\hat{x}_t = c + \phi_1 x_{t-1} + \cdots + \phi_p x_{t-p}$$
 
-### 最简单的情形：AR(1)
-
-$$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
-
-一个系数 $$\phi$$ 就决定了序列的“性格”：
-
-- **|φ| < 1**：序列**平稳**，会不断被拉回长期均值 μ = c/(1−φ)——这叫**均值回复**（利率、温度、库存常是这样）。
-- **φ = 1**：变成**随机游走**（下一个值 = 上一个值 + 随机噪声），没有回归的力，股价常被这样近似。
-- **|φ| > 1**：发散，现实中很少见。
-
-把"均值回复"变成一个能玩的**蛛网图 (cobweb)** 👇
-
-<div class="game" markdown="0">
-<h3 style="margin-top:0">🎯 均值回复小游戏：点几下，看它爬回中线</h3>
-<p class="hint">这是 AR(1)：<b>x' = c + φ·x</b>（取 c=4、φ=0.6，长期均值 μ=10）。<strong>每点一下画布就迭代一步</strong>：竖线走到 AR 直线（= 算出下一个值），横线回到 <b>y=x 中线</b>。蓝色折线像爬楼梯一样收敛到中线与 AR 直线的交点——那就是均值 μ。点「换个起点」从别处出发，照样回到同一点。</p>
-<canvas id="cw-canvas" width="352" height="344" style="width:100%;max-width:352px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:pointer"></canvas>
-<div style="margin-top:10px"><button id="cw-reset">换个起点</button> <span id="cw-info" style="font-size:.9rem;color:var(--muted)"></span></div>
-
-<style>
-#cw-reset{padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);cursor:pointer;font-size:.86rem}
-#cw-reset:hover{opacity:.85}
-</style>
-
-<script>
-(function(){
-  var cv=document.getElementById('cw-canvas'); if(!cv) return;
-  var ctx=cv.getContext('2d'); var info=document.getElementById('cw-info');
-  var W=352,H=344, ML=38,MR=14,MT=14,MB=30, PW=W-ML-MR, PH=H-MT-MB;
-  var XMAX=20, c=4, phi=0.6, mu=c/(1-phi), TAU=Math.PI*2;
-  function f(x){ return c+phi*x; }
-  function gx(v){ return ML+PW*v/XMAX; }
-  function gy(v){ return MT+PH*(1-v/XMAX); }
-  var pts=[], steps=0;
-
-  function status(){
-    var cur=pts[pts.length-1][0];
-    info.innerHTML='第 '+steps+' 步：x = '+cur.toFixed(2)+'　·　离均值 μ=10 还差 '+Math.abs(cur-mu).toFixed(2);
-  }
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    ctx.strokeStyle='rgba(150,160,180,0.25)';ctx.lineWidth=1;ctx.strokeRect(ML,MT,PW,PH);
-    ctx.strokeStyle='rgba(150,160,180,0.75)';ctx.setLineDash([5,4]);ctx.lineWidth=1.5;
-    ctx.beginPath();ctx.moveTo(gx(0),gy(0));ctx.lineTo(gx(XMAX),gy(XMAX));ctx.stroke();ctx.setLineDash([]);
-    ctx.strokeStyle='#818cf8';ctx.lineWidth=2;
-    ctx.beginPath();ctx.moveTo(gx(0),gy(f(0)));ctx.lineTo(gx(XMAX),gy(f(XMAX)));ctx.stroke();
-    ctx.fillStyle='#fbbf24';ctx.beginPath();ctx.arc(gx(mu),gy(mu),5,0,TAU);ctx.fill();
-    ctx.strokeStyle='#5eead4';ctx.lineWidth=1.8;ctx.beginPath();
-    for(var i=0;i<pts.length;i++){ var px=gx(pts[i][0]),py=gy(pts[i][1]); if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
-    ctx.stroke();
-    var last=pts[pts.length-1];
-    ctx.fillStyle='#5eead4';ctx.beginPath();ctx.arc(gx(last[0]),gy(last[1]),4,0,TAU);ctx.fill();
-    ctx.font='11px sans-serif';
-    ctx.fillStyle='#9aa3b2';ctx.fillText('y = x',gx(XMAX)-32,gy(XMAX)+13);
-    ctx.fillStyle='#818cf8';ctx.fillText('x → c+φx',gx(XMAX)-60,gy(f(XMAX))-6);
-    ctx.fillStyle='#fbbf24';ctx.fillText('μ',gx(mu)+7,gy(mu)+4);
-    ctx.fillStyle='#9aa3b2';ctx.fillText('x（当前）',ML+PW/2-22,H-9);
-    ctx.save();ctx.translate(12,MT+PH/2+26);ctx.rotate(-TAU/4);ctx.fillText("x'（下一步）",0,0);ctx.restore();
-  }
-  function step(){
-    var x=pts[pts.length-1][0], fx=f(x);
-    pts.push([x,fx]); pts.push([fx,fx]); steps++;
-    draw(); status();
-  }
-  function reset(start){
-    var x0=(start==null)?(2+Math.random()*16):start;
-    pts=[[x0,x0]]; steps=0; draw(); status();
-  }
-  cv.addEventListener('click',step);
-  document.getElementById('cw-reset').addEventListener('click',function(){ reset(); });
-  reset(17);
-})();
-</script>
-</div>
-
-### 它其实就是一个线性回归
-
-把回看窗口当作特征、把下一个值当作标签，AR 就是一个标准的**线性回归**：用 $$(x_{t-1}, \ldots, x_{t-p})$$ 去预测 $$x_t$$ 。让这个窗口在序列上**逐步向后滑动**，就得到一行行训练样本—— $$(x_1,\ldots,x_p)\to x_{p+1}$$ 、 $$(x_2,\ldots,x_{p+1})\to x_{p+2}$$ ，依此类推。
-
-于是参数可以用**最小二乘**直接解出来（经典统计里也用 **Yule–Walker 方程**，两者等价）。这正是[第 4 步](../math-ml-foundations/)里说的“用优化找最好的规律”，落到时间序列上的第一个具体模型。
-
-## 2. 从单步到多步：线性模型
-
-经典 AR 一次**只预测一步**。要预测未来 $$H$$ 步，传统做法是**递归**：预测出 $$\hat{x}_{t}$$ ，再把它当成真实值代回去预测 $$\hat{x}_{t+1}$$ ……但每一步的误差会**层层累积**。
-
-现代的做法更干脆——**一次性把整段未来都预测出来**。这就是近年大热的“**线性模型**”（如 DLinear、NLinear）：用**一个线性层**（权重矩阵 $$W$$ 、偏置 $$b$$ ），把长度为 $$L$$ 的回看窗口 $$x_{t-L+1:t}$$ 一次映射到长度为 $$H$$ 的未来 $$\hat{x}_{t+1:t+H}$$ ：
-
-$$\hat{x}_{t+1:t+H} \;=\; W\,x_{t-L+1:t} + b, \qquad W \in \mathbb{R}^{H \times L},\; b \in \mathbb{R}^{H}$$
-
-其中输入是 $$L$$ 个历史值、输出是 $$H$$ 个未来值， $$W$$ 是一个 $$H \times L$$ 的权重矩阵。把它展开到每一个未来时刻，就是 $$H$$ 个并排的加权和：
-
-$$\hat{x}_{t+h} \;=\; \sum_{i=1}^{L} W_{h,i}\,x_{t-L+i} + b_h, \qquad h = 1, 2, \dots, H$$
-
-每个 $$\hat{x}_{t+h}$$ 都是**整段回看窗口的一个加权和**——这正是 AR 那条加权和的“放大版”：经典 AR 不过是它在 $$H=1$$ （只输出一行）、 $$L=p$$ 时的特例。
-
-对照一下就会发现，它和 AR 是同一个想法的两种规模：
-
-| | 经典 AR | 线性模型 (DLinear 等) |
-|---|---|---|
-| 输入 | 过去 $$p$$ 个值 | 过去 $$L$$ 个值（回看窗口） |
-| 输出 | **1** 个值（下一步） | **$$H$$** 个值（整段未来） |
-| 本质 | $$1$$ 维线性映射 | $$L \to H$$ 的线性映射 |
-| 多步 | 递归，误差累积 | 直接多输出，无累积 |
-
-所以一句话：**线性模型就是向量化的、多输出的自回归。** 把 AR 那条加权和从“算一个数”扩成“一次算一整排数”，就得到了它。
-
-别小看这么简单的结构：2022 年的 **DLinear**（先把序列分解成趋势 + 季节，再各用一个线性层）在多个长序列基准上**击败了一众复杂的 Transformer**（见讲义[第 13 讲](../../course/13/)），让整个领域重新认识到——**线性映射本身，就是一个极强的基线**。
-
-## 动手：点击太阳黑子序列，看模型在想什么
+### 动手：点击太阳黑子序列，看模型在想什么
 
 还记得[太阳黑子](../../applications/geophysics/)吗？1927 年 Yule 正是用它发明了自回归。下面在一段类太阳黑子序列上，用最小二乘**实时拟合**一个 $$\text{AR}(12)$$ （用过去 12 个值预测下一个）——**点击曲线上任意一点**，看模型预测它时用了哪些数据、每个数据乘了多大的权重、各贡献多少。
 
@@ -251,7 +144,114 @@ $$\hat{x}_{t+h} \;=\; \sum_{i=1}^{L} W_{h,i}\,x_{t-L+i} + b_h, \qquad h = 1, 2, 
 </script>
 </div>
 
-> **看出门道了吗？** 同一组权重 $$w_1,\dots,w_{12}$$ 对**所有时刻通用**——这就是模型“学到的规律”；你点不同的点，变的只是它作用的那 12 个历史值，于是每个点的“贡献分解”都不一样。把这一行加权和扩成“一次输出 $$H$$ 个”，就是上一节的线性模型；再按 U 形层次堆叠，就是下一节的 KUN。
+> **看出门道了吗？** 同一组权重 $$w_1,\dots,w_{12}$$ 对**所有时刻通用**——这就是模型“学到的规律”；你点不同的点，变的只是它作用的那 12 个历史值，于是每个点的“贡献分解”都不一样。把这一行加权和扩成“一次输出 $$H$$ 个”，就是后面要讲的**线性模型**；再按 U 形层次堆叠，就是 **KUN**。
+
+### 最简单的情形：AR(1)
+
+$$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
+
+一个系数 $$\phi$$ 就决定了序列的“性格”：
+
+- **|φ| < 1**：序列**平稳**，会不断被拉回长期均值 μ = c/(1−φ)——这叫**均值回复**（利率、温度、库存常是这样）。
+- **φ = 1**：变成**随机游走**（下一个值 = 上一个值 + 随机噪声），没有回归的力，股价常被这样近似。
+- **|φ| > 1**：发散，现实中很少见。
+
+把"均值回复"变成一个能玩的**蛛网图 (cobweb)** 👇
+
+<div class="game" markdown="0">
+<h3 style="margin-top:0">🎯 均值回复小游戏：点几下，看它爬回中线</h3>
+<p class="hint">这是 AR(1)：<b>x' = c + φ·x</b>（取 c=4、φ=0.6，长期均值 μ=10）。<strong>每点一下画布就迭代一步</strong>：竖线走到 AR 直线（= 算出下一个值），横线回到 <b>y=x 中线</b>。蓝色折线像爬楼梯一样收敛到中线与 AR 直线的交点——那就是均值 μ。点「换个起点」从别处出发，照样回到同一点。</p>
+<canvas id="cw-canvas" width="352" height="344" style="width:100%;max-width:352px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:pointer"></canvas>
+<div style="margin-top:10px"><button id="cw-reset">换个起点</button> <span id="cw-info" style="font-size:.9rem;color:var(--muted)"></span></div>
+
+<style>
+#cw-reset{padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);cursor:pointer;font-size:.86rem}
+#cw-reset:hover{opacity:.85}
+</style>
+
+<script>
+(function(){
+  var cv=document.getElementById('cw-canvas'); if(!cv) return;
+  var ctx=cv.getContext('2d'); var info=document.getElementById('cw-info');
+  var W=352,H=344, ML=38,MR=14,MT=14,MB=30, PW=W-ML-MR, PH=H-MT-MB;
+  var XMAX=20, c=4, phi=0.6, mu=c/(1-phi), TAU=Math.PI*2;
+  function f(x){ return c+phi*x; }
+  function gx(v){ return ML+PW*v/XMAX; }
+  function gy(v){ return MT+PH*(1-v/XMAX); }
+  var pts=[], steps=0;
+
+  function status(){
+    var cur=pts[pts.length-1][0];
+    info.innerHTML='第 '+steps+' 步：x = '+cur.toFixed(2)+'　·　离均值 μ=10 还差 '+Math.abs(cur-mu).toFixed(2);
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(150,160,180,0.25)';ctx.lineWidth=1;ctx.strokeRect(ML,MT,PW,PH);
+    ctx.strokeStyle='rgba(150,160,180,0.75)';ctx.setLineDash([5,4]);ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.moveTo(gx(0),gy(0));ctx.lineTo(gx(XMAX),gy(XMAX));ctx.stroke();ctx.setLineDash([]);
+    ctx.strokeStyle='#818cf8';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(gx(0),gy(f(0)));ctx.lineTo(gx(XMAX),gy(f(XMAX)));ctx.stroke();
+    ctx.fillStyle='#fbbf24';ctx.beginPath();ctx.arc(gx(mu),gy(mu),5,0,TAU);ctx.fill();
+    ctx.strokeStyle='#5eead4';ctx.lineWidth=1.8;ctx.beginPath();
+    for(var i=0;i<pts.length;i++){ var px=gx(pts[i][0]),py=gy(pts[i][1]); if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+    ctx.stroke();
+    var last=pts[pts.length-1];
+    ctx.fillStyle='#5eead4';ctx.beginPath();ctx.arc(gx(last[0]),gy(last[1]),4,0,TAU);ctx.fill();
+    ctx.font='11px sans-serif';
+    ctx.fillStyle='#9aa3b2';ctx.fillText('y = x',gx(XMAX)-32,gy(XMAX)+13);
+    ctx.fillStyle='#818cf8';ctx.fillText('x → c+φx',gx(XMAX)-60,gy(f(XMAX))-6);
+    ctx.fillStyle='#fbbf24';ctx.fillText('μ',gx(mu)+7,gy(mu)+4);
+    ctx.fillStyle='#9aa3b2';ctx.fillText('x（当前）',ML+PW/2-22,H-9);
+    ctx.save();ctx.translate(12,MT+PH/2+26);ctx.rotate(-TAU/4);ctx.fillText("x'（下一步）",0,0);ctx.restore();
+  }
+  function step(){
+    var x=pts[pts.length-1][0], fx=f(x);
+    pts.push([x,fx]); pts.push([fx,fx]); steps++;
+    draw(); status();
+  }
+  function reset(start){
+    var x0=(start==null)?(2+Math.random()*16):start;
+    pts=[[x0,x0]]; steps=0; draw(); status();
+  }
+  cv.addEventListener('click',step);
+  document.getElementById('cw-reset').addEventListener('click',function(){ reset(); });
+  reset(17);
+})();
+</script>
+</div>
+
+### 它其实就是一个线性回归
+
+把回看窗口当作特征、把下一个值当作标签，AR 就是一个标准的**线性回归**：用 $$(x_{t-1}, \ldots, x_{t-p})$$ 去预测 $$x_t$$ 。让这个窗口在序列上**逐步向后滑动**，就得到一行行训练样本—— $$(x_1,\ldots,x_p)\to x_{p+1}$$ 、 $$(x_2,\ldots,x_{p+1})\to x_{p+2}$$ ，依此类推。
+
+于是参数可以用**最小二乘**直接解出来（经典统计里也用 **Yule–Walker 方程**，两者等价）。这正是[第 4 步](../math-ml-foundations/)里说的“用优化找最好的规律”，落到时间序列上的第一个具体模型。
+
+## 2. 从单步到多步：线性模型
+
+经典 AR 一次**只预测一步**。要预测未来 $$H$$ 步，传统做法是**递归**：预测出 $$\hat{x}_{t}$$ ，再把它当成真实值代回去预测 $$\hat{x}_{t+1}$$ ……但每一步的误差会**层层累积**。
+
+现代的做法更干脆——**一次性把整段未来都预测出来**。这就是近年大热的“**线性模型**”（如 DLinear、NLinear）：用**一个线性层**（权重矩阵 $$W$$ 、偏置 $$b$$ ），把长度为 $$L$$ 的回看窗口 $$x_{t-L+1:t}$$ 一次映射到长度为 $$H$$ 的未来 $$\hat{x}_{t+1:t+H}$$ ：
+
+$$\hat{x}_{t+1:t+H} \;=\; W\,x_{t-L+1:t} + b, \qquad W \in \mathbb{R}^{H \times L},\; b \in \mathbb{R}^{H}$$
+
+其中输入是 $$L$$ 个历史值、输出是 $$H$$ 个未来值， $$W$$ 是一个 $$H \times L$$ 的权重矩阵。把它展开到每一个未来时刻，就是 $$H$$ 个并排的加权和：
+
+$$\hat{x}_{t+h} \;=\; \sum_{i=1}^{L} W_{h,i}\,x_{t-L+i} + b_h, \qquad h = 1, 2, \dots, H$$
+
+每个 $$\hat{x}_{t+h}$$ 都是**整段回看窗口的一个加权和**——这正是 AR 那条加权和的“放大版”：经典 AR 不过是它在 $$H=1$$ （只输出一行）、 $$L=p$$ 时的特例。
+
+对照一下就会发现，它和 AR 是同一个想法的两种规模：
+
+| | 经典 AR | 线性模型 (DLinear 等) |
+|---|---|---|
+| 输入 | 过去 $$p$$ 个值 | 过去 $$L$$ 个值（回看窗口） |
+| 输出 | **1** 个值（下一步） | **$$H$$** 个值（整段未来） |
+| 本质 | $$1$$ 维线性映射 | $$L \to H$$ 的线性映射 |
+| 多步 | 递归，误差累积 | 直接多输出，无累积 |
+
+所以一句话：**线性模型就是向量化的、多输出的自回归。** 把 AR 那条加权和从“算一个数”扩成“一次算一整排数”，就得到了它。
+
+别小看这么简单的结构：2022 年的 **DLinear**（先把序列分解成趋势 + 季节，再各用一个线性层）在多个长序列基准上**击败了一众复杂的 Transformer**（见讲义[第 13 讲](../../course/13/)），让整个领域重新认识到——**线性映射本身，就是一个极强的基线**。
 
 ## 3. 通往 KUN
 
