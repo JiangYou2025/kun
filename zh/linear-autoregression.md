@@ -160,9 +160,9 @@ $$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
 
 <div class="game" markdown="0">
 <h3 style="margin-top:0">🎯 均值回复小游戏：点一下走一步，看它爬回中线</h3>
-<p class="hint">这是 AR(1)：<b>x' = c + φ·x</b>（取 c=4、φ=0.6，长期均值 μ=10）。<strong>每点一下画布就迭代一步</strong>：竖线走到 AR 直线（= 算出下一个值），横线回到 <b>y=x 中线</b>。多点几下，<strong>蓝色折线像爬楼梯一样</strong>收敛到中线与 AR 直线的交点——那就是均值 μ。点「换个起点」从别处出发，照样回到同一点。</p>
+<p class="hint">这是 AR(1)：<b>x' = c + φ·x</b>（长期均值 μ = c/(1−φ)，下面几组参数都让 μ=10）。<strong>每点一下画布就迭代一步</strong>：竖线走到 AR 直线（= 算出下一个值），横线回到 <b>y=x 中线</b>。多点几下，蓝色折线收敛到中线与 AR 直线的交点——那就是 μ。点<strong>「换个参数」</strong>切换不同的 φ：<b>φ 越接近 1 爬得越慢</b>，<b>φ 为负则会绕着 μ 来回螺旋着收敛</b>。</p>
 <canvas id="cw-canvas" width="352" height="344" style="width:100%;max-width:352px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:pointer"></canvas>
-<div style="margin-top:10px"><button id="cw-reset">换个起点</button> <span id="cw-info" style="font-size:.9rem;color:var(--muted)"></span></div>
+<div style="margin-top:10px"><button id="cw-reset">换个参数</button> <span id="cw-info" style="font-size:.9rem;color:var(--muted)"></span></div>
 
 <style>
 #cw-reset{padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);cursor:pointer;font-size:.86rem}
@@ -174,7 +174,16 @@ $$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
   var cv=document.getElementById('cw-canvas'); if(!cv) return;
   var ctx=cv.getContext('2d'); var info=document.getElementById('cw-info');
   var W=352,H=344, ML=38,MR=14,MT=14,MB=30, PW=W-ML-MR, PH=H-MT-MB;
-  var XMAX=20, c=4, phi=0.6, mu=c/(1-phi), TAU=Math.PI*2;
+  var XMAX=20, TAU=Math.PI*2;
+  // 一组参数，μ 都 = 10，只有 φ 不同 —— 看路径怎么变
+  var PARAMS=[
+    {c:4,  phi:0.6},   // 中速、单调爬升
+    {c:7,  phi:0.3},   // 很快收敛
+    {c:1.5,phi:0.85},  // 很慢收敛
+    {c:13, phi:-0.3},  // 轻微来回螺旋
+    {c:16, phi:-0.6}   // 明显绕着 μ 螺旋
+  ];
+  var pidx=0, c=PARAMS[0].c, phi=PARAMS[0].phi, mu=c/(1-phi);
   function f(x){ return c+phi*x; }
   function gx(v){ return ML+PW*v/XMAX; }
   function gy(v){ return MT+PH*(1-v/XMAX); }
@@ -182,7 +191,7 @@ $$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
 
   function status(){
     var cur=pts[pts.length-1][0];
-    info.innerHTML='第 '+steps+' 步：x = '+cur.toFixed(2)+'　·　离均值 μ=10 还差 '+Math.abs(cur-mu).toFixed(2);
+    info.innerHTML='φ = '+phi.toFixed(2)+'，c = '+c.toFixed(1)+'（μ = '+mu.toFixed(0)+'）　·　第 '+steps+' 步：x = '+cur.toFixed(2)+'，离 μ 还差 '+Math.abs(cur-mu).toFixed(2);
   }
   function draw(){
     ctx.clearRect(0,0,W,H);
@@ -218,6 +227,7 @@ $$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
     ctx.fillStyle='#fbbf24';ctx.fillText('μ',gx(mu)+7,gy(mu)+4);
     ctx.fillStyle='#9aa3b2';ctx.fillText('x（当前）',ML+PW/2-22,H-9);
     ctx.save();ctx.translate(12,MT+PH/2+26);ctx.rotate(-TAU/4);ctx.fillText("x'（下一步）",0,0);ctx.restore();
+    ctx.fillStyle='#818cf8';ctx.font='12px sans-serif';ctx.fillText('φ = '+phi.toFixed(2),ML+6,MT+14);
   }
   var MAXSTEPS=14;
   function step(){
@@ -231,7 +241,11 @@ $$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
     pts=[[x0,x0]]; steps=0; draw(); status();
   }
   cv.addEventListener('click',step);
-  document.getElementById('cw-reset').addEventListener('click',function(){ reset(); });
+  document.getElementById('cw-reset').addEventListener('click',function(){
+    pidx=(pidx+1)%PARAMS.length;
+    c=PARAMS[pidx].c; phi=PARAMS[pidx].phi; mu=c/(1-phi);
+    reset(17);
+  });
   reset(17);
 })();
 </script>
