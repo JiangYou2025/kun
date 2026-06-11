@@ -6,7 +6,7 @@ permalink: /zh/wave-types/
 title: "波的类型与预测"
 lead: "现实中的时间序列几乎都是多种波形的叠加。认识这些基本波形——趋势、周期、衰减、突变——才能选对预测工具。这一页用可交互的图让你亲手拆解波形。"
 prev: math-ml-foundations
-next: frontier-2026
+next: kun
 ---
 
 ## 为什么要理解波形？

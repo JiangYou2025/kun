@@ -27,7 +27,7 @@ next: /applications/industry/
 ## 常用方法
 
 - 传统主力是**数值天气预报（NWP）**：在超算上求解大气运动的偏微分方程，配合集合卡尔曼滤波（EnKF）做数据同化（见发展史[序](../../history/foundations/)）。
-- 数据驱动新浪潮：FourCastNet、GraphCast、傅里叶神经算子（FNO）等用深度学习直接学场到场的映射，速度快几个数量级（[序](../../history/foundations/)、[2026 前沿 · 时空](../../zh/frontier-2026/)）。
+- 数据驱动新浪潮：FourCastNet、GraphCast、傅里叶神经算子（FNO）等用深度学习直接学场到场的映射，速度快几个数量级（[序](../../history/foundations/)、[2026 前沿 · 时空（KUN 页）](../../zh/kun/)）。
 
 ## 一个代表性案例：GraphCast
 
