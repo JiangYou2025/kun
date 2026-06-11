@@ -66,4 +66,4 @@ $$\theta^\* = \arg\min_\theta \; \mathcal{L}(\theta)$$
 
 ---
 
-**关键术语：** 梯度、链式法则、矩阵乘法、范数、SVD、随机变量、贝叶斯定理、极大似然、凸优化、梯度下降、熵、交叉熵、KL 散度。
+**关键术语：** [梯度](../terms/gradient/)、[链式法则](../terms/chain-rule/)、[矩阵乘法](../terms/matrix-multiplication/)、[范数](../terms/norm/)、[SVD](../terms/svd/)、[随机变量](../terms/random-variable/)、[贝叶斯定理](../terms/bayes-theorem/)、[极大似然](../terms/maximum-likelihood/)、[凸优化](../terms/convex-optimization/)、[梯度下降](../terms/gradient-descent/)、[熵](../terms/entropy/)、[交叉熵](../terms/cross-entropy/)、[KL 散度](../terms/kl-divergence/)。

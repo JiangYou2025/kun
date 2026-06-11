@@ -64,4 +64,4 @@ y = x ** 2          # 向量化：一行胜过 for 循环
 
 ---
 
-**关键术语：** Python、数据结构、Big-O 复杂度、动态规划、NumPy、向量化、Pandas、GPU 并行、batch、Git、可复现性。
+**关键术语：** [Python](../terms/python/)、[数据结构](../terms/data-structures/)、[Big-O 复杂度](../terms/big-o/)、[动态规划](../terms/dynamic-programming/)、[NumPy](../terms/numpy/)、[向量化](../terms/vectorization/)、[Pandas](../terms/pandas/)、[GPU 并行](../terms/gpu/)、[batch](../terms/batch/)、[Git](../terms/git/)、[可复现性](../terms/reproducibility/)。

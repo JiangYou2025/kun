@@ -55,4 +55,4 @@ math: true
 
 ---
 
-**关键术语：** 监督 / 无监督 / 强化学习、线性模型、决策树、集成 (GBDT)、SVM、聚类、PCA、损失函数、交叉验证、过拟合、偏差—方差权衡、正则化、评估指标。
+**关键术语：** [监督](../terms/supervised-learning/) / [无监督](../terms/unsupervised-learning/) / [强化学习](../terms/reinforcement-learning/)、[线性模型](../terms/linear-model/)、[决策树](../terms/decision-tree/)、[集成 (GBDT)](../terms/ensemble-gbdt/)、[SVM](../terms/svm/)、[聚类](../terms/clustering/)、[PCA](../terms/pca/)、[损失函数](../terms/loss-function/)、[交叉验证](../terms/cross-validation/)、[过拟合](../terms/overfitting/)、[偏差—方差权衡](../terms/bias-variance/)、[正则化](../terms/regularization/)、[评估指标](../terms/evaluation-metrics/)。

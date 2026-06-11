@@ -59,4 +59,4 @@ $$h = \sigma(Wx + b)$$
 
 ---
 
-**关键术语：** 神经元、激活函数、前向传播、反向传播、自动微分、Adam、学习率、Dropout、BatchNorm、早停、MLP、CNN、RNN / LSTM、Transformer、注意力、U-Net、GPU、梯度消失 / 爆炸。
+**关键术语：** [神经元](../terms/neuron/)、[激活函数](../terms/activation-function/)、[前向传播](../terms/forward-propagation/)、[反向传播](../terms/backpropagation/)、[自动微分](../terms/autodiff/)、[Adam](../terms/adam/)、[学习率](../terms/learning-rate/)、[Dropout](../terms/dropout/)、[BatchNorm](../terms/batchnorm/)、[早停](../terms/early-stopping/)、[MLP](../terms/mlp/)、[CNN](../terms/cnn/)、[RNN](../terms/rnn/) / [LSTM](../terms/lstm/)、[Transformer](../terms/transformer/)、[注意力](../terms/attention/)、[U-Net](../terms/u-net/)、[GPU](../terms/gpu/)、[梯度消失 / 爆炸](../terms/vanishing-exploding-gradient/)。
