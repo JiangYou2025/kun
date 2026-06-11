@@ -69,17 +69,17 @@ lead: "发展史主线从 1900 年的随机过程理论起步，但人类“看�
 
 ## 应用领域
 
-> 想看每个领域的**详细展开**（数据长什么样、难在哪、常用方法、代表案例），见专门的[**时间序列应用**](../applications/)专题——金融、能源、零售、交通、医疗、气象、工业、信号、地球物理、语言共十个场景，每个一页。下表先给一张速览。
+> **点开下表任一领域名**，进入它的详解页：那里的时间序列长什么样、要预测或检测什么、难在哪、常用哪些方法、一个代表性案例。十个场景同属[**时间序列应用**](../applications/)专题——金融、能源、零售、交通、医疗、气象、工业、信号、地球物理、语言，每个一页。
 
 | 领域 | 典型应用 | 关联方法 / 章节 |
 |------|---------|------------------|
-| 天文 · 地球物理 | 行星轨道、太阳黑子、潮汐、地震 | 谐波分析、周期图（史前史） |
-| 气象 · 气候 | 天气预报、气候变化、厄尔尼诺 | 数据同化（EnKF）、神经算子（[序](../history/foundations/)） |
-| 经济 · 金融 | GDP、通胀、股价、波动率、风险管理 | ARIMA（[5](../history/05/)）、GARCH（[6](../history/06/)）、随机微积分 |
-| 工业 · 控制 | 质量控制、过程监控、预测性维护 | 状态空间、卡尔曼滤波、MPC（[4](../history/04/)、[序](../history/foundations/)） |
-| 能源 | 电力/燃气负荷、可再生能源出力预测 | 指数平滑（[3](../history/03/)）、深度学习（[9](../history/09/)） |
-| 零售 · 供应链 | 需求预测、库存补货、动态定价 | 全局模型 DeepAR、强化学习（[9](../history/09/)、[序](../history/foundations/)） |
-| 通信 · 信号 | 语音编码、信道均衡、雷达跟踪 | LPC、Wiener/Kalman 滤波、Viterbi（[序](../history/foundations/)） |
-| 医学 · 生理 | 心率、脑电、流行病传播 | DFA、HMM、序列模型（[序](../history/foundations/)、[7](../history/07/)） |
-| 交通 · 城市 | 车流、轨迹预测、时空预测 | 图神经网络、时空模型 |
-| 自然语言 · 序列 | 语言模型、序列标注、生成 | RNN/LSTM（[7](../history/07/)）、Transformer（[9](../history/09/)） |
+| [天文 · 地球物理](../applications/geophysics/) | 行星轨道、太阳黑子、潮汐、地震 | 谐波分析、周期图（史前史） |
+| [气象 · 气候](../applications/weather/) | 天气预报、气候变化、厄尔尼诺 | 数据同化（EnKF）、神经算子（[序](../history/foundations/)） |
+| [经济 · 金融](../applications/finance/) | GDP、通胀、股价、波动率、风险管理 | ARIMA（[5](../history/05/)）、GARCH（[6](../history/06/)）、随机微积分 |
+| [工业 · 控制](../applications/industry/) | 质量控制、过程监控、预测性维护 | 状态空间、卡尔曼滤波、MPC（[4](../history/04/)、[序](../history/foundations/)） |
+| [能源](../applications/energy/) | 电力/燃气负荷、可再生能源出力预测 | 指数平滑（[3](../history/03/)）、深度学习（[9](../history/09/)） |
+| [零售 · 供应链](../applications/retail/) | 需求预测、库存补货、动态定价 | 全局模型 DeepAR、强化学习（[9](../history/09/)、[序](../history/foundations/)） |
+| [通信 · 信号](../applications/signal/) | 语音编码、信道均衡、雷达跟踪 | LPC、Wiener/Kalman 滤波、Viterbi（[序](../history/foundations/)） |
+| [医学 · 生理](../applications/health/) | 心率、脑电、流行病传播 | DFA、HMM、序列模型（[序](../history/foundations/)、[7](../history/07/)） |
+| [交通 · 城市](../applications/transport/) | 车流、轨迹预测、时空预测 | 图神经网络、时空模型 |
+| [自然语言 · 序列](../applications/language/) | 语言模型、序列标注、生成 | RNN/LSTM（[7](../history/07/)）、Transformer（[9](../history/09/)） |
