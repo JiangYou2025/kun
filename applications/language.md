@@ -24,9 +24,9 @@ prev: /applications/geophysics/
 
 ## 方法谱系（与时序高度同源）
 
-- RNN / LSTM（讲义 [12](../../course/12/)、发展史 [7](../../history/07/)）。
-- **Transformer / 自注意力**（讲义 [13](../../course/13/)、发展史 [9](../../history/09/)）——同一套架构如今反哺数值时序，催生了 PatchTST、iTransformer。
-- 正因这种互通，Chronos 才能把数值**离散化成 token**、直接套用语言模型架构来做预测（讲义 [15](../../course/15/)）。
+- RNN / LSTM（讲义 [9](../../course/09/)、发展史 [7](../../history/07/)）。
+- **Transformer / 自注意力**（讲义 [10](../../course/10/)、发展史 [9](../../history/09/)）——同一套架构如今反哺数值时序，催生了 PatchTST、iTransformer。
+- 正因这种互通，Chronos 才能把数值**离散化成 token**、直接套用语言模型架构来做预测（讲义 [10](../../course/10/)）。
 
 ## 一个代表性案例：架构的双向迁移
 

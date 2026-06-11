@@ -28,7 +28,7 @@ next: linear-autoregression
 - [🤖 **机器学习基础**](../../foundations/ml/) —— [监督](../../foundations/supervised-learning/) / [无监督学习](../../foundations/unsupervised-learning/)、[模型族](../../foundations/model-families/)、[训练流程](../../foundations/training-pipeline/)、[泛化](../../foundations/generalization/)与[评估](../../foundations/evaluation-metrics/)
 - [🧠 **深度学习基础**](../../foundations/dl/) —— [神经网络](../../foundations/neural-network/)、[反向传播](../../foundations/backpropagation/)、[优化器](../../foundations/optimizer/)、[常见架构](../../foundations/architectures/)、[训练实践](../../foundations/training-practice/)
 
-想要方法与公式的系统讲解，也可以直接看[时间序列入门讲义（15 讲）](../../course/)。
+想要方法与公式的系统讲解，也可以直接看[时间序列入门讲义（17 讲）](../../course/)。
 
 ## 为什么这对预测重要
 

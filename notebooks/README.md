@@ -4,9 +4,9 @@
 
 | 案例 | 主题 | 对应讲义 |
 |------|------|----------|
-| [`01_explore_and_decompose.ipynb`](01_explore_and_decompose.ipynb) | 探索、滚动统计、加法分解、ACF | 第 3、4 讲 |
-| [`02_forecasting_baselines.ipynb`](02_forecasting_baselines.ipynb) | 时间切分、基线模型、MAE/RMSE/MAPE、滚动回测 | 第 7、8 讲 |
-| [`03_kun_style_window_forecast.ipynb`](03_kun_style_window_forecast.ipynb) | 滑动窗口 + 神经网络直接多步预测（KUN 思想） | 第 11、14 讲 |
+| [`01_explore_and_decompose.ipynb`](01_explore_and_decompose.ipynb) | 探索、滚动统计、加法分解、ACF | 第 4、5 讲 |
+| [`02_forecasting_baselines.ipynb`](02_forecasting_baselines.ipynb) | 时间切分、基线模型、MAE/RMSE/MAPE、滚动回测 | 第 3、4 讲 |
+| [`03_kun_style_window_forecast.ipynb`](03_kun_style_window_forecast.ipynb) | 滑动窗口 + 神经网络直接多步预测（KUN 思想） | 第 9、11 讲 |
 
 ## 运行
 

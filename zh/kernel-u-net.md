@@ -225,7 +225,7 @@ print("测试集 MAE:", mae.item())
 - **想动手跑**：见上面的[分步教程](#分步教程用-kun-做预测)，从线性核 + 短时域的基线开始。
 - **想先打牢基线**：重读 [如何做预测](../forecasting/)——KUN 只有相对于基线才有意义。
 - **想看它在方法史里的位置**：读[发展史第 10 章 · 大模型、线性回归与 Kernel U-Net](../../history/10/)。
-- **想要课程视角**：见[第 14 讲 · 现代预测模型](../../course/14/)，里面有 N-BEATS、DLinear 与 KUN 的对照。
+- **想要课程视角**：见[第 11 讲 · Kernel U-Net](../../course/11/)，里面有 N-BEATS、DLinear 与 KUN 的对照。
 - **想看源码 / 提问**：[GitHub 仓库](https://github.com/JiangYou2025/kun)。
 
 <div class="note">

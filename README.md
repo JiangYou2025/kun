@@ -5,7 +5,7 @@
 A [Jekyll](https://jekyllrb.com/) site about **time series, forecasting and the Kernel U-Net (KUN) model**. It has grown from a small trilingual intro into a small library:
 
 - **Trilingual KUN intro** (English / 中文 / Français) — what a time series is, how to forecast, and how to use KUN.
-- **中文入门讲义** (`/course/`) — a 15-lecture course outline.
+- **中文入门讲义** (`/course/`) — a 17-lecture course outline.
 - **时间序列发展史** (`/history/`) — a narrative “100 years of time series”, a preface + 10 chapters.
 - **Three companion essays** (Chinese), each split into one short story per entry:
   - **史前史与当代应用** (`/prehistory/`) — pre-1900 timekeeping, observation and naïve methods.
@@ -39,7 +39,7 @@ Served by **GitHub Pages**. Entry points:
 │   ├── forecasting.md       #   what is forecasting      (zh: figures + a mini-game)
 │   └── kun.md               #   using Kernel U-Net       (zh: incl. multi-scale series)
 │
-├── course/                  # 中文入门讲义 — 15 lectures + index
+├── course/                  # 中文入门讲义 — 17 lectures + index
 │   ├── index.md
 │   └── 01.md … 15.md
 │
