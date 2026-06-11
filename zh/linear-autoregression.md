@@ -268,6 +268,129 @@ $$\hat{x}_{t+h} \;=\; \sum_{i=1}^{L} W_{h,i}\,x_{t-L+i} + b_h, \qquad h = 1, 2, 
 
 所以一句话：**线性模型就是向量化的、多输出的自回归。** 把 AR 那条加权和从“算一个数”扩成“一次算一整排数”，就得到了它。
 
+那"递归会累积误差、直接多输出不会"到底差多少？点一下看看 👇
+
+<div class="game" markdown="0">
+<h3 style="margin-top:0">🔮 点击任一时刻：比一比「递归单步」和「直接多输出」</h3>
+<p class="hint">在曲线上<strong>点一个预测起点 t</strong>，两个模型都用它前面 <b>L=16</b> 个值，向后预测 <b>H=18</b> 步：<span style="color:#818cf8;font-weight:600">蓝色 = 直接多输出</span>（一个线性层一次算出整段）、<span style="color:#f59e0b;font-weight:600">橙色 = 递归单步</span>（预测一步、把它当真值代回去再预测下一步）、<span style="color:#5eead4;font-weight:600">青色 = 真实未来</span>。注意看橙色怎么越往后越偏。</p>
+
+<canvas id="ms-canvas" width="640" height="320" style="width:100%;max-width:640px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:crosshair"></canvas>
+<div id="ms-info" style="margin-top:10px;font-size:.9rem;color:var(--muted)"></div>
+
+<script>
+(function(){
+  var cv=document.getElementById('ms-canvas'); if(!cv) return;
+  var ctx=cv.getContext('2d'); var info=document.getElementById('ms-info');
+  var W=640,CH=320, ML=42,MR=12,MT=16,MB=28, PW=W-ML-MR, PH=CH-MT-MB;
+  var N=170, L=16, H=18, TAU=Math.PI*2;
+  var i,j,k,t,h;
+
+  // 一段两段不可公度周期 + 不规则项的序列：周期 23 比 L=16 长，单步模型无法完美拟合
+  var y=[];
+  for(t=0;t<N;t++){
+    var b=52+26*Math.sin(TAU*t/23)+13*Math.sin(TAU*t/9+0.6);
+    var irr=7*Math.sin(t*0.7)*Math.cos(t*0.27)+5*Math.sin(t*1.3+0.4);
+    y.push(b+irr);
+  }
+
+  function solve(A,b){
+    var nn=b.length,r,c,ii;
+    for(c=0;c<nn;c++){
+      var piv=c;
+      for(r=c+1;r<nn;r++) if(Math.abs(A[r][c])>Math.abs(A[piv][c])) piv=r;
+      var ta=A[c];A[c]=A[piv];A[piv]=ta; var tb=b[c];b[c]=b[piv];b[piv]=tb;
+      var d=A[c][c]; if(Math.abs(d)<1e-9) d=d<0?-1e-9:1e-9;
+      for(r=0;r<nn;r++){ if(r===c) continue; var fa=A[r][c]/d; for(ii=c;ii<nn;ii++) A[r][ii]-=fa*A[c][ii]; b[r]-=fa*b[c]; }
+    }
+    var x=[]; for(ii=0;ii<nn;ii++) x.push(b[ii]/A[ii][ii]); return x;
+  }
+  function fit(rows,tgt,m){   // 含轻微 ridge 的最小二乘
+    var A=[],bv=[],r,a,ii;
+    for(a=0;a<m;a++){ A.push(new Array(m).fill(0)); bv.push(0); }
+    for(r=0;r<rows.length;r++){ var fr=rows[r],tv=tgt[r];
+      for(a=0;a<m;a++){ for(ii=0;ii<m;ii++) A[a][ii]+=fr[a]*fr[ii]; bv[a]+=fr[a]*tv; } }
+    var md=0; for(a=1;a<m;a++) md+=A[a][a]; md/=(m-1);
+    for(a=1;a<m;a++) A[a][a]+=0.04*md;
+    return solve(A,bv);
+  }
+
+  // 单步 AR(L) —— 用于递归
+  var rA=[],tA=[];
+  for(t=L;t<N;t++){ var fr=[1]; for(k=1;k<=L;k++) fr.push(y[t-k]); rA.push(fr); tA.push(y[t]); }
+  var coefAR=fit(rA,tA,L+1);
+
+  // 直接多输出 —— 每个 horizon 各训一个线性模型（= 矩阵 W 的一行）
+  var coefDir=[];
+  for(h=1;h<=H;h++){
+    var rows=[],tg=[];
+    for(t=L-1;t+h<N;t++){ var fr=[1]; for(i=0;i<L;i++) fr.push(y[t-L+1+i]); rows.push(fr); tg.push(y[t+h]); }
+    coefDir.push(fit(rows,tg,L+1));
+  }
+
+  function recursive(o){
+    var hist=[]; for(k=0;k<L;k++) hist.push(y[o-k]);   // hist[0]=y[o]（滞后 1）
+    var out=[];
+    for(h=0;h<H;h++){ var s=coefAR[0]; for(k=1;k<=L;k++) s+=coefAR[k]*hist[k-1];
+      out.push(s); hist.unshift(s); hist.pop(); }
+    return out;
+  }
+  function direct(o){
+    var out=[];
+    for(h=1;h<=H;h++){ var c=coefDir[h-1],s=c[0]; for(i=0;i<L;i++) s+=c[i+1]*y[o-L+1+i]; out.push(s); }
+    return out;
+  }
+
+  var ymin=Math.min.apply(null,y), ymax=Math.max.apply(null,y), pad=(ymax-ymin)*0.08;
+  ymin-=pad; ymax+=pad;
+  function X(idx){ return ML+PW*idx/(N-1); }
+  function Y(v){ return MT+PH*(1-(v-ymin)/(ymax-ymin)); }
+
+  var o=Math.round(N*0.5);
+
+  function draw(){
+    ctx.clearRect(0,0,W,CH);
+    ctx.fillStyle='rgba(129,140,248,0.10)';ctx.fillRect(X(o-L+1),MT,X(o)-X(o-L+1),PH);
+    ctx.strokeStyle='rgba(150,160,180,0.6)';ctx.setLineDash([3,3]);ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(X(o),MT);ctx.lineTo(X(o),MT+PH);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#9aa3b2';ctx.font='11px sans-serif';
+    ctx.fillText('起点 t',X(o)+4,MT+11);
+    ctx.fillText('回看 L='+L,X(o-L+1)+2,MT+PH-5);
+
+    ctx.strokeStyle='#5eead4';ctx.lineWidth=2;ctx.beginPath();
+    for(i=0;i<N;i++){ var xx=X(i),yy=Y(y[i]); if(i===0)ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy); }
+    ctx.stroke();
+
+    var dr=direct(o), rc=recursive(o);
+    function fc(arr,col){
+      ctx.strokeStyle=col;ctx.lineWidth=2;ctx.setLineDash([5,3]);ctx.beginPath();
+      ctx.moveTo(X(o),Y(y[o]));
+      for(h=1;h<=H;h++) ctx.lineTo(X(o+h),Y(arr[h-1]));
+      ctx.stroke();ctx.setLineDash([]);
+      for(h=1;h<=H;h++){ ctx.fillStyle=col;ctx.beginPath();ctx.arc(X(o+h),Y(arr[h-1]),2.2,0,TAU);ctx.fill(); }
+    }
+    fc(dr,'#818cf8'); fc(rc,'#f59e0b');
+
+    var maeD=0,maeR=0;
+    for(h=1;h<=H;h++){ var tv=y[o+h]; maeD+=Math.abs(dr[h-1]-tv); maeR+=Math.abs(rc[h-1]-tv); }
+    maeD/=H; maeR/=H;
+    info.innerHTML='预测起点 <strong style="color:var(--text)">t='+o+'</strong>，向后 <strong style="color:var(--text)">H='+H+'</strong> 步的平均误差：'+
+      '<span style="color:#818cf8;font-weight:600">直接 '+maeD.toFixed(2)+'</span>　vs　'+
+      '<span style="color:#f59e0b;font-weight:600">递归 '+maeR.toFixed(2)+'</span>'+
+      (maeR>maeD?'　→ 递归更大，且越往后越偏（误差层层累积）':'');
+  }
+
+  cv.addEventListener('click',function(e){
+    var rect=cv.getBoundingClientRect();
+    var cx=(e.clientX-rect.left)*(W/rect.width);
+    var idx=Math.round((cx-ML)/PW*(N-1));
+    if(idx<L-1)idx=L-1; if(idx>N-1-H)idx=N-1-H;
+    o=idx; draw();
+  });
+  draw();
+})();
+</script>
+</div>
+
 别小看这么简单的结构：2022 年的 **DLinear**（先把序列分解成趋势 + 季节，再各用一个线性层）在多个长序列基准上**击败了一众复杂的 Transformer**（见讲义[第 13 讲](../../course/13/)），让整个领域重新认识到——**线性映射本身，就是一个极强的基线**。
 
 ## 3. 通往 KUN
