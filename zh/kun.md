@@ -4,7 +4,7 @@ lang: zh
 ref: kun
 permalink: /zh/kun/
 title: "2026 时间序列前沿问题"
-lead: "经过近百年发展，时间序列预测已经积累了大量成熟工具。但 2026 年，研究者仍在追问：我们能做得更好吗？本页梳理当下最热的六大前沿挑战，以及它们如何彼此交织。"
+lead: "经过近百年发展，时间序列预测已经积累了大量成熟工具。但 2026 年，研究者仍在追问：我们能做得更好吗？本页梳理当下最热的六大前沿挑战，并看 Kernel U-Net 如何尝试回应其中几个。"
 prev: linear-autoregression
 next: kernel-u-net
 math: true
