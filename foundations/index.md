@@ -14,7 +14,7 @@ next: /foundations/math/
 
 > 配套主线：[时间序列入门讲义（15 讲）](../course/) · [时间序列发展史](../history/) · [使用 KUN](../zh/kun/)
 >
-> 循序渐进的入门站点：[时间序列](../zh/time-series/) → [预测](../zh/forecasting/) → [预测实战](../zh/prediction-in-action/) → [数学与机器学习基础](../zh/math-ml-foundations/) → [前沿问题与 KUN](../zh/kun/)
+> 循序渐进的入门站点：[时间序列](../zh/time-series/) → [预测](../zh/forecasting/) → [预测实战](../zh/prediction-in-action/) → [数学与机器学习基础](../zh/math-ml-foundations/) → [2026 时间序列前沿问题](../zh/kun/) → [深入理解 KUN](../zh/kernel-u-net/)
 
 ## 四门基础课
 
