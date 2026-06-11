@@ -37,6 +37,10 @@ lead: "一门关于时间序列分析与预测的入门课程，共 15 讲。本
 | 14 | [现代预测模型：DLinear、N-BEATS 与 Kernel U-Net](14/) | Modern forecasters & KUN |
 | 15 | [概率预测、多变量与实战流程](15/) | Probabilistic & pipeline |
 
+## 补充专题
+
+- [**波的类型与预测**](wave-types/) —— 用一块可交互的画布认识趋势、周期、衰减、方波、复合波与噪声六种基本波形，以及各自的预测难度。配合第 3、4 讲一起看。
+
 ## 动手案例
 
 配套的可运行 Jupyter 案例（合成数据，克隆即跑）放在仓库的 [`notebooks/`](https://github.com/JiangYou2025/kun/tree/main/notebooks) 目录：
