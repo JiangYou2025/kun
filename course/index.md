@@ -22,7 +22,7 @@ lead: "一门关于时间序列分析与预测的入门课程，共 15 讲。本
 | 1 | [导论：时间序列与预测任务](01/) | Introduction |
 | 2 | [数据：数据集、基准与格式](02/) | Data & benchmarks |
 | 3 | [探索性分析与可视化](03/) | EDA & visualization |
-| 4 | [成分与分解](04/) | Components & decomposition |
+| 4 | [数学与机器学习基础](04/) | Math & ML foundations |
 | 5 | [平稳性、差分与变换](05/) | Stationarity & transforms |
 | 6 | [自相关：ACF 与 PACF](06/) | Autocorrelation |
 | 7 | [评估：指标、切分与回测](07/) | Evaluation |
@@ -39,7 +39,7 @@ lead: "一门关于时间序列分析与预测的入门课程，共 15 讲。本
 
 配套的可运行 Jupyter 案例（合成数据，克隆即跑）放在仓库的 [`notebooks/`](https://github.com/JiangYou2025/kun/tree/main/notebooks) 目录：
 
-1. [探索与分解](https://github.com/JiangYou2025/kun/blob/main/notebooks/01_explore_and_decompose.ipynb) — 第 3、4 讲
+1. [探索与分解](https://github.com/JiangYou2025/kun/blob/main/notebooks/01_explore_and_decompose.ipynb) — 第 3 讲
 2. [预测基线与评估](https://github.com/JiangYou2025/kun/blob/main/notebooks/02_forecasting_baselines.ipynb) — 第 7、8 讲
 3. [滑动窗口神经网络预测（KUN 思想）](https://github.com/JiangYou2025/kun/blob/main/notebooks/03_kun_style_window_forecast.ipynb) — 第 11、14 讲
 
