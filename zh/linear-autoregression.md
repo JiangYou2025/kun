@@ -152,14 +152,14 @@ $$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
 
 一个系数 $$\phi$$ 就决定了序列的“性格”：
 
-- **−1 < φ < 1**（即 φ 的绝对值小于 1）：序列**平稳**，会不断被拉回长期均值 μ = c/(1−φ)——这叫**均值回复**（利率、温度、库存常是这样）。
+- **−1 < φ < 1**（即 φ 的绝对值小于 1）：序列**平稳**，会不断被拉回长期均值 μ = c/(1−φ)——这叫**均值回归**（利率、温度、库存常是这样）。
 - **φ = 1**：变成**随机游走**（下一个值 = 上一个值 + 随机噪声），没有回归的力，股价常被这样近似。
 - **φ > 1 或 φ < −1**（绝对值大于 1）：发散，现实中很少见。
 
-把"均值回复"变成一张**能玩的小图**，亲眼看一个值怎么被一步步拉回中线 👇
+把"均值回归"变成一张**能玩的小图**，亲眼看一个值怎么被一步步拉回中线 👇
 
 <div class="game" markdown="0">
-<h3 style="margin-top:0">🎯 均值回复小游戏：点一下走一步，看它爬回中线</h3>
+<h3 style="margin-top:0">🎯 均值回归小游戏：点一下走一步，看它爬回中线</h3>
 <p class="hint">这是 AR(1)：<b>x' = c + φ·x</b>（长期均值 μ = c/(1−φ)，下面几组参数都让 μ=10）。<strong>每点一下画布就迭代一步</strong>：竖线走到 AR 直线（= 算出下一个值），横线回到 <b>y=x 中线</b>。多点几下，蓝色折线收敛到中线与 AR 直线的交点——那就是 μ。点<strong>「换个参数」</strong>切换不同的 φ：<b>φ 越接近 1 爬得越慢</b>，<b>φ 为负则会绕着 μ 来回螺旋着收敛</b>。</p>
 <canvas id="cw-canvas" width="352" height="344" style="width:100%;max-width:352px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:pointer"></canvas>
 <div style="margin-top:10px"><button id="cw-reset">换个参数</button> <span id="cw-info" style="font-size:.9rem;color:var(--muted)"></span></div>
@@ -415,4 +415,4 @@ $$\hat{x}_{t+h} \;=\; \sum_{i=1}^{L} W_{h,i}\,x_{t-L+i} + b_h, \qquad h = 1, 2, 
 
 ---
 
-**关键术语 (Key terms):** 自回归 AR(p)、AR(1) 与均值回复、随机游走、最小二乘 / Yule–Walker、回看窗口、递归 vs 直接多步、线性模型、线性核。
+**关键术语 (Key terms):** 自回归 AR(p)、AR(1) 与均值回归、随机游走、最小二乘 / Yule–Walker、回看窗口、递归 vs 直接多步、线性模型、线性核。
