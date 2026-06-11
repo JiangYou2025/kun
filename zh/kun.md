@@ -5,7 +5,7 @@ ref: kun
 permalink: /zh/kun/
 title: "2026 前沿问题与 KUN（Kernel U-Net）"
 lead: "先看清 2026 年时间序列预测的六大前沿挑战，再理解 KUN（Kernel U-Net）如何回应它们——本页给出 KUN 背后的思想，以及在你自己数据上运行它的分步教程。"
-prev: wave-types
+prev: linear-autoregression
 math: true
 ---
 

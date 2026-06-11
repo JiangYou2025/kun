@@ -6,7 +6,7 @@ permalink: /zh/math-ml-foundations/
 title: "数学和机器学习基础"
 lead: "上一页你亲手拟合了一条弹道——那其实就是机器学习的核心：用数学描述规律、用优化找到最好的规律、用数据把规律学出来。这一页只做个引子，把你领到系统的基础课。"
 prev: prediction-in-action
-next: kun
+next: linear-autoregression
 ---
 
 ## 预测背后的三件事
