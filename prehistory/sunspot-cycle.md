@@ -2,12 +2,12 @@
 updated: "2026-06-11"
 layout: history
 lang: zh
-era: "史前史故事 9 · 观测 · 方法"
+era: "史前史故事 13 · 观测 · 方法"
 permalink: /prehistory/sunspot-cycle/
 title: "太阳黑子的 11 年周期 (The Sunspot Cycle)"
 lead: "一个业余天文爱好者，本想找一颗藏在太阳附近的行星，于是一连数年天天数太阳上的黑子——行星没找到，却撞见了一条藏了上千年的节律。"
 math: false
-prev: /prehistory/ceres-least-squares/
+prev: /prehistory/kelvin-tides/
 next: /prehistory/
 ---
 

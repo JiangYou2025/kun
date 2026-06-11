@@ -2,7 +2,7 @@
 updated: "2026-06-11"
 layout: history
 lang: zh
-era: "史前史故事 7 · 方法"
+era: "史前史故事 8 · 方法"
 permalink: /prehistory/playfair-chart/
 title: "普莱费尔与折线图 (Playfair's Line Chart)"
 lead: "在 1786 年以前，数据是一张张数字表格。一个苏格兰人突发奇想：要是把时间放在横轴、把数值连成一条线呢？——于是“趋势”第一次变得可以被“看见”。"

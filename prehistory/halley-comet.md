@@ -2,7 +2,7 @@
 updated: "2026-06-11"
 layout: history
 lang: zh
-era: "史前史故事 6 · 方法"
+era: "史前史故事 7 · 方法"
 permalink: /prehistory/halley-comet/
 title: "哈雷与彗星的回归 (Halley's Comet)"
 lead: "1705 年，哈雷翻遍几百年的彗星目击记录，大胆断言：1531、1607、1682 年出现的那三颗“不同”彗星，其实是同一颗——它会在 1758 年底再回来。他赌的是一个自己注定看不到的未来。"

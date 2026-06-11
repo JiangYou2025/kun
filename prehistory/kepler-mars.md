@@ -8,7 +8,7 @@ title: "开普勒与火星的 8 角分 (Kepler & the Eight Arcminutes)"
 lead: "第谷留下数十年精密的火星位置记录，可火星偏偏不肯走完美的圆。一个数据点差了 8 角分——开普勒没有把它当误差抹掉，而是追了它八年。"
 math: false
 prev: /prehistory/antikythera/
-next: /prehistory/graunt-life-table/
+next: /prehistory/galileo-jupiter/
 ---
 
 > 这是[史前史与当代应用](../)的一则小故事。

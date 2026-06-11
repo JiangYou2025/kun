@@ -2,13 +2,13 @@
 updated: "2026-06-11"
 layout: history
 lang: zh
-era: "史前史故事 8 · 方法"
+era: "史前史故事 9 · 方法"
 permalink: /prehistory/ceres-least-squares/
 title: "谷神星与最小二乘 (Ceres & Least Squares)"
 lead: "1801 年元旦，天文学家发现了一颗新天体“谷神星”，只记录了 40 天它就被太阳的强光淹没、丢失了。茫茫星空，它会从哪里再冒出来？"
 math: true
 prev: /prehistory/playfair-chart/
-next: /prehistory/sunspot-cycle/
+next: /prehistory/snow-cholera/
 ---
 
 > 这是[史前史与当代应用](../)的一则小故事。

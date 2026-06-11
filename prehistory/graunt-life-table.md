@@ -2,12 +2,12 @@
 updated: "2026-06-11"
 layout: history
 lang: zh
-era: "史前史故事 5 · 方法"
+era: "史前史故事 6 · 方法"
 permalink: /prehistory/graunt-life-table/
 title: "格朗特与第一张生命表 (Graunt's Life Table)"
 lead: "1662 年，一个布商翻着伦敦教区每周公布的死亡名单，问了一个此前没人系统问过的问题：一群新生儿里，能活到 60 岁的有几个？"
 math: false
-prev: /prehistory/kepler-mars/
+prev: /prehistory/galileo-jupiter/
 next: /prehistory/halley-comet/
 ---
 
