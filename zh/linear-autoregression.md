@@ -159,7 +159,7 @@ $$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
 把"均值回复"变成一个能玩的**蛛网图 (cobweb)** 👇
 
 <div class="game" markdown="0">
-<h3 style="margin-top:0">🎯 均值回复小游戏：点几下，看它爬回中线</h3>
+<h3 style="margin-top:0">🎯 均值回复小游戏：看蛛网一步步爬回中线</h3>
 <p class="hint">这是 AR(1)：<b>x' = c + φ·x</b>（取 c=4、φ=0.6，长期均值 μ=10）。<strong>载入后蛛网会自动一步步画出来</strong>，也可以<strong>点画布手动迭代一步</strong>：竖线走到 AR 直线（= 算出下一个值），横线回到 <b>y=x 中线</b>。蓝色折线像爬楼梯一样收敛到中线与 AR 直线的交点——那就是均值 μ。点「换个起点」从别处出发，照样回到同一点。</p>
 <canvas id="cw-canvas" width="352" height="344" style="width:100%;max-width:352px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:pointer"></canvas>
 <div style="margin-top:10px"><button id="cw-reset">换个起点</button> <span id="cw-info" style="font-size:.9rem;color:var(--muted)"></span></div>
