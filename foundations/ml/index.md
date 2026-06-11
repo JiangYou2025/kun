@@ -55,4 +55,4 @@ math: true
 
 ---
 
-**关键术语：** [监督](../terms/supervised-learning/) / [无监督](../terms/unsupervised-learning/) / [强化学习](../terms/reinforcement-learning/)、[线性模型](../terms/linear-model/)、[决策树](../terms/decision-tree/)、[集成 (GBDT)](../terms/ensemble-gbdt/)、[SVM](../terms/svm/)、[聚类](../terms/clustering/)、[PCA](../terms/pca/)、[损失函数](../terms/loss-function/)、[交叉验证](../terms/cross-validation/)、[过拟合](../terms/overfitting/)、[偏差—方差权衡](../terms/bias-variance/)、[正则化](../terms/regularization/)、[评估指标](../terms/evaluation-metrics/)。
+**关键术语：** [监督](../supervised-learning/) / [无监督](../unsupervised-learning/) / [强化学习](../reinforcement-learning/)、[线性模型](../linear-model/)、[决策树](../decision-tree/)、[集成 (GBDT)](../ensemble-gbdt/)、[SVM](../svm/)、[聚类](../clustering/)、[PCA](../pca/)、[损失函数](../loss-function/)、[交叉验证](../cross-validation/)、[过拟合](../overfitting/)、[偏差—方差权衡](../bias-variance/)、[正则化](../regularization/)、[评估指标](../evaluation-metrics/)。

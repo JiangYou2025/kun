@@ -59,4 +59,4 @@ $$h = \sigma(Wx + b)$$
 
 ---
 
-**关键术语：** [神经元](../terms/neuron/)、[激活函数](../terms/activation-function/)、[前向传播](../terms/forward-propagation/)、[反向传播](../terms/backpropagation/)、[自动微分](../terms/autodiff/)、[Adam](../terms/adam/)、[学习率](../terms/learning-rate/)、[Dropout](../terms/dropout/)、[BatchNorm](../terms/batchnorm/)、[早停](../terms/early-stopping/)、[MLP](../terms/mlp/)、[CNN](../terms/cnn/)、[RNN](../terms/rnn/) / [LSTM](../terms/lstm/)、[Transformer](../terms/transformer/)、[注意力](../terms/attention/)、[U-Net](../terms/u-net/)、[GPU](../terms/gpu/)、[梯度消失 / 爆炸](../terms/vanishing-exploding-gradient/)。
+**关键术语：** [神经元](../neuron/)、[激活函数](../activation-function/)、[前向传播](../forward-propagation/)、[反向传播](../backpropagation/)、[自动微分](../autodiff/)、[Adam](../adam/)、[学习率](../learning-rate/)、[Dropout](../dropout/)、[BatchNorm](../batchnorm/)、[早停](../early-stopping/)、[MLP](../mlp/)、[CNN](../cnn/)、[RNN](../rnn/) / [LSTM](../lstm/)、[Transformer](../transformer/)、[注意力](../attention/)、[U-Net](../u-net/)、[GPU](../gpu/)、[梯度消失 / 爆炸](../vanishing-exploding-gradient/)。
