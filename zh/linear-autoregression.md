@@ -74,9 +74,15 @@ forecast = model.predict(start=len(train), end=len(train)+23)  # 预测未来 24
 
 经典 AR 一次**只预测一步**。要预测未来 $H$ 步，传统做法是**递归**：预测出 $\hat{x}_{t}$，再把它当成真实值代回去预测 $\hat{x}_{t+1}$……但每一步的误差会**层层累积**。
 
-现代的做法更干脆——**一次性把整段未来都预测出来**。这就是近年大热的“**线性模型**”（如 DLinear、NLinear）：用**一个线性层**，把长度为 $L$ 的回看窗口直接映射到长度为 $H$ 的未来：
+现代的做法更干脆——**一次性把整段未来都预测出来**。这就是近年大热的“**线性模型**”（如 DLinear、NLinear）：用**一个线性层**（权重矩阵 $W$、偏置 $b$），把长度为 $L$ 的回看窗口 $x_{t-L+1:t}$ 一次映射到长度为 $H$ 的未来 $\hat{x}_{t+1:t+H}$：
 
-$$\underbrace{\begin{bmatrix}\hat{x}_{t+1}\\ \vdots \\ \hat{x}_{t+H}\end{bmatrix}}_{H \text{ 个未来值}} = W \underbrace{\begin{bmatrix}x_{t-L+1}\\ \vdots \\ x_{t}\end{bmatrix}}_{L \text{ 个历史值}} + b$$
+$$\hat{x}_{t+1:t+H} \;=\; W\,x_{t-L+1:t} + b, \qquad W \in \mathbb{R}^{H \times L},\; b \in \mathbb{R}^{H}$$
+
+其中输入是 $L$ 个历史值、输出是 $H$ 个未来值，$W$ 是一个 $H \times L$ 的权重矩阵。把它展开到每一个未来时刻，就是 $H$ 个并排的加权和：
+
+$$\hat{x}_{t+h} \;=\; \sum_{i=1}^{L} W_{h,i}\,x_{t-L+i} + b_h, \qquad h = 1, 2, \dots, H$$
+
+每个 $\hat{x}_{t+h}$ 都是**整段回看窗口的一个加权和**——这正是 AR 那条加权和的“放大版”：经典 AR 不过是它在 $H=1$（只输出一行）、$L=p$ 时的特例。
 
 对照一下就会发现，它和 AR 是同一个想法的两种规模：
 
@@ -90,6 +96,126 @@ $$\underbrace{\begin{bmatrix}\hat{x}_{t+1}\\ \vdots \\ \hat{x}_{t+H}\end{bmatrix
 所以一句话：**线性模型就是向量化的、多输出的自回归。** 把 AR 那条加权和从“算一个数”扩成“一次算一整排数”，就得到了它。
 
 别小看这么简单的结构：2022 年的 **DLinear**（先把序列分解成趋势 + 季节，再各用一个线性层）在多个长序列基准上**击败了一众复杂的 Transformer**（见讲义[第 13 讲](../../course/13/)），让整个领域重新认识到——**线性映射本身，就是一个极强的基线**。
+
+## 动手：点击太阳黑子序列，看模型在想什么
+
+还记得[太阳黑子](../../applications/geophysics/)吗？1927 年 Yule 正是用它发明了自回归。下面在一段类太阳黑子序列上，用最小二乘**实时拟合**一个 $\text{AR}(12)$（用过去 12 个值预测下一个）——**点击曲线上任意一点**，看模型预测它时用了哪些数据、每个数据乘了多大的权重、各贡献多少。
+
+<div class="game" markdown="0">
+<h3 style="margin-top:0">🌞 点击任一点：看模型用了哪 12 个历史值、怎么加权</h3>
+<p class="hint">灰色虚线右侧的点都可点击。蓝点 = 这次预测用到的历史窗口，黄圈 = 预测值，实心点 = 真实值。</p>
+
+<canvas id="ar-canvas" width="640" height="300" style="width:100%;max-width:640px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:crosshair"></canvas>
+<div id="ar-info" style="margin-top:12px;font-size:.9rem"></div>
+
+<style>
+#ar-info table{border-collapse:collapse;width:100%;max-width:560px;font-size:.84rem;margin-top:8px}
+#ar-info th,#ar-info td{padding:3px 8px;text-align:right;border-bottom:1px solid var(--border)}
+#ar-info th:first-child,#ar-info td:first-child{text-align:left}
+.wbar{display:inline-block;height:9px;border-radius:2px;vertical-align:middle}
+</style>
+
+<script>
+(function(){
+  var canvas=document.getElementById('ar-canvas');
+  if(!canvas) return;
+  var ctx=canvas.getContext('2d');
+  var info=document.getElementById('ar-info');
+  var W=640,H=300,p=12,N=140;
+  var ML=40,MR=14,MT=16,MB=26, PW=W-ML-MR, PH=H-MT-MB;
+  var i,j,k,t;
+
+  // 1) 生成一段类太阳黑子序列（确定性、非负、约 11 步一个周期）
+  var y=[];
+  for(t=0;t<N;t++){
+    var base=85+72*Math.sin(2*Math.PI*t/11)+24*Math.sin(2*Math.PI*t/5.5+1.0);
+    var wig=16*Math.sin(t*1.7)*Math.cos(t*0.41)+10*Math.sin(t*0.9+0.5);
+    var v=base+wig; if(v<0)v=0; y.push(v);
+  }
+
+  // 2) 高斯消元解线性方程组
+  function solve(A,b){
+    var nn=b.length,r,c,ii;
+    for(c=0;c<nn;c++){
+      var piv=c;
+      for(r=c+1;r<nn;r++) if(Math.abs(A[r][c])>Math.abs(A[piv][c])) piv=r;
+      var ta=A[c];A[c]=A[piv];A[piv]=ta; var tb=b[c];b[c]=b[piv];b[piv]=tb;
+      var d=A[c][c]; if(Math.abs(d)<1e-9) d=d<0?-1e-9:1e-9;
+      for(r=0;r<nn;r++){ if(r===c) continue; var f=A[r][c]/d; for(ii=c;ii<nn;ii++) A[r][ii]-=f*A[c][ii]; b[r]-=f*b[c]; }
+    }
+    var x=[]; for(ii=0;ii<nn;ii++) x.push(b[ii]/A[ii][ii]); return x;
+  }
+
+  // 3) 最小二乘拟合 AR(p)（含截距 + 轻微 ridge 稳住权重）
+  var n=p+1, A=[], bv=[];
+  for(i=0;i<n;i++){ A.push(new Array(n).fill(0)); bv.push(0); }
+  for(t=p;t<N;t++){
+    var feat=[1]; for(k=1;k<=p;k++) feat.push(y[t-k]);
+    for(i=0;i<n;i++){ for(j=0;j<n;j++) A[i][j]+=feat[i]*feat[j]; bv[i]+=feat[i]*y[t]; }
+  }
+  var md=0; for(i=1;i<n;i++) md+=A[i][i]; md/=p;
+  for(i=1;i<n;i++) A[i][i]+=0.05*md;
+  var coef=solve(A,bv);   // coef[0]=截距, coef[k]=滞后 k 的权重
+
+  function predict(tt){ var s=coef[0]; for(var kk=1;kk<=p;kk++) s+=coef[kk]*y[tt-kk]; return s; }
+
+  var ymin=Math.min.apply(null,y), ymax=Math.max.apply(null,y), TAU=Math.PI*2;
+  function X(idx){ return ML+PW*idx/(N-1); }
+  function Y(val){ return MT+PH*(1-(val-ymin)/(ymax-ymin)); }
+
+  var sel=N-1;
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(150,160,180,0.4)';ctx.setLineDash([3,3]);ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(X(p-0.5),MT);ctx.lineTo(X(p-0.5),MT+PH);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#9aa3b2';ctx.font='11px sans-serif';ctx.fillText('需 ≥12 个历史值',X(p)+4,MT+12);
+
+    if(sel!==null){ ctx.fillStyle='rgba(129,140,248,0.13)';ctx.fillRect(X(sel-p),MT,X(sel-1)-X(sel-p),PH); }
+
+    ctx.strokeStyle='#5eead4';ctx.lineWidth=2;ctx.beginPath();
+    for(i=0;i<N;i++){ var xx=X(i),yy=Y(y[i]); if(i===0)ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy); }
+    ctx.stroke();
+    for(i=0;i<N;i++){ ctx.fillStyle='#5eead4';ctx.beginPath();ctx.arc(X(i),Y(y[i]),1.8,0,TAU);ctx.fill(); }
+
+    if(sel!==null){
+      for(k=1;k<=p;k++){ var id=sel-k; ctx.fillStyle='#818cf8';ctx.beginPath();ctx.arc(X(id),Y(y[id]),3.4,0,TAU);ctx.fill(); }
+      ctx.fillStyle='#5eead4';ctx.beginPath();ctx.arc(X(sel),Y(y[sel]),4,0,TAU);ctx.fill();
+      var pv=predict(sel);
+      ctx.strokeStyle='rgba(251,191,36,0.55)';ctx.setLineDash([2,3]);ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(X(sel),Y(pv));ctx.lineTo(X(sel),Y(y[sel]));ctx.stroke();ctx.setLineDash([]);
+      ctx.strokeStyle='#fbbf24';ctx.lineWidth=2;ctx.beginPath();ctx.arc(X(sel),Y(pv),5,0,TAU);ctx.stroke();
+    }
+  }
+
+  function renderInfo(){
+    if(sel===null){ info.innerHTML=''; return; }
+    var pv=predict(sel), av=y[sel], maxc=0, kk, rows='';
+    for(kk=1;kk<=p;kk++){ var cc=Math.abs(coef[kk]*y[sel-kk]); if(cc>maxc)maxc=cc; }
+    for(kk=1;kk<=p;kk++){
+      var w=coef[kk], val=y[sel-kk], contr=w*val;
+      var bw=maxc>0?Math.round(Math.abs(contr)/maxc*64):0;
+      var col=contr>=0?'#5eead4':'#ef4444';
+      rows+='<tr><td>x<sub>t−'+kk+'</sub></td><td>'+w.toFixed(3)+'</td><td>'+val.toFixed(1)+'</td><td>'+contr.toFixed(1)+'</td><td><span class="wbar" style="width:'+bw+'px;background:'+col+'"></span></td></tr>';
+    }
+    info.innerHTML='<div>预测第 <strong>t = '+sel+'</strong> 个点：ŷ = 截距 '+coef[0].toFixed(1)+' + Σ(权重×历史值) = <strong style="color:#fbbf24">'+pv.toFixed(1)+'</strong>　·　真实值 <strong style="color:#5eead4">'+av.toFixed(1)+'</strong>（误差 '+(pv-av>=0?'+':'')+(pv-av).toFixed(1)+'）</div>'+
+      '<table><thead><tr><th>用到的历史值</th><th>权重 w</th><th>值 x</th><th>贡献 w·x</th><th></th></tr></thead><tbody>'+rows+'</tbody></table>';
+  }
+
+  canvas.addEventListener('click',function(e){
+    var rect=canvas.getBoundingClientRect();
+    var cx=(e.clientX-rect.left)*(W/rect.width);
+    var idx=Math.round((cx-ML)/PW*(N-1));
+    if(idx<p)idx=p; if(idx>N-1)idx=N-1;
+    sel=idx; draw(); renderInfo();
+  });
+
+  draw(); renderInfo();
+})();
+</script>
+</div>
+
+> **看出门道了吗？** 同一组权重 $w_1,\dots,w_{12}$ 对**所有时刻通用**——这就是模型“学到的规律”；你点不同的点，变的只是它作用的那 12 个历史值，于是每个点的“贡献分解”都不一样。把这一行加权和扩成“一次输出 $H$ 个”，就是上一节的线性模型；再按 U 形层次堆叠，就是下一节的 KUN。
 
 ## 4. 通往 KUN
 
