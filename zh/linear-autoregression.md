@@ -159,8 +159,8 @@ $$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
 把"均值回复"变成一张**能玩的小图**，亲眼看一个值怎么被一步步拉回中线 👇
 
 <div class="game" markdown="0">
-<h3 style="margin-top:0">🎯 均值回复小游戏：看它一步步爬回中线</h3>
-<p class="hint">这是 AR(1)：<b>x' = c + φ·x</b>（取 c=4、φ=0.6，长期均值 μ=10）。竖线走到 AR 直线（= 算出下一个值），横线回到 <b>y=x 中线</b>，<strong>蓝色折线像爬楼梯一样</strong>收敛到中线与 AR 直线的交点——那就是均值 μ。<strong>点画布或「换个起点」</strong>从别处出发，照样回到同一点。</p>
+<h3 style="margin-top:0">🎯 均值回复小游戏：点一下走一步，看它爬回中线</h3>
+<p class="hint">这是 AR(1)：<b>x' = c + φ·x</b>（取 c=4、φ=0.6，长期均值 μ=10）。<strong>每点一下画布就迭代一步</strong>：竖线走到 AR 直线（= 算出下一个值），横线回到 <b>y=x 中线</b>。多点几下，<strong>蓝色折线像爬楼梯一样</strong>收敛到中线与 AR 直线的交点——那就是均值 μ。点「换个起点」从别处出发，照样回到同一点。</p>
 <canvas id="cw-canvas" width="352" height="344" style="width:100%;max-width:352px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:pointer"></canvas>
 <div style="margin-top:10px"><button id="cw-reset">换个起点</button> <span id="cw-info" style="font-size:.9rem;color:var(--muted)"></span></div>
 
@@ -221,16 +221,16 @@ $$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
   }
   var MAXSTEPS=14;
   function step(){
+    if(steps>=MAXSTEPS) return;
     var x=pts[pts.length-1][0], fx=f(x);
     pts.push([x,fx]); pts.push([fx,fx]); steps++;
+    draw(); status();
   }
   function reset(start){
     var x0=(start==null)?(2+Math.random()*16):start;
-    pts=[[x0,x0]]; steps=0;
-    while(steps<MAXSTEPS) step();
-    draw(); status();
+    pts=[[x0,x0]]; steps=0; draw(); status();
   }
-  cv.addEventListener('click',function(){ reset(); });
+  cv.addEventListener('click',step);
   document.getElementById('cw-reset').addEventListener('click',function(){ reset(); });
   reset(17);
 })();
