@@ -29,6 +29,7 @@
       <a href="{{ '/prehistory/' | relative_url }}">史前史</a>
       <a href="{{ '/nature-of-time/' | relative_url }}">时间的本质</a>
       <a href="{{ '/paradoxes/' | relative_url }}">时间悖论</a>
+      <a href="{{ '/applications/' | relative_url }}">应用</a>
       <a href="{{ '/course/' | relative_url }}">讲义</a>
       <a href="{{ '/zh/' | relative_url }}">KUN 站点</a>
       <a href="https://github.com/JiangYou2025/kun">GitHub</a>
@@ -47,6 +48,8 @@
   <label for="chap-toggle" class="chap-toggle-label">时间的本质</label>
   {% elsif u contains '/tasks/' %}
   <label for="chap-toggle" class="chap-toggle-label">任务史</label>
+  {% elsif u contains '/applications/' %}
+  <label for="chap-toggle" class="chap-toggle-label">应用场景</label>
   {% else %}
   <label for="chap-toggle" class="chap-toggle-label">章节目录</label>
   {% endif %}
@@ -118,6 +121,21 @@
     <ul>
       <li><a href="{{ '/tasks/' | relative_url }}" class="active"><span class="num">目</span>任务史全文</a></li>
       <li><a href="{{ '/history/' | relative_url }}"><span class="num">←</span>回发展史</a></li>
+    </ul>
+  {% elsif u contains '/applications/' %}
+    <p class="side-title">应用场景</p>
+    <ul>
+      <li><a href="{{ '/applications/' | relative_url }}" {% if u == '/applications/' %}class="active"{% endif %}><span class="num">目</span>应用目录</a></li>
+      <li><a href="{{ '/applications/finance/' | relative_url }}" {% if u == '/applications/finance/' %}class="active"{% endif %}><span class="num">1</span>金融与经济</a></li>
+      <li><a href="{{ '/applications/energy/' | relative_url }}" {% if u == '/applications/energy/' %}class="active"{% endif %}><span class="num">2</span>能源与电力</a></li>
+      <li><a href="{{ '/applications/retail/' | relative_url }}" {% if u == '/applications/retail/' %}class="active"{% endif %}><span class="num">3</span>零售与供应链</a></li>
+      <li><a href="{{ '/applications/transport/' | relative_url }}" {% if u == '/applications/transport/' %}class="active"{% endif %}><span class="num">4</span>交通与出行</a></li>
+      <li><a href="{{ '/applications/health/' | relative_url }}" {% if u == '/applications/health/' %}class="active"{% endif %}><span class="num">5</span>医疗与健康</a></li>
+      <li><a href="{{ '/applications/weather/' | relative_url }}" {% if u == '/applications/weather/' %}class="active"{% endif %}><span class="num">6</span>气象与气候</a></li>
+      <li><a href="{{ '/applications/industry/' | relative_url }}" {% if u == '/applications/industry/' %}class="active"{% endif %}><span class="num">7</span>工业与物联网</a></li>
+      <li><a href="{{ '/applications/signal/' | relative_url }}" {% if u == '/applications/signal/' %}class="active"{% endif %}><span class="num">8</span>通信与信号</a></li>
+      <li><a href="{{ '/applications/geophysics/' | relative_url }}" {% if u == '/applications/geophysics/' %}class="active"{% endif %}><span class="num">9</span>天文与地球物理</a></li>
+      <li><a href="{{ '/applications/language/' | relative_url }}" {% if u == '/applications/language/' %}class="active"{% endif %}><span class="num">10</span>自然语言与序列</a></li>
     </ul>
   {% else %}
     <p class="side-title">章节目录</p>
