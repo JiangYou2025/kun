@@ -156,11 +156,11 @@ $$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
 - **φ = 1**：变成**随机游走**（下一个值 = 上一个值 + 随机噪声），没有回归的力，股价常被这样近似。
 - **φ > 1 或 φ < −1**（绝对值大于 1）：发散，现实中很少见。
 
-把"均值回复"变成一个能玩的**蛛网图 (cobweb)** 👇
+把"均值回复"变成一张**能玩的小图**，亲眼看一个值怎么被一步步拉回中线 👇
 
 <div class="game" markdown="0">
-<h3 style="margin-top:0">🎯 均值回复小游戏：看蛛网一步步爬回中线</h3>
-<p class="hint">这是 AR(1)：<b>x' = c + φ·x</b>（取 c=4、φ=0.6，长期均值 μ=10）。<strong>载入后蛛网会自动一步步画出来</strong>，也可以<strong>点画布手动迭代一步</strong>：竖线走到 AR 直线（= 算出下一个值），横线回到 <b>y=x 中线</b>。蓝色折线像爬楼梯一样收敛到中线与 AR 直线的交点——那就是均值 μ。点「换个起点」从别处出发，照样回到同一点。</p>
+<h3 style="margin-top:0">🎯 均值回复小游戏：看它一步步爬回中线</h3>
+<p class="hint">这是 AR(1)：<b>x' = c + φ·x</b>（取 c=4、φ=0.6，长期均值 μ=10）。<strong>载入后折线会自动一步步画出来</strong>，也可以<strong>点画布手动迭代一步</strong>：竖线走到 AR 直线（= 算出下一个值），横线回到 <b>y=x 中线</b>。蓝色折线像爬楼梯一样收敛到中线与 AR 直线的交点——那就是均值 μ。点「换个起点」从别处出发，照样回到同一点。</p>
 <canvas id="cw-canvas" width="352" height="344" style="width:100%;max-width:352px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:pointer"></canvas>
 <div style="margin-top:10px"><button id="cw-reset">换个起点</button> <span id="cw-info" style="font-size:.9rem;color:var(--muted)"></span></div>
 
@@ -187,6 +187,21 @@ $$x_t = c + \phi\, x_{t-1} + \varepsilon_t$$
   function draw(){
     ctx.clearRect(0,0,W,H);
     ctx.strokeStyle='rgba(150,160,180,0.25)';ctx.lineWidth=1;ctx.strokeRect(ML,MT,PW,PH);
+    // 坐标轴：x 轴（底边）、y 轴（左边）+ 刻度 + 原点 O
+    ctx.strokeStyle='rgba(150,160,180,0.7)';ctx.lineWidth=1.3;
+    ctx.beginPath();
+    ctx.moveTo(gx(0),gy(0));ctx.lineTo(gx(XMAX),gy(0));
+    ctx.moveTo(gx(0),gy(0));ctx.lineTo(gx(0),gy(XMAX));
+    ctx.stroke();
+    ctx.fillStyle='#9aa3b2';ctx.font='10px sans-serif';
+    for(var tk=5;tk<=XMAX;tk+=5){
+      ctx.beginPath();ctx.moveTo(gx(tk),gy(0));ctx.lineTo(gx(tk),gy(0)+4);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(gx(0),gy(tk));ctx.lineTo(gx(0)-4,gy(tk));ctx.stroke();
+      ctx.fillText(tk,gx(tk)-5,gy(0)+15);
+      ctx.fillText(tk,gx(0)-20,gy(tk)+3);
+    }
+    ctx.fillStyle='#9aa3b2';ctx.beginPath();ctx.arc(gx(0),gy(0),2.6,0,TAU);ctx.fill();
+    ctx.fillText('O',gx(0)-11,gy(0)+13);
     ctx.strokeStyle='rgba(150,160,180,0.75)';ctx.setLineDash([5,4]);ctx.lineWidth=1.5;
     ctx.beginPath();ctx.moveTo(gx(0),gy(0));ctx.lineTo(gx(XMAX),gy(XMAX));ctx.stroke();ctx.setLineDash([]);
     ctx.strokeStyle='#818cf8';ctx.lineWidth=2;
