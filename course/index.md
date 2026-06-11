@@ -22,7 +22,7 @@ lead: "一门关于时间序列分析与预测的入门课程，共 15 讲。本
 | 1 | [导论：时间序列与预测任务](01/) | Introduction |
 | 2 | [数据：数据集、基准与格式](02/) | Data & benchmarks |
 | 3 | [探索性分析与可视化](03/) | EDA & visualization |
-| 4 | [数学与机器学习基础](04/) | Math & ML foundations |
+| 4 | [机器学习基础](04/) | ML foundations |
 | 5 | [平稳性、差分与变换](05/) | Stationarity & transforms |
 | 6 | [自相关：ACF 与 PACF](06/) | Autocorrelation |
 | 7 | [评估：指标、切分与回测](07/) | Evaluation |
