@@ -3,7 +3,7 @@ updated: "2026-06-11"
 layout: history
 lang: zh
 permalink: /prehistory/
-title: "史前史与应用 (Prehistory & Applications)"
+title: "史前史与当代应用 (Prehistory & Contemporary Applications)"
 lead: "发展史主线从 1900 年的随机过程理论起步，但人类“看时间序列”的历史要久远得多——在严格的方法之前，先有了零散的长期观测与朴素的周期/趋势方法。本页先挑出几则最精彩的片段写成小故事，再用两张清单分别梳理 19 世纪末以前的史前史与时间序列在各领域的应用。"
 ---
 

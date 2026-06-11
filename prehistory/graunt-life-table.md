@@ -11,7 +11,7 @@ prev: /prehistory/kepler-mars/
 next: /prehistory/halley-comet/
 ---
 
-> 这是[史前史与应用](../)的一则小故事。
+> 这是[史前史与当代应用](../)的一则小故事。
 
 为追踪瘟疫，伦敦定期公布"死亡统计单"(Bills of Mortality)，逐周记录死亡人数与死因。这是一条丰富却"原始"的社会时间序列。
 

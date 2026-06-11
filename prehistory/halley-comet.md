@@ -11,7 +11,7 @@ prev: /prehistory/graunt-life-table/
 next: /prehistory/playfair-chart/
 ---
 
-> 这是[史前史与应用](../)的一则小故事。
+> 这是[史前史与当代应用](../)的一则小故事。
 
 牛顿的万有引力刚刚问世，而彗星在当时仍被普遍当作一次性的、不祥的天兆。
 

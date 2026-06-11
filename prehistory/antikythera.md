@@ -11,7 +11,7 @@ prev: /prehistory/babylon-diaries/
 next: /prehistory/kepler-mars/
 ---
 
-> 这是[史前史与应用](../)的一则小故事。
+> 这是[史前史与当代应用](../)的一则小故事。
 
 约公元前 100 年的希腊化世界，已经握有两样东西：[巴比伦积累的食周期数据](../babylon-diaries/)，以及希腊几何化的天文模型。
 

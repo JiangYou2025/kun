@@ -11,7 +11,7 @@ prev: /prehistory/halley-comet/
 next: /prehistory/ceres-least-squares/
 ---
 
-> 这是[史前史与应用](../)的一则小故事。
+> 这是[史前史与当代应用](../)的一则小故事。
 
 威廉·普莱费尔(William Playfair)在 1786 年的《商业与政治图集》里，首次大规模使用折线图与柱状图来呈现经济数据。
 

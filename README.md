@@ -8,7 +8,7 @@ A [Jekyll](https://jekyllrb.com/) site about **time series, forecasting and the 
 - **中文入门讲义** (`/course/`) — a 15-lecture course outline.
 - **时间序列发展史** (`/history/`) — a narrative “100 years of time series”, a preface + 10 chapters.
 - **Three companion essays** (Chinese), each split into one short story per entry:
-  - **史前史与应用** (`/prehistory/`) — pre-1900 timekeeping, observation and naïve methods.
+  - **史前史与当代应用** (`/prehistory/`) — pre-1900 timekeeping, observation and naïve methods.
   - **时间的本质** (`/nature-of-time/`) — 23 cross-disciplinary takes on what *time itself* is.
   - **时间悖论** (`/paradoxes/`) — 15 famous paradoxes of time.
 - **Runnable notebooks** (`/notebooks/`) — synthetic-data Jupyter examples.
@@ -18,7 +18,7 @@ Served by **GitHub Pages**. Entry points:
 - 中文首页 — <https://jiangyou2025.github.io/kun/zh/>
 - 入门讲义 — <https://jiangyou2025.github.io/kun/course/>
 - 时间序列发展史 — <https://jiangyou2025.github.io/kun/history/>
-- 专题：[史前史与应用](https://jiangyou2025.github.io/kun/prehistory/) · [时间的本质](https://jiangyou2025.github.io/kun/nature-of-time/) · [时间悖论](https://jiangyou2025.github.io/kun/paradoxes/)
+- 专题：[史前史与当代应用](https://jiangyou2025.github.io/kun/prehistory/) · [时间的本质](https://jiangyou2025.github.io/kun/nature-of-time/) · [时间悖论](https://jiangyou2025.github.io/kun/paradoxes/)
 
 ## Site map
 
@@ -48,7 +48,7 @@ Served by **GitHub Pages**. Entry points:
 │   ├── foundations.md       #   序 · cross-disciplinary origins
 │   └── 01.md … 10.md        #   chapters by decade (1920s → 2020s)
 │
-├── prehistory.md  + prehistory/    # 专题 · 史前史与应用 (directory + stories)
+├── prehistory.md  + prehistory/    # 专题 · 史前史与当代应用 (directory + stories)
 ├── nature-of-time.md + nature-of-time/   # 专题 · 时间的本质 (directory + 23 stories)
 ├── paradoxes.md + paradoxes/       # 专题 · 时间悖论 (directory + 15 stories)
 │
