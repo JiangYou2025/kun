@@ -5,7 +5,7 @@ ref: frontier-2026
 permalink: /zh/frontier-2026/
 title: "2026：前沿预测问题"
 lead: "时间序列预测在 2026 年走到了哪里？哪些问题已经被解决，哪些仍然是开放挑战？这一页梳理最前沿的研究方向，帮你看清这个领域正在发生什么。"
-prev: wave-types
+prev: math-ml-foundations
 next: kun
 ---
 
