@@ -23,10 +23,10 @@ next: linear-autoregression
 
 这几门[基础课](../../foundations/)是更完整的概念地图，只搭框架、讲概念，按需查阅即可：
 
-- [📐 **数学基础**](../../foundations/math/) —— 微积分、线性代数、概率统计、优化、信息论
-- [💻 **计算机基础**](../../foundations/cs/) —— 编程、数据结构与算法、科学计算栈、工程实践
-- [🤖 **机器学习基础**](../../foundations/ml/) —— 监督 / 无监督学习、模型族、训练流程、泛化与评估
-- [🧠 **深度学习基础**](../../foundations/dl/) —— 神经网络、反向传播、优化器、常见架构、训练实践
+- [📐 **数学基础**](../../foundations/math/) —— [微积分](../../foundations/calculus/)、[线性代数](../../foundations/linear-algebra/)、[概率统计](../../foundations/probability-statistics/)、[优化](../../foundations/optimization/)、[信息论](../../foundations/information-theory/)
+- [💻 **计算机基础**](../../foundations/cs/) —— [编程](../../foundations/programming/)、[数据结构](../../foundations/data-structures/)与[算法](../../foundations/algorithms/)、[科学计算栈](../../foundations/scientific-computing/)、[工程实践](../../foundations/engineering-practice/)
+- [🤖 **机器学习基础**](../../foundations/ml/) —— [监督](../../foundations/supervised-learning/) / [无监督学习](../../foundations/unsupervised-learning/)、[模型族](../../foundations/model-families/)、[训练流程](../../foundations/training-pipeline/)、[泛化](../../foundations/generalization/)与[评估](../../foundations/evaluation-metrics/)
+- [🧠 **深度学习基础**](../../foundations/dl/) —— [神经网络](../../foundations/neural-network/)、[反向传播](../../foundations/backpropagation/)、[优化器](../../foundations/optimizer/)、[常见架构](../../foundations/architectures/)、[训练实践](../../foundations/training-practice/)
 
 想要方法与公式的系统讲解，也可以直接看[时间序列入门讲义（15 讲）](../../course/)。
 
