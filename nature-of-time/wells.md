@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 11 · 文学"
+era: "时间的本质 12 · 文学"
 permalink: /nature-of-time/wells/
 title: "威尔斯《时间机器》：第四维度 (The Time Machine)"
 lead: "如果时间只是空间之外的第四个方向，我们能不能像沿街散步那样，在其中自由往来？"

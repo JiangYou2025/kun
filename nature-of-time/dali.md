@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 18 · 艺术"
+era: "时间的本质 19 · 艺术"
 permalink: /nature-of-time/dali/
 title: "达利《记忆的永恒》：融化的钟 (Dalí)"
 lead: "如果坚硬的钟表像盛夏的奶酪一样软塌下来、挂在枝头与桌沿，它究竟想说时间的什么？"

@@ -7,7 +7,7 @@ permalink: /nature-of-time/kant/
 title: "康德：作为直观形式的时间 (Kant)"
 lead: "时间是世界本身的一种属性，还是我们生来戴着、永远摘不下来的一副眼镜？"
 prev: /nature-of-time/leibniz/
-next: /nature-of-time/arrow-of-time/
+next: /nature-of-time/lagrange-invariant/
 ---
 
 > 这是[时间的本质](../)的一则。

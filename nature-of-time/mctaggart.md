@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 14 · 哲学"
+era: "时间的本质 15 · 哲学"
 permalink: /nature-of-time/mctaggart/
 title: "McTaggart：时间是不实在的？(McTaggart)"
 lead: "我们说事件有“过去、现在、未来”——可这套再自然不过的说法，会不会本身就藏着矛盾？"

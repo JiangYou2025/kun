@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 12 · 物理"
+era: "时间的本质 13 · 物理"
 permalink: /nature-of-time/einstein/
 title: "爱因斯坦：相对的时间 (Einstein)"
 lead: "两件事“同时”发生——这句话对所有观察者都成立吗，还是要先问一句“在谁看来”？"

@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 10 · 哲学"
+era: "时间的本质 11 · 哲学"
 permalink: /nature-of-time/bergson/
 title: "柏格森：绵延 (Bergson · Durée)"
 lead: "钟表均匀切出的“时间”，和你苦等一个人时“度日如年”的时间，真的是同一种时间吗？"

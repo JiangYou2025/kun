@@ -1,5 +1,5 @@
 numpy
 pandas
 matplotlib
-# 案例 3 需要 PyTorch（可选）:
+# 案例 03 / 04 / 05 需要 PyTorch:
 torch

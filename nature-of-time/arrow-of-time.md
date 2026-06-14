@@ -2,12 +2,12 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 9 · 物理"
+era: "时间的本质 10 · 物理"
 permalink: /nature-of-time/arrow-of-time/
 title: "时间之箭：熵与方向 (The Arrow of Time)"
 lead: "支配每个分子的物理定律几乎都不分过去与未来，可我们从没见过打碎的杯子自己拼回去——时间的“方向”到底从哪来？"
 math: true
-prev: /nature-of-time/kant/
+prev: /nature-of-time/lagrange-invariant/
 next: /nature-of-time/bergson/
 ---
 

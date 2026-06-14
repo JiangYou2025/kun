@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 22 · 物理"
+era: "时间的本质 23 · 物理"
 permalink: /nature-of-time/hawking/
 title: "霍金：虚时间与无边界 (Hawking)"
 lead: "问“时间开始之前是什么”，会不会就像问“北极以北是哪里”一样——一个语法正确、却根本没有答案的问题？"

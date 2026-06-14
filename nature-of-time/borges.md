@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 19 · 文学"
+era: "时间的本质 20 · 文学"
 permalink: /nature-of-time/borges/
 title: "博尔赫斯：分岔的时间 (Borges)"
 lead: "每一次选择，会不会都让时间分出一条新的岔路——而所有未走的路，都在别处同时成真？"

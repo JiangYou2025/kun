@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 13 · 物理"
+era: "时间的本质 14 · 物理"
 permalink: /nature-of-time/minkowski/
 title: "闵可夫斯基：四维时空 (Minkowski)"
 lead: "如果空间和时间并不是两样东西，而是同一块布的经线与纬线，世界会变成什么样子？"

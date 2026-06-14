@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 23 · 物理"
+era: "时间的本质 24 · 物理"
 permalink: /nature-of-time/rovelli/
 title: "罗韦利：时间是涌现的 (Rovelli)"
 lead: "如果世界的最底层根本没有“时间”这样东西，那我们每时每刻如此真切的流逝感，又是从哪里冒出来的？"

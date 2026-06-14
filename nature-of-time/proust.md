@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 15 · 文学"
+era: "时间的本质 16 · 文学"
 permalink: /nature-of-time/proust/
 title: "普鲁斯特：找回的时间 (Proust)"
 lead: "一块泡在茶里的小蛋糕，凭什么能在一瞬间，把整段早已逝去的童年原封不动地唤回？"

@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 21 · 物理"
+era: "时间的本质 22 · 物理"
 permalink: /nature-of-time/problem-of-time/
 title: "时间问题：方程里没有时间 (The Problem of Time)"
 lead: "当物理学家试着把引力和量子合并、写出整个宇宙的方程时，“时间”这一项竟然消失了——这是怎么回事？"

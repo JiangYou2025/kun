@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 20 · 物理"
+era: "时间的本质 21 · 物理"
 permalink: /nature-of-time/godel/
 title: "哥德尔：会转圈的时间 (Gödel)"
 lead: "爱因斯坦自己的方程，会不会允许一条最终回到出发点的“时间环路”——让旅行回到过去成为合法解？"

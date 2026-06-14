@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 16 · 物理"
+era: "时间的本质 17 · 物理"
 permalink: /nature-of-time/black-hole-time/
 title: "黑洞：时间的尽头 (Black Holes)"
 lead: "越过黑洞的视界，“未来”会不会变成一个你再也无法掉头、只能一路坠向终点的方向？"

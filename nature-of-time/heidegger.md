@@ -2,7 +2,7 @@
 updated: "2026-06-03"
 layout: history
 lang: zh
-era: "时间的本质 17 · 哲学"
+era: "时间的本质 18 · 哲学"
 permalink: /nature-of-time/heidegger/
 title: "海德格尔：时间性 (Heidegger)"
 lead: "知道自己终将死去——这份沉甸甸的“有限”，会不会正是时间向你显现的根本方式？"
