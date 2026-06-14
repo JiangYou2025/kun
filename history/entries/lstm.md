@@ -5,7 +5,7 @@ lang: zh
 era: "时间线条目 · 1997 · 计算机"
 permalink: /history/e/lstm/
 title: "长短期记忆网络 (Hochreiter · Schmidhuber, 1997)"
-lead: "普通 RNN 的梯度会沿时间指数衰减。LSTM 修一条几乎不衰减的"传送带",再用三道闸门决定记什么、忘什么、放什么出去。"
+lead: "普通 RNN 的梯度会沿时间指数衰减。LSTM 修一条几乎不衰减的“传送带”,再用三道闸门决定记什么、忘什么、放什么出去。"
 math: true
 ---
 

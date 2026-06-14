@@ -5,7 +5,7 @@ lang: zh
 era: "时间线条目 · 1982 · 计算机"
 permalink: /history/e/arch/
 title: "ARCH 模型 (Engle, 1982)"
-lead: "金融市场的"风浪"会扎堆：平静接平静，动荡接动荡。Engle 让方差自己随时间起伏，把"波动率聚集"写进了模型。"
+lead: "金融市场的“风浪”会扎堆：平静接平静，动荡接动荡。Engle 让方差自己随时间起伏，把“波动率聚集”写进了模型。"
 math: true
 ---
 

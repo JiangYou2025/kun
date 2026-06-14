@@ -5,7 +5,7 @@ lang: zh
 era: "时间线条目 · 1993 · 控制 / 通信"
 permalink: /history/e/particle-filter/
 title: "粒子滤波 (Gordon et al., 1993)"
-lead: "当系统既非线性又非高斯，卡尔曼滤波的公式失灵。那就别求闭式解了——撒一群带权的"粒子"去逼近后验。"
+lead: "当系统既非线性又非高斯，卡尔曼滤波的公式失灵。那就别求闭式解了——撒一群带权的“粒子”去逼近后验。"
 math: true
 ---
 

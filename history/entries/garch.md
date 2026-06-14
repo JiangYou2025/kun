@@ -5,7 +5,7 @@ lang: zh
 era: "时间线条目 · 1986 · 计算机"
 permalink: /history/e/garch/
 title: "GARCH 模型 (Bollerslev, 1986)"
-lead: "ARCH 要拖很长的滞后才能记住波动，Bollerslev 给方差加上它自己的"昨天",用三个参数就记住了长程的风浪。"
+lead: "ARCH 要拖很长的滞后才能记住波动，Bollerslev 给方差加上它自己的“昨天”,用三个参数就记住了长程的风浪。"
 math: true
 ---
 

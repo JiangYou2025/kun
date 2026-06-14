@@ -5,7 +5,7 @@ lang: zh
 era: "时间线条目 · 1952 · 数学"
 permalink: /history/e/robbins-bandit/
 title: "多臂赌博机与序贯设计 (Robbins, 1952)"
-lead: "面对几台回报未知的老虎机，该一直摇最赚的那台，还是冒险试试别的？Robbins 把"探索与利用"的两难写成了数学。"
+lead: "面对几台回报未知的老虎机，该一直摇最赚的那台，还是冒险试试别的？Robbins 把“探索与利用”的两难写成了数学。"
 math: true
 ---
 

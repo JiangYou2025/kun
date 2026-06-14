@@ -5,7 +5,7 @@ lang: zh
 era: "时间线条目 · 1990 · 物理"
 permalink: /history/e/nonlinear-prediction/
 title: "非线性预测辨混沌 (Sugihara · May, 1990)"
-lead: "一段看似随机的曲线，到底是低维混沌还是纯噪声？答案藏在"预测能随时间多快变坏"里。"
+lead: "一段看似随机的曲线，到底是低维混沌还是纯噪声？答案藏在“预测能随时间多快变坏”里。"
 math: true
 ---
 

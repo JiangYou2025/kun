@@ -5,7 +5,7 @@ lang: zh
 era: "时间线条目 · 1970s–80s · 控制 / 通信"
 permalink: /history/e/system-identification/
 title: "系统辨识 (Åström · Ljung, 1970s–80s)"
-lead: "工程师没有现成的微分方程，只有一堆输入输出数据——那就让数据自己把模型"长"出来：从信号里辨识动态系统。"
+lead: "工程师没有现成的微分方程，只有一堆输入输出数据——那就让数据自己把模型“长”出来：从信号里辨识动态系统。"
 math: true
 ---
 

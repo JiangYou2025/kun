@@ -5,7 +5,7 @@ lang: zh
 era: "时间线条目 · 1960 · 控制 / 通信"
 permalink: /history/e/holt-winters/
 title: "Holt–Winters 季节性平滑 (Winters, 1960)"
-lead: "销量每年圣诞都翘起一截。Winters 给"水平+趋势"再添一组季节递推,让指数平滑学会了过年。"
+lead: "销量每年圣诞都翘起一截。Winters 给“水平+趋势”再添一组季节递推,让指数平滑学会了过年。"
 math: true
 ---
 

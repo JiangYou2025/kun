@@ -5,7 +5,7 @@ lang: zh
 era: "时间线条目 · 1983 · 物理"
 permalink: /history/e/correlation-dimension/
 title: "关联维数 (Grassberger · Procaccia, 1983)"
-lead: "一条信号到底是低维混沌还是高维噪声？数一数相空间里"有多少对点彼此靠得很近",分形维数就从标度律里浮出来。"
+lead: "一条信号到底是低维混沌还是高维噪声？数一数相空间里“有多少对点彼此靠得很近”,分形维数就从标度律里浮出来。"
 math: true
 ---
 

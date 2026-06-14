@@ -5,7 +5,7 @@ lang: zh
 era: "时间线条目 · 1990s · 计算机"
 permalink: /history/e/rnn/
 title: "循环神经网络与 BPTT (Elman · Jordan · Werbos, 1990s)"
-lead: "让网络长出"记忆"：把上一刻的隐状态喂回这一刻。代价是,梯度顺着时间回传时,会指数级地消失或爆炸。"
+lead: "让网络长出“记忆”：把上一刻的隐状态喂回这一刻。代价是,梯度顺着时间回传时,会指数级地消失或爆炸。"
 math: true
 ---
 

@@ -5,7 +5,7 @@ lang: zh
 era: "时间线条目 · 1989 · 数学"
 permalink: /history/e/wavelet-mra/
 title: "多分辨率分析 (Mallat, 1989)"
-lead: "傅里叶看得见频率却看不见时刻，加窗又把分辨率钉死。Mallat 用一架可缩放的"显微镜"，让低频用宽视野、高频用细笔触。"
+lead: "傅里叶看得见频率却看不见时刻，加窗又把分辨率钉死。Mallat 用一架可缩放的“显微镜”，让低频用宽视野、高频用细笔触。"
 math: true
 ---
 

@@ -5,7 +5,7 @@ lang: zh
 era: "时间线条目 · 1998 · 数学"
 permalink: /history/e/rough-paths/
 title: "粗糙路径与路径签名 (Lyons, 1998)"
-lead: "一条路径的全部信息能否压缩成一组数？Lyons 用迭代积分张成的"签名",给序列造了一把通用钥匙。"
+lead: "一条路径的全部信息能否压缩成一组数？Lyons 用迭代积分张成的“签名”,给序列造了一把通用钥匙。"
 math: true
 ---
 
