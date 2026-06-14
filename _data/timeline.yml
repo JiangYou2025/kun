@@ -1,0 +1,581 @@
+# 时间序列发展史 · 百年时间线（数据源）
+# 同时驱动：/history/ 时间线表格、条目页侧边栏、条目页上一篇/下一篇导航。
+# domain: math 数学 | phys 物理 | ctrl 控制/通信 | cs 计算机
+# chap: 章节标签（序/1..10）；chap_url: 章节页相对地址。
+# slug: 条目页地址 /history/e/<slug>/。
+
+- year: "1807"
+  domain: math
+  person: "Fourier"
+  contribution: "傅里叶级数与傅里叶变换：任意信号分解为正弦波叠加，频域分析之始"
+  slug: fourier
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1900"
+  domain: math
+  person: "Bachelier"
+  contribution: "随机游走为股价建模：数理金融与布朗运动之始"
+  slug: bachelier
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1905"
+  domain: phys
+  person: "Einstein · Smoluchowski"
+  contribution: "布朗运动理论 → 数学上的 Wiener 过程"
+  slug: brownian-motion
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1906"
+  domain: math
+  person: "Markov"
+  contribution: "马尔可夫链：无记忆性（AR/HMM/MDP/MCMC 的骨架）"
+  slug: markov
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1908"
+  domain: phys
+  person: "Langevin"
+  contribution: "Langevin 方程：摩擦项 + 随机力"
+  slug: langevin
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1927"
+  domain: math
+  person: "Yule · Walker"
+  contribution: "自回归 AR(p)、Yule–Walker 方程"
+  slug: yule-ar
+  chap: "1"
+  chap_url: "01/"
+
+- year: "1927"
+  domain: math
+  person: "Slutsky"
+  contribution: "Slutsky 效应：滤波制造伪周期"
+  slug: slutsky
+  chap: "1"
+  chap_url: "01/"
+
+- year: "1930"
+  domain: phys
+  person: "Ornstein · Uhlenbeck"
+  contribution: "均值回复随机过程，离散化即 AR(1)"
+  slug: ornstein-uhlenbeck
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1933"
+  domain: math
+  person: "Kolmogorov"
+  contribution: "概率论公理化、遍历定理（时间均值=系综均值）"
+  slug: kolmogorov
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1934"
+  domain: math
+  person: "Khinchin"
+  contribution: "Wiener–Khinchin 定理：自协方差 ↔ 功率谱"
+  slug: wiener-khinchin
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1934"
+  domain: math
+  person: "Lévy"
+  contribution: "Lévy 过程、稳定分布（重尾）、鞅理论奠基"
+  slug: levy
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1938"
+  domain: math
+  person: "Wold"
+  contribution: "Wold 分解：平稳过程 = 确定项 + MA(∞)"
+  slug: wold
+  chap: "2"
+  chap_url: "02/"
+
+- year: "1940s"
+  domain: ctrl
+  person: "Wiener · Kolmogorov"
+  contribution: "最优线性预测 = 条件期望（投影）"
+  slug: wiener-kolmogorov-prediction
+  chap: "2"
+  chap_url: "02/"
+
+- year: "1944"
+  domain: math
+  person: "Itô"
+  contribution: "随机微积分、Itô 引理 → 连续时间金融的引擎"
+  slug: ito
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1945"
+  domain: math
+  person: "Wald"
+  contribution: "序贯分析 / SPRT、最优停时（变点检测之源）"
+  slug: wald-sprt
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1946"
+  domain: ctrl
+  person: "Gabor"
+  contribution: "短时傅里叶变换 (STFT)：加窗傅里叶，兼顾时间与频率局部化"
+  slug: gabor-stft
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1948"
+  domain: ctrl
+  person: "Wiener"
+  contribution: "《控制论》、Wiener–Hopf 最优滤波器"
+  slug: wiener-cybernetics
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1948"
+  domain: ctrl
+  person: "Shannon"
+  contribution: "信息论：熵、信道容量、Nyquist–Shannon 采样定理"
+  slug: shannon
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1949"
+  domain: math
+  person: "Kac · Feynman"
+  contribution: "Feynman–Kac / 路径积分：PDE 解 = 路径期望"
+  slug: feynman-kac
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1950s"
+  domain: cs
+  person: "Brown"
+  contribution: "简单指数平滑 SES（在线 O(1) 更新）"
+  slug: brown-ses
+  chap: "3"
+  chap_url: "03/"
+
+- year: "1951"
+  domain: phys
+  person: "Hurst"
+  contribution: "R/S 重标极差、长程依赖（尼罗河洪水）"
+  slug: hurst
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1952"
+  domain: math
+  person: "Robbins"
+  contribution: "多臂赌博机、序贯实验设计（探索 vs 利用）"
+  slug: robbins-bandit
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1953"
+  domain: math
+  person: "Doob"
+  contribution: "鞅理论：公平游戏 → 有效市场 / 无套利定价"
+  slug: doob-martingale
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1957"
+  domain: ctrl
+  person: "Holt"
+  contribution: "Holt 线性趋势法（水平 + 趋势递推）"
+  slug: holt
+  chap: "3"
+  chap_url: "03/"
+
+- year: "1957"
+  domain: ctrl
+  person: "Bellman"
+  contribution: "动态规划、Bellman 方程、马尔可夫决策过程"
+  slug: bellman-dp
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1960"
+  domain: ctrl
+  person: "Kálmán"
+  contribution: "卡尔曼滤波、状态空间模型（预测—更新）"
+  slug: kalman
+  chap: "4"
+  chap_url: "04/"
+
+- year: "1960"
+  domain: ctrl
+  person: "Winters"
+  contribution: "Holt–Winters 季节性指数平滑"
+  slug: holt-winters
+  chap: "4"
+  chap_url: "04/"
+
+- year: "1963"
+  domain: math
+  person: "Mandelbrot"
+  contribution: "金融收益重尾、分数布朗运动与长记忆"
+  slug: mandelbrot
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1963"
+  domain: phys
+  person: "Lorenz"
+  contribution: "确定性混沌、洛伦兹吸引子（可预测性极限）"
+  slug: lorenz-chaos
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1965"
+  domain: cs
+  person: "Cooley · Tukey"
+  contribution: "快速傅里叶变换 (FFT)：O(N log N) 算法，让频谱分析大规模可行"
+  slug: fft
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1967"
+  domain: ctrl
+  person: "Viterbi"
+  contribution: "维特比算法：HMM / 卷积码的动态规划解码"
+  slug: viterbi
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1970"
+  domain: cs
+  person: "Box · Jenkins"
+  contribution: "ARIMA/SARIMA 与三阶段建模方法论"
+  slug: box-jenkins
+  chap: "5"
+  chap_url: "05/"
+
+- year: "1973"
+  domain: math
+  person: "Black · Scholes · Merton"
+  contribution: "期权定价：几何布朗运动 + Itô 引理"
+  slug: black-scholes
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1976"
+  domain: math
+  person: "Malliavin"
+  contribution: "Malliavin 微积分：对随机性求导，SDE 密度与 Greeks"
+  slug: malliavin
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1970s–80s"
+  domain: ctrl
+  person: "Åström · Ljung"
+  contribution: "系统辨识：从输入输出拟合 ARX/ARMAX"
+  slug: system-identification
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1980"
+  domain: ctrl
+  person: "Cutler · Ramaker"
+  contribution: "模型预测控制 MPC：用滚动预测做闭环决策"
+  slug: mpc
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1981"
+  domain: phys
+  person: "Takens"
+  contribution: "延迟嵌入定理：单变量序列重构相空间"
+  slug: takens
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1982"
+  domain: cs
+  person: "Engle"
+  contribution: "ARCH：让条件方差随时间变化"
+  slug: arch
+  chap: "6"
+  chap_url: "06/"
+
+- year: "1983"
+  domain: phys
+  person: "Grassberger · Procaccia"
+  contribution: "关联维数：从序列估计吸引子分形维"
+  slug: correlation-dimension
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1986"
+  domain: cs
+  person: "Bollerslev"
+  contribution: "GARCH(1,1)：更简洁的波动率模型"
+  slug: garch
+  chap: "6"
+  chap_url: "06/"
+
+- year: "1987"
+  domain: cs
+  person: "Engle · Granger"
+  contribution: "协整、误差修正模型、ADF 单位根检验"
+  slug: cointegration
+  chap: "6"
+  chap_url: "06/"
+
+- year: "1988–89"
+  domain: cs
+  person: "Sutton · Barto · Watkins"
+  contribution: "强化学习：时序差分 (TD) 与 Q-learning"
+  slug: td-qlearning
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1989"
+  domain: math
+  person: "Mallat"
+  contribution: "小波多分辨率分析 (MRA)：正交小波基 + 快速小波变换，时频自适应分辨率"
+  slug: wavelet-mra
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1990"
+  domain: phys
+  person: "Sugihara · May"
+  contribution: "非线性预测：区分混沌与噪声（后启 CCM 因果）"
+  slug: nonlinear-prediction
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1993"
+  domain: ctrl
+  person: "Gordon et al."
+  contribution: "粒子滤波 / 序贯蒙特卡洛：非线性非高斯状态估计"
+  slug: particle-filter
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1994"
+  domain: ctrl
+  person: "Evensen"
+  contribution: "集合卡尔曼滤波 EnKF：数值天气预报的数据同化"
+  slug: enkf
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1994"
+  domain: phys
+  person: "Peng et al."
+  contribution: "DFA 去趋势波动分析：提取长程相关"
+  slug: dfa
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1990s"
+  domain: cs
+  person: "RNN"
+  contribution: "循环神经网络、BPTT 与梯度消失问题"
+  slug: rnn
+  chap: "7"
+  chap_url: "07/"
+
+- year: "1997"
+  domain: cs
+  person: "Hochreiter · Schmidhuber"
+  contribution: "LSTM：门控 + 细胞状态（常误差环）"
+  slug: lstm
+  chap: "7"
+  chap_url: "07/"
+
+- year: "1998"
+  domain: math
+  person: "Lyons"
+  contribution: "粗糙路径理论 + 路径签名：序列的通用特征映射"
+  slug: rough-paths
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "1999"
+  domain: phys
+  person: "Mantegna · Stanley"
+  contribution: "经济物理：金融序列的标度律、幂律与胖尾"
+  slug: econophysics
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "2000s"
+  domain: cs
+  person: "SVR"
+  contribution: "支持向量回归：ε-不敏感损失 + 核技巧"
+  slug: svr
+  chap: "8"
+  chap_url: "08/"
+
+- year: "2001"
+  domain: cs
+  person: "Friedman"
+  contribution: "梯度提升 GBDT（函数空间梯度下降）"
+  slug: gbdt
+  chap: "8"
+  chap_url: "08/"
+
+- year: "2001–04"
+  domain: ctrl
+  person: "Jaeger"
+  contribution: "回声状态网络 / 储备池计算：低成本预测混沌序列"
+  slug: echo-state-network
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "2005–10"
+  domain: phys
+  person: "Mezić · Schmid"
+  contribution: "Koopman 算子 / 动态模态分解：高维序列的相干模态"
+  slug: koopman-dmd
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "2006"
+  domain: ctrl
+  person: "Donoho · Candès · Tao"
+  contribution: "压缩感知：稀疏信号的亚奈奎斯特采样与重构"
+  slug: compressed-sensing
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "2010"
+  domain: ctrl
+  person: "Andrieu et al."
+  contribution: "粒子 MCMC：非线性状态空间模型的参数推断"
+  slug: particle-mcmc
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "2014–18"
+  domain: math
+  person: "Gatheral · Jaisson · Rosenbaum"
+  contribution: "粗糙波动率：波动率轨迹是 H<½ 的分数布朗运动"
+  slug: rough-volatility
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "2015–16"
+  domain: cs
+  person: "DQN · AlphaGo"
+  contribution: "深度强化学习（Atari、围棋）= 决策化的序列学习"
+  slug: deep-rl
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "2017"
+  domain: cs
+  person: "Vaswani et al."
+  contribution: "Transformer：自注意力，任意位置直接交互"
+  slug: transformer
+  chap: "9"
+  chap_url: "09/"
+
+- year: "2017–19"
+  domain: cs
+  person: "Amazon DeepAR"
+  contribution: "自回归 RNN 概率预测、跨序列全局模型"
+  slug: deepar
+  chap: "9"
+  chap_url: "09/"
+
+- year: "2019"
+  domain: cs
+  person: "N-BEATS"
+  contribution: "纯前馈 + 残差堆叠的可解释深度模型"
+  slug: nbeats
+  chap: "9"
+  chap_url: "09/"
+
+- year: "2019"
+  domain: phys
+  person: "Raissi · Lu"
+  contribution: "PINN 物理信息网络、DeepONet 神经算子（解 PDE）"
+  slug: pinn-deeponet
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "2020"
+  domain: phys
+  person: "Li et al."
+  contribution: "傅里叶神经算子 FNO：学习函数到函数的映射"
+  slug: fno
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "2020–21"
+  domain: ctrl
+  person: "Gu et al. (HiPPO · S4)"
+  contribution: "深度状态空间模型：Kalman 状态空间反超 Transformer"
+  slug: s4
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "2022"
+  domain: cs
+  person: "DLinear"
+  contribution: "分解 + 单层线性，竟超越复杂 Transformer"
+  slug: dlinear
+  chap: "10"
+  chap_url: "10/"
+
+- year: "2023"
+  domain: cs
+  person: "PatchTST"
+  contribution: "分块 token + 通道独立，降维并保留局部语义"
+  slug: patchtst
+  chap: "10"
+  chap_url: "10/"
+
+- year: "2022–23"
+  domain: phys
+  person: "FourCastNet · GraphCast"
+  contribution: "数据驱动天气预报 = 全球尺度时空时间序列预测"
+  slug: neural-weather
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "2023"
+  domain: ctrl
+  person: "Mamba (Gu · Dao)"
+  contribution: "选择性状态空间模型：线性时间扫描的长序列建模"
+  slug: mamba
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "2020s"
+  domain: math
+  person: "Neural CDE · 签名核"
+  contribution: "粗糙路径/签名用于不规则、缺失值序列的机器学习"
+  slug: neural-cde
+  chap: "序"
+  chap_url: "foundations/"
+
+- year: "2020s"
+  domain: cs
+  person: "Kernel U-Net (KUN)"
+  contribution: "层次化 U 形 + 可插拔核（线性/MLP/注意力）"
+  slug: kun
+  chap: "10"
+  chap_url: "10/"
+
+- year: "2020s"
+  domain: cs
+  person: "TimesFM · Chronos · Moirai"
+  contribution: "海量预训练的时间序列基础模型（零样本预测）"
+  slug: foundation-models
+  chap: "10"
+  chap_url: "10/"

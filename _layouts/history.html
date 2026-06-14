@@ -50,6 +50,8 @@
   <label for="chap-toggle" class="chap-toggle-label">任务史</label>
   {% elsif u contains '/applications/' %}
   <label for="chap-toggle" class="chap-toggle-label">应用场景</label>
+  {% elsif u contains '/history/e/' %}
+  <label for="chap-toggle" class="chap-toggle-label">条目目录</label>
   {% else %}
   <label for="chap-toggle" class="chap-toggle-label">章节目录</label>
   {% endif %}
@@ -137,6 +139,17 @@
       <li><a href="{{ '/applications/geophysics/' | relative_url }}" {% if u == '/applications/geophysics/' %}class="active"{% endif %}><span class="num">9</span>天文与地球物理</a></li>
       <li><a href="{{ '/applications/language/' | relative_url }}" {% if u == '/applications/language/' %}class="active"{% endif %}><span class="num">10</span>自然语言与序列</a></li>
     </ul>
+  {% elsif u contains '/history/e/' %}
+    <p class="side-title">条目目录</p>
+    <ul>
+      <li><a href="{{ '/history/' | relative_url }}"><span class="num">目</span>← 时间线总目录</a></li>
+      {% assign egroups = "序|跨学科源头,1|① 自回归,2|② 理论奠基,3|③ 指数平滑,4|④ 卡尔曼滤波,5|⑤ ARIMA,6|⑥ 波动率与协整,7|⑦ 神经网络,8|⑧ 机器学习,9|⑨ 深度学习,10|⑩ 大模型与 KUN" | split: "," %}
+      {% for g in egroups %}{% assign parts = g | split: "|" %}{% assign ck = parts[0] %}
+      <li style="margin:.7rem 0 .15rem;font-size:.74rem;letter-spacing:.04em;color:var(--muted);font-weight:600">{{ parts[1] }}</li>
+      {% assign erows = site.data.timeline | where: "chap", ck %}
+      {% for it in erows %}{% assign ehref = '/history/e/' | append: it.slug | append: '/' %}<li><a href="{{ ehref | relative_url }}" {% if u == ehref %}class="active"{% endif %}><span class="num">{{ it.year }}</span>{{ it.person }}</a></li>
+      {% endfor %}{% endfor %}
+    </ul>
   {% else %}
     <p class="side-title">章节目录</p>
     <ul>
@@ -179,6 +192,21 @@
     <nav class="pager">
       {% if page.prev %}<a class="prev" href="{{ page.prev | relative_url }}">← 上一章</a>{% endif %}
       {% if page.next %}<a class="next" href="{{ page.next | relative_url }}">下一章 →</a>{% endif %}
+    </nav>
+    {% endif %}
+
+    {% if u contains '/history/e/' %}
+    {% assign tl = site.data.timeline %}
+    {% assign curidx = -1 %}
+    {% for it in tl %}{% assign ehref = '/history/e/' | append: it.slug | append: '/' %}{% if u == ehref %}{% assign curidx = forloop.index0 %}{% endif %}{% endfor %}
+    {% assign previdx = curidx | minus: 1 %}
+    {% assign nextidx = curidx | plus: 1 %}
+    {% assign last = tl.size | minus: 1 %}
+    {% assign p = tl[previdx] %}
+    {% assign n = tl[nextidx] %}
+    <nav class="pager">
+      {% if curidx > 0 %}<a class="prev" href="{{ '/history/e/' | append: p.slug | append: '/' | relative_url }}">← {{ p.year }} {{ p.person }}</a>{% else %}<a class="prev" href="{{ '/history/' | relative_url }}">← 时间线</a>{% endif %}
+      {% if curidx < last %}<a class="next" href="{{ '/history/e/' | append: n.slug | append: '/' | relative_url }}">{{ n.year }} {{ n.person }} →</a>{% else %}<a class="next" href="{{ '/history/' | relative_url }}">时间线 →</a>{% endif %}
     </nav>
     {% endif %}
 
