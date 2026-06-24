@@ -8,3 +8,4 @@ vendor/
 .DS_Store
 Thumbs.db
 .claude/settings.local.json
+notebooks/04_insect_multistep_kun_solution.ipynb

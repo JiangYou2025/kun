@@ -3,3 +3,5 @@ pandas
 matplotlib
 # 案例 03 / 04 / 05 需要 PyTorch:
 torch
+# 案例 06 (MNIST 图像分类) 额外需要 torchvision 来下载数据集:
+torchvision
