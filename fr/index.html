@@ -6,32 +6,83 @@ title: null
 ---
 <section class="hero">
   <h1>Prédire l'avenir avec <span class="grad">Kernel U-Net</span></h1>
-  <p>Une introduction progressive et pratique aux <strong>séries temporelles</strong>, à la manière de les <strong>prévoir</strong>, et à l'utilisation de <strong>KUN (Kernel U-Net)</strong> — un modèle hiérarchique et symétrique pour la prévision de séries temporelles multivariées.</p>
+  <p>Un guide d'introduction progressif et pratique : ce qu'est une <strong>série temporelle</strong>, comment la <strong>prévoir</strong>, et comment utiliser <strong>KUN (Kernel U-Net)</strong> — un modèle hiérarchique et symétrique pour la prévision de séries temporelles multivariées.</p>
   <div class="btn-row">
     <a class="btn primary" href="{{ '/fr/time-series/' | relative_url }}">Commencer par les bases →</a>
-    <a class="btn ghost" href="{{ '/fr/kun/' | relative_url }}">Aller à KUN</a>
+    <a class="btn ghost" href="{{ '/fr/kun/' | relative_url }}">Aller directement à KUN</a>
   </div>
 </section>
 
 <div class="cards">
   <a class="card" href="{{ '/fr/time-series/' | relative_url }}">
     <div class="step">Étape 1</div>
-    <h3>Qu'est-ce qu'une série temporelle ?</h3>
-    <p>Tendance, saisonnalité, bruit, stationnarité — le vocabulaire indispensable avant toute prévision.</p>
+    <h3>Qu'est-ce qu'une série temporelle ?</h3>
+    <p>Quelques figures pour comprendre ce que sont une variable et une valeur, et à quoi ressemble une série temporelle.</p>
   </a>
   <a class="card" href="{{ '/fr/forecasting/' | relative_url }}">
     <div class="step">Étape 2</div>
-    <h3>Comment prévoir</h3>
-    <p>Le flux de travail complet — des modèles de référence et classiques jusqu'à l'apprentissage profond, et comment mesurer la réussite.</p>
+    <h3>Qu'est-ce que la prévision ?</h3>
+    <p>Des figures, un mini-jeu et des situations réelles pour se forger d'abord une intuition de la « prévision ».</p>
+  </a>
+  <a class="card" href="{{ '/fr/prediction-in-action/' | relative_url }}">
+    <div class="step">Étape 3</div>
+    <h3>Une prévision réussie</h3>
+    <p>L'essence de la prévision : trouver des régularités dans les données observées et les extrapoler. Un mini-jeu de tir d'artillerie pour expérimenter soi-même l'ajustement et la prévision.</p>
+  </a>
+  <a class="card" href="{{ '/fr/math-ml-foundations/' | relative_url }}">
+    <div class="step">Étape 4</div>
+    <h3>Bases de mathématiques et d'apprentissage automatique</h3>
+    <p>Fonctions, optimisation, apprentissage automatique — les trois fondations de la prévision, avec un mini-jeu d'ajustement pour comprendre le sous-apprentissage et le surapprentissage.</p>
+  </a>
+  <a class="card" href="{{ '/fr/linear-autoregression/' | relative_url }}">
+    <div class="step">Étape 5</div>
+    <h3>Prévision par autorégression linéaire</h3>
+    <p>Les mathématiques de l'autorégression, un exemple interactif sur les taches solaires, et la façon dont les « modèles linéaires » modernes l'étendent à la prévision multi-pas — l'ébauche du noyau linéaire de KUN.</p>
   </a>
   <a class="card" href="{{ '/fr/kun/' | relative_url }}">
-    <div class="step">Étape 3</div>
-    <h3>Utiliser KUN</h3>
-    <p>Ce qu'est Kernel U-Net, pourquoi il fonctionne, et une recette pas à pas pour l'entraîner sur vos données.</p>
+    <div class="step">Étape 6</div>
+    <h3>Les questions de pointe des séries temporelles en 2026</h3>
+    <p>Les six grands défis de pointe de la prévision de séries temporelles en 2026, et la manière dont ils s'entremêlent — le détail de KUN, l'une des réponses possibles, se trouve sur la page dédiée.</p>
+  </a>
+  <a class="card" href="{{ '/fr/course/' | relative_url }}">
+    <div class="step">Cours complet</div>
+    <h3>Notes de cours d'introduction aux séries temporelles</h3>
+    <p>Des notes de cours d'introduction systématiques en 17 leçons (version plan), de l'introduction jusqu'aux systèmes dynamiques, au flow matching et à la diffusion.</p>
+  </a>
+  <a class="card" href="{{ '/fr/history/' | relative_url }}">
+    <div class="step">Chroniques</div>
+    <h3>Histoire des séries temporelles</h3>
+    <p>De l'autorégression de Yule en 1927 aux modèles de fondation et à KUN aujourd'hui : un siècle d'évolution des méthodes en 10 chapitres.</p>
+  </a>
+  <a class="card" href="{{ '/fr/tasks/' | relative_url }}">
+    <div class="step">Chroniques</div>
+    <h3>Histoire des tâches sur les séries temporelles</h3>
+    <p>L'histoire des méthodes raconte l'évolution des outils ; celle-ci raconte l'évolution des problèmes : de la prévision des crues il y a 3 000 ans aux séries temporelles multimodales d'aujourd'hui.</p>
+  </a>
+  <a class="card" href="{{ '/fr/prehistory/' | relative_url }}">
+    <div class="step">Chroniques</div>
+    <h3>Préhistoire et applications contemporaines</h3>
+    <p>La mesure du temps, l'observation et les méthodes naïves d'avant le XIX<sup>e</sup> siècle, ainsi qu'un inventaire des applications des séries temporelles dans divers domaines.</p>
+  </a>
+  <a class="card" href="{{ '/fr/nature-of-time/' | relative_url }}">
+    <div class="step">Chroniques</div>
+    <h3>La nature du temps</h3>
+    <p>La philosophie, la physique et la littérature interrogent le « temps » lui-même — une petite promenade interdisciplinaire.</p>
+  </a>
+  <a class="card" href="{{ '/fr/paradoxes/' | relative_url }}">
+    <div class="step">Chroniques</div>
+    <h3>Paradoxes temporels</h3>
+    <p>De Zénon au paradoxe du grand-père, ces paradoxes célèbres qui nous obligent à penser clairement le « temps ».</p>
+  </a>
+  <a class="card" href="{{ '/fr/kernel-u-net/' | relative_url }}">
+    <div class="step">Dossier</div>
+    <h3>Comprendre Kernel U-Net en profondeur</h3>
+    <p>La version approfondie de l'architecture KUN : la structure en U décortiquée couche par couche, la notation mathématique des noyaux interchangeables, et ce qui la distingue fondamentalement de DLinear et des Transformers.</p>
   </a>
 </div>
 
 <div class="note">
-  <strong>Nouveau dans le domaine ?</strong> Suivez les trois étapes : <a href="{{ '/fr/time-series/' | relative_url }}">Séries temporelles</a> → <a href="{{ '/fr/forecasting/' | relative_url }}">Prévision</a> → <a href="{{ '/fr/kun/' | relative_url }}">KUN</a> — chacune s'appuie sur la précédente.<br>
-  <strong>Déjà à l'aise ?</strong> Passez directement à <a href="{{ '/fr/kun/' | relative_url }}">Utiliser KUN</a>.
+  <strong>Première fois ?</strong> Suivez l'ordre : <a href="{{ '/fr/time-series/' | relative_url }}">séries temporelles</a> → <a href="{{ '/fr/forecasting/' | relative_url }}">prévision</a> → <a href="{{ '/fr/prediction-in-action/' | relative_url }}">la prévision en pratique</a> → <a href="{{ '/fr/math-ml-foundations/' | relative_url }}">bases de mathématiques et d'apprentissage automatique</a> → <a href="{{ '/fr/linear-autoregression/' | relative_url }}">autorégression linéaire</a> → <a href="{{ '/fr/kun/' | relative_url }}">questions de pointe des séries temporelles en 2026</a> → <a href="{{ '/fr/kernel-u-net/' | relative_url }}">comprendre Kernel U-Net en profondeur</a> ; chaque étape s'appuie sur la précédente.<br>
+  <strong>Déjà familier des séries temporelles ?</strong> Passez directement à <a href="{{ '/fr/kernel-u-net/' | relative_url }}">Comprendre Kernel U-Net en profondeur</a>.<br>
+  <strong>Envie d'approfondir le contexte ?</strong> Les dossiers ci-dessus — <a href="{{ '/fr/course/' | relative_url }}">notes de cours</a>, <a href="{{ '/fr/history/' | relative_url }}">histoire</a>, <a href="{{ '/fr/nature-of-time/' | relative_url }}">la nature du temps</a>, etc. — peuvent se lire indépendamment.
 </div>

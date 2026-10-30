@@ -38,6 +38,8 @@
       <a href="{{ base }}/time-series/"{% if ref == 'time-series' %}class="active"{% endif %}>{{ t.nav_ts }}</a>
       <a href="{{ base }}/forecasting/"{% if ref == 'forecasting' %}class="active"{% endif %}>{{ t.nav_fc }}</a>
       <a href="{{ base }}/kun/"        {% if ref == 'kun' %}class="active"{% endif %}>{{ t.nav_kun }}</a>
+      {% if lang == 'zh' %}{% assign hist = site.baseurl | append: '/history/' %}{% else %}{% assign hist = base | append: '/history/' %}{% endif %}
+      <a href="{{ hist }}">{{ site.data.ui[lang].nav_history }}</a>
 
       <span class="lang-switch">
         {% for l in site.languages %}

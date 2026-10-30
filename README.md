@@ -56,29 +56,40 @@ Served by **GitHub Pages**. Entry points:
 └── Gemfile
 ```
 
-## Conventions
+## Citation
 
-- **Layouts**: trilingual pages use `default.html`; the Chinese history/essays use `history.html` (with a left sidebar that adapts to the section you are in); the course uses `lecture.html`.
-- **Front matter**: pages carry `permalink`, `title`, `lead`, and an `updated: "YYYY-MM-DD"` stamp shown in the footer. Story pages add `era`, `prev`/`next` (to chain them), and `math: true` when they contain formulas.
-- **Essays as stories**: each essay entry is its own page following one arc — a hook question → background & zeitgeist → the idea & method → result & significance → reflection.
-- **Figures**: illustrations are inline SVG (so they follow the dark/light theme); the forecasting page also embeds a small self-contained “guess the next value” game.
-- **Adding a language**: copy `en/`, translate the pages (keep the `ref:` values), add a block to `_data/i18n.yml`, and add the code to `languages:` in `_config.yml`.
+🌟 If you find this resource useful, consider adding a star to this repository and citing our research:
 
-## Run locally
-
-```bash
-bundle install
-bundle exec jekyll serve   # http://localhost:4000/kun/
+```bibtex
+@inproceedings{you_2024_kernel_u_net,
+  author={You, Jiang and Cela, Arben and Natowicz, René and Ouanounou, Jacob and Siarry, Patrick},
+  booktitle={2024 International Conference on INnovations in Intelligent SysTems and Applications (INISTA)},
+  title={Kernel-U-Net: Multivariate Time Series Forecasting using Custom Kernels},
+  year={2024},
+  volume={},
+  number={},
+  pages={1-8},
+  keywords={Time series Forecasting;Architecture;U-Net;Transformers;},
+  doi={10.1109/INISTA62901.2024.10683862}}
 ```
 
-(Requires Ruby + Bundler. On Windows, install Ruby+Devkit from rubyinstaller.org.)
+For anomaly prediction, please use:
 
-## Deploy on GitHub Pages
+```bibtex
+@inproceedings{you_2024_anomaly_prediction,
+  author={You, Jiang and Cela, Arben and Natowicz, René and Ouanounou, Jacob and Siarry, Patrick},
+  booktitle={2024 IEEE 20th International Conference on Intelligent Computer Communication and Processing (ICCP)},
+  title={Anomaly Prediction: A Novel Approach with Explicit Delay and Horizon},
+  year={2024},
+  volume={},
+  number={},
+  pages={-},
+  keywords={Time series;Anomaly Prediction;Anomaly Detection;U-Net;Transformers;},
+  url={https://arxiv.org/abs/2408.04377}}
+```
 
-1. Push to the `main` branch of `JiangYou2025/kun`.
-2. On GitHub: **Settings → Pages → Build and deployment → Source: Deploy from a branch**, branch `main`, folder `/ (root)`.
-3. Wait ~1 minute; the site goes live at `https://jiangyou2025.github.io/kun/`.
+Related work:
 
-GitHub Pages builds the Jekyll site automatically — no extra Actions workflow needed.
-
-> **Note:** the KUN code snippets in `kun.md` are an illustrative *template* of a typical PyTorch training loop. Update the import path, class name and argument names to match the real Kernel U-Net API once the model code is published in this repo.
+- J. You, A. Cela, R. Natowicz, J. Ouanounou, P. Siarry. **Robust Time Series Forecasting with Non-Heavy-Tailed Gaussian Loss-Weighted Sampler.** arXiv preprint [arXiv:2406.13871](https://arxiv.org/abs/2406.13871), 2024.
+- C. Li, J. You, H. Moungla, V. Gauthier, M. Nunez-del-Prado, H. Alatrista-Salas. **Enhancing Spatio-Temporal Forecasting with Spatial Neighbourhood Fusion: A Case Study on COVID-19 Mobility in Peru.** arXiv preprint [arXiv:2507.00031](https://arxiv.org/abs/2507.00031), 2025.
+- J. You, X. Wang, A. Cela. **Dynamic Perturbed Adaptive Method for Infinite Task-Conflicting Time Series.** arXiv preprint [arXiv:2505.11902](https://arxiv.org/abs/2505.11902), 2025.

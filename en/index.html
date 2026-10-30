@@ -6,7 +6,7 @@ title: null
 ---
 <section class="hero">
   <h1>Forecast the future with <span class="grad">Kernel U-Net</span></h1>
-  <p>A gentle, hands-on introduction to <strong>time series</strong>, how to <strong>forecast</strong> them, and how to use <strong>KUN (Kernel U-Net)</strong> — a hierarchical, symmetric model for multivariate time-series forecasting.</p>
+  <p>A step-by-step, hands-on introduction: what a <strong>time series</strong> is, how to <strong>forecast</strong> one, and how to use <strong>KUN (Kernel U-Net)</strong> — a hierarchical, symmetric model for multivariate time-series forecasting.</p>
   <div class="btn-row">
     <a class="btn primary" href="{{ '/en/time-series/' | relative_url }}">Start from the basics →</a>
     <a class="btn ghost" href="{{ '/en/kun/' | relative_url }}">Jump to KUN</a>
@@ -17,21 +17,72 @@ title: null
   <a class="card" href="{{ '/en/time-series/' | relative_url }}">
     <div class="step">Step 1</div>
     <h3>What is a time series?</h3>
-    <p>Trend, seasonality, noise, stationarity — the vocabulary you need before forecasting anything.</p>
+    <p>A few pictures to make it click: what variables and values are, and what a time series looks like.</p>
   </a>
   <a class="card" href="{{ '/en/forecasting/' | relative_url }}">
     <div class="step">Step 2</div>
-    <h3>How to forecast</h3>
-    <p>The full workflow — from baselines and classical models to deep learning, plus how to measure success.</p>
+    <h3>What is forecasting?</h3>
+    <p>Build an intuition for "forecasting" first, with charts, a small game and real-world scenarios.</p>
+  </a>
+  <a class="card" href="{{ '/en/prediction-in-action/' | relative_url }}">
+    <div class="step">Step 3</div>
+    <h3>A successful forecast</h3>
+    <p>The essence of forecasting: find patterns in observed data and extrapolate them. Try fitting and predicting yourself with an artillery-fire mini-game.</p>
+  </a>
+  <a class="card" href="{{ '/en/math-ml-foundations/' | relative_url }}">
+    <div class="step">Step 4</div>
+    <h3>Math and machine learning foundations</h3>
+    <p>Functions, optimization, machine learning — the three foundations behind forecasting, with a curve-fitting game that shows underfitting and overfitting.</p>
+  </a>
+  <a class="card" href="{{ '/en/linear-autoregression/' | relative_url }}">
+    <div class="step">Step 5</div>
+    <h3>Linear autoregressive forecasting</h3>
+    <p>The math of autoregression, a clickable sunspot example, and how modern "linear models" extend it to multi-step forecasting — the seed of KUN's linear kernel.</p>
   </a>
   <a class="card" href="{{ '/en/kun/' | relative_url }}">
-    <div class="step">Step 3</div>
-    <h3>Using KUN</h3>
-    <p>What Kernel U-Net is, why it works, and a step-by-step recipe to train it on your own data.</p>
+    <div class="step">Step 6</div>
+    <h3>Open problems in time series, 2026</h3>
+    <p>The six frontier challenges of time-series forecasting in 2026 and how they intertwine — the details of KUN as one response are on its dedicated page.</p>
+  </a>
+  <a class="card" href="{{ '/en/course/' | relative_url }}">
+    <div class="step">Full course</div>
+    <h3>Introductory lecture notes on time series</h3>
+    <p>A systematic introduction in 17 lectures (outline version), from the basics all the way to dynamical systems, flow matching and diffusion.</p>
+  </a>
+  <a class="card" href="{{ '/en/history/' | relative_url }}">
+    <div class="step">Chronicles</div>
+    <h3>A history of time series</h3>
+    <p>From Yule's autoregression in 1927 to today's foundation models and KUN: a century of methods in 10 chapters.</p>
+  </a>
+  <a class="card" href="{{ '/en/tasks/' | relative_url }}">
+    <div class="step">Chronicles</div>
+    <h3>A history of time-series tasks</h3>
+    <p>The history covers how the tools evolved; this covers how the problems evolved: from flood forecasting 3,000 years ago to today's multimodal time series.</p>
+  </a>
+  <a class="card" href="{{ '/en/prehistory/' | relative_url }}">
+    <div class="step">Chronicles</div>
+    <h3>Prehistory and applications today</h3>
+    <p>Timekeeping, observation and simple methods before the 19th century, plus a list of where time series are used across fields.</p>
+  </a>
+  <a class="card" href="{{ '/en/nature-of-time/' | relative_url }}">
+    <div class="step">Chronicles</div>
+    <h3>The nature of time</h3>
+    <p>How philosophy, physics and literature have questioned "time" itself — a short interdisciplinary tour.</p>
+  </a>
+  <a class="card" href="{{ '/en/paradoxes/' | relative_url }}">
+    <div class="step">Chronicles</div>
+    <h3>Paradoxes of time</h3>
+    <p>From Zeno to the grandfather paradox: the famous paradoxes that force us to think "time" through.</p>
+  </a>
+  <a class="card" href="{{ '/en/kernel-u-net/' | relative_url }}">
+    <div class="step">Deep dive</div>
+    <h3>Understanding Kernel U-Net in depth</h3>
+    <p>The in-depth version of the KUN architecture: the U-shaped structure layer by layer, the math notation for pluggable kernels, and how it fundamentally differs from DLinear and Transformers.</p>
   </a>
 </div>
 
 <div class="note">
-  <strong>New to the field?</strong> Start with the three steps above: <a href="{{ '/en/time-series/' | relative_url }}">Time Series</a> → <a href="{{ '/en/forecasting/' | relative_url }}">Forecasting</a> → <a href="{{ '/en/kun/' | relative_url }}">KUN</a> — each builds on the previous.<br>
-  <strong>Already familiar?</strong> Jump straight to <a href="{{ '/en/kun/' | relative_url }}">Using KUN</a>.
+  <strong>New to this?</strong> Go in order: <a href="{{ '/en/time-series/' | relative_url }}">Time series</a> → <a href="{{ '/en/forecasting/' | relative_url }}">Forecasting</a> → <a href="{{ '/en/prediction-in-action/' | relative_url }}">Forecasting in action</a> → <a href="{{ '/en/math-ml-foundations/' | relative_url }}">Math and machine learning foundations</a> → <a href="{{ '/en/linear-autoregression/' | relative_url }}">Linear autoregression</a> → <a href="{{ '/en/kun/' | relative_url }}">Open problems in time series, 2026</a> → <a href="{{ '/en/kernel-u-net/' | relative_url }}">Understanding Kernel U-Net in depth</a>. Each step builds on the one before.<br>
+  <strong>Already familiar with time series?</strong> Go straight to <a href="{{ '/en/kernel-u-net/' | relative_url }}">Understanding Kernel U-Net in depth</a>.<br>
+  <strong>Want more background?</strong> The <a href="{{ '/en/course/' | relative_url }}">lecture notes</a>, the <a href="{{ '/en/history/' | relative_url }}">history</a>, <a href="{{ '/en/nature-of-time/' | relative_url }}">the nature of time</a> and the other topics above can each be read on their own.
 </div>

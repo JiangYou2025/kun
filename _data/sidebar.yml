@@ -1,0 +1,114 @@
+# Left-sidebar entries for the history layout, per section and language.
+# path is the Chinese (unprefixed) URL; en/fr pages get /en or /fr prepended.
+paradoxes:
+  - { path: /paradoxes/, num: { zh: 目, en: "≡", fr: "≡" }, zh: "悖论目录", en: "All paradoxes", fr: "Tous les paradoxes" }
+  - { path: /paradoxes/zeno-arrow/, num: 1, zh: "飞矢不动", en: "The flying arrow", fr: "La flèche immobile" }
+  - { path: /paradoxes/achilles-tortoise/, num: 2, zh: "阿基里斯追龟", en: "Achilles and the tortoise", fr: "Achille et la tortue" }
+  - { path: /paradoxes/twin/, num: 3, zh: "双生子佯谬", en: "Twin paradox", fr: "Paradoxe des jumeaux" }
+  - { path: /paradoxes/ladder-barn/, num: 4, zh: "谷仓–杆悖论", en: "Ladder–barn paradox", fr: "Paradoxe de la grange" }
+  - { path: /paradoxes/loschmidt/, num: 5, zh: "Loschmidt 佯谬", en: "Loschmidt's paradox", fr: "Paradoxe de Loschmidt" }
+  - { path: /paradoxes/maxwell-demon/, num: 6, zh: "麦克斯韦妖", en: "Maxwell's demon", fr: "Démon de Maxwell" }
+  - { path: /paradoxes/boltzmann-brain/, num: 7, zh: "玻尔兹曼大脑", en: "Boltzmann brain", fr: "Cerveau de Boltzmann" }
+  - { path: /paradoxes/grandfather/, num: 8, zh: "祖父悖论", en: "Grandfather paradox", fr: "Paradoxe du grand-père" }
+  - { path: /paradoxes/predestination/, num: 9, zh: "命定悖论", en: "Predestination paradox", fr: "Paradoxe de la prédestination" }
+  - { path: /paradoxes/bootstrap/, num: 10, zh: "自举悖论", en: "Bootstrap paradox", fr: "Paradoxe de l'écrivain" }
+  - { path: /paradoxes/tachyonic-antitelephone/, num: 11, zh: "反向电话", en: "Tachyonic antitelephone", fr: "Antitéléphone tachyonique" }
+  - { path: /paradoxes/light-travel-time/, num: 12, zh: "光程时序倒错", en: "Light-travel-time illusions", fr: "Illusions du temps de trajet de la lumière" }
+  - { path: /paradoxes/chronology-protection/, num: 13, zh: "时序保护猜想", en: "Chronology protection", fr: "Protection chronologique" }
+  - { path: /paradoxes/mctaggart/, num: 14, zh: "McTaggart 悖论", en: "McTaggart's paradox", fr: "Paradoxe de McTaggart" }
+  - { path: /paradoxes/newcomb/, num: 15, zh: "Newcomb 悖论", en: "Newcomb's paradox", fr: "Paradoxe de Newcomb" }
+
+prehistory:
+  - { path: /prehistory/, num: { zh: 目, en: "≡", fr: "≡" }, zh: "史前史目录", en: "Prehistory index", fr: "Sommaire de la préhistoire" }
+  - { path: /prehistory/nilometer/, num: 1, zh: "尼罗河水位计", en: "The Nilometer", fr: "Le nilomètre" }
+  - { path: /prehistory/babylon-diaries/, num: 2, zh: "巴比伦天文日记", en: "Babylonian astronomical diaries", fr: "Journaux astronomiques babyloniens" }
+  - { path: /prehistory/antikythera/, num: 3, zh: "安提基特拉机械", en: "Antikythera mechanism", fr: "Machine d'Anticythère" }
+  - { path: /prehistory/kepler-mars/, num: 4, zh: "开普勒与火星", en: "Kepler and Mars", fr: "Kepler et Mars" }
+  - { path: /prehistory/graunt-life-table/, num: 5, zh: "第一张生命表", en: "The first life table", fr: "La première table de mortalité" }
+  - { path: /prehistory/halley-comet/, num: 6, zh: "哈雷彗星", en: "Halley's comet", fr: "La comète de Halley" }
+  - { path: /prehistory/playfair-chart/, num: 7, zh: "折线图", en: "The line chart", fr: "Le graphique linéaire" }
+  - { path: /prehistory/ceres-least-squares/, num: 8, zh: "谷神星与最小二乘", en: "Ceres and least squares", fr: "Cérès et les moindres carrés" }
+  - { path: /prehistory/sunspot-cycle/, num: 9, zh: "太阳黑子周期", en: "The sunspot cycle", fr: "Le cycle des taches solaires" }
+
+nature-of-time:
+  - { path: /nature-of-time/, num: { zh: 目, en: "≡", fr: "≡" }, zh: "本质目录", en: "Index", fr: "Sommaire" }
+  - { path: /nature-of-time/cyclic-time/, num: 1, zh: "循环时间", en: "Cyclic time", fr: "Le temps cyclique" }
+  - { path: /nature-of-time/heraclitus/, num: 2, zh: "赫拉克利特", en: "Heraclitus", fr: "Héraclite" }
+  - { path: /nature-of-time/zeno-divisibility/, num: 3, zh: "芝诺·可分", en: "Zeno · divisibility", fr: "Zénon · divisibilité" }
+  - { path: /nature-of-time/aristotle/, num: 4, zh: "亚里士多德", en: "Aristotle", fr: "Aristote" }
+  - { path: /nature-of-time/augustine/, num: 5, zh: "奥古斯丁", en: "Augustine", fr: "Augustin" }
+  - { path: /nature-of-time/newton/, num: 6, zh: "牛顿·绝对", en: "Newton · absolute time", fr: "Newton · temps absolu" }
+  - { path: /nature-of-time/leibniz/, num: 7, zh: "莱布尼茨", en: "Leibniz", fr: "Leibniz" }
+  - { path: /nature-of-time/kant/, num: 8, zh: "康德", en: "Kant", fr: "Kant" }
+  - { path: /nature-of-time/lagrange-invariant/, num: 9, zh: "拉格朗日不变量", en: "Lagrangian invariants", fr: "Invariants lagrangiens" }
+  - { path: /nature-of-time/arrow-of-time/, num: 10, zh: "时间之箭", en: "The arrow of time", fr: "La flèche du temps" }
+  - { path: /nature-of-time/bergson/, num: 11, zh: "柏格森", en: "Bergson", fr: "Bergson" }
+  - { path: /nature-of-time/wells/, num: 12, zh: "时间机器", en: "The Time Machine", fr: "La Machine à explorer le temps" }
+  - { path: /nature-of-time/einstein/, num: 13, zh: "爱因斯坦", en: "Einstein", fr: "Einstein" }
+  - { path: /nature-of-time/minkowski/, num: 14, zh: "闵可夫斯基", en: "Minkowski", fr: "Minkowski" }
+  - { path: /nature-of-time/mctaggart/, num: 15, zh: "McTaggart", en: "McTaggart", fr: "McTaggart" }
+  - { path: /nature-of-time/proust/, num: 16, zh: "普鲁斯特", en: "Proust", fr: "Proust" }
+  - { path: /nature-of-time/black-hole-time/, num: 17, zh: "黑洞", en: "Black holes", fr: "Trous noirs" }
+  - { path: /nature-of-time/heidegger/, num: 18, zh: "海德格尔", en: "Heidegger", fr: "Heidegger" }
+  - { path: /nature-of-time/dali/, num: 19, zh: "达利", en: "Dalí", fr: "Dalí" }
+  - { path: /nature-of-time/borges/, num: 20, zh: "博尔赫斯", en: "Borges", fr: "Borges" }
+  - { path: /nature-of-time/godel/, num: 21, zh: "哥德尔", en: "Gödel", fr: "Gödel" }
+  - { path: /nature-of-time/problem-of-time/, num: 22, zh: "时间问题", en: "The problem of time", fr: "Le problème du temps" }
+  - { path: /nature-of-time/hawking/, num: 23, zh: "霍金", en: "Hawking", fr: "Hawking" }
+  - { path: /nature-of-time/rovelli/, num: 24, zh: "罗韦利", en: "Rovelli", fr: "Rovelli" }
+
+tasks:
+  - { path: /tasks/, num: { zh: 目, en: "≡", fr: "≡" }, zh: "任务史全文", en: "Full text", fr: "Texte intégral" }
+  - { path: /history/, num: "←", zh: "回发展史", en: "Back to the history", fr: "Retour à l'histoire" }
+
+applications:
+  - { path: /applications/, num: { zh: 目, en: "≡", fr: "≡" }, zh: "应用目录", en: "All applications", fr: "Toutes les applications" }
+  - { path: /applications/finance/, num: 1, zh: "金融与经济", en: "Finance & economics", fr: "Finance et économie" }
+  - { path: /applications/energy/, num: 2, zh: "能源与电力", en: "Energy & power", fr: "Énergie et électricité" }
+  - { path: /applications/retail/, num: 3, zh: "零售与供应链", en: "Retail & supply chain", fr: "Commerce et logistique" }
+  - { path: /applications/transport/, num: 4, zh: "交通与出行", en: "Transport & mobility", fr: "Transport et mobilité" }
+  - { path: /applications/health/, num: 5, zh: "医疗与健康", en: "Healthcare", fr: "Santé" }
+  - { path: /applications/weather/, num: 6, zh: "气象与气候", en: "Weather & climate", fr: "Météo et climat" }
+  - { path: /applications/industry/, num: 7, zh: "工业与物联网", en: "Industry & IoT", fr: "Industrie et IoT" }
+  - { path: /applications/signal/, num: 8, zh: "通信与信号", en: "Communications & signals", fr: "Télécoms et signaux" }
+  - { path: /applications/geophysics/, num: 9, zh: "天文与地球物理", en: "Astronomy & geophysics", fr: "Astronomie et géophysique" }
+  - { path: /applications/language/, num: 10, zh: "自然语言与序列", en: "Language & sequences", fr: "Langage et séquences" }
+
+chapters:
+  - { path: /history/, num: { zh: 目, en: "≡", fr: "≡" }, zh: "总目录", en: "Contents", fr: "Sommaire" }
+  - { path: /history/foundations/, num: { zh: 序, en: "0", fr: "0" }, zh: "跨学科源头", en: "Cross-disciplinary origins", fr: "Origines interdisciplinaires" }
+  - { path: /history/01/, num: 1, zh: "自回归 · 1920s", en: "Autoregression · 1920s", fr: "Autorégression · années 1920" }
+  - { path: /history/02/, num: 2, zh: "理论奠基 · 1930s–40s", en: "Theoretical foundations · 1930s–40s", fr: "Fondements théoriques · 1930–40" }
+  - { path: /history/03/, num: 3, zh: "指数平滑 · 1950s", en: "Exponential smoothing · 1950s", fr: "Lissage exponentiel · années 1950" }
+  - { path: /history/04/, num: 4, zh: "卡尔曼滤波 · 1960s", en: "Kalman filter · 1960s", fr: "Filtre de Kalman · années 1960" }
+  - { path: /history/05/, num: 5, zh: "ARIMA · 1970s", en: "ARIMA · 1970s", fr: "ARIMA · années 1970" }
+  - { path: /history/06/, num: 6, zh: "波动率与协整 · 1980s", en: "Volatility & cointegration · 1980s", fr: "Volatilité et cointégration · années 1980" }
+  - { path: /history/07/, num: 7, zh: "神经网络 · 1990s", en: "Neural networks · 1990s", fr: "Réseaux de neurones · années 1990" }
+  - { path: /history/08/, num: 8, zh: "机器学习 · 2000s", en: "Machine learning · 2000s", fr: "Apprentissage automatique · années 2000" }
+  - { path: /history/09/, num: 9, zh: "深度学习 · 2010s", en: "Deep learning · 2010s", fr: "Apprentissage profond · années 2010" }
+  - { path: /history/10/, num: 10, zh: "大模型与 KUN · 2020s", en: "Foundation models & KUN · 2020s", fr: "Modèles de fondation et KUN · années 2020" }
+
+topics:
+  - { path: /tasks/, num: { zh: 任, en: T, fr: T }, zh: "任务史", en: "History of tasks", fr: "Histoire des tâches" }
+  - { path: /applications/, num: { zh: 用, en: A, fr: A }, zh: "应用场景", en: "Applications", fr: "Applications" }
+  - { path: /prehistory/, num: { zh: 史, en: P, fr: P }, zh: "史前史", en: "Prehistory", fr: "Préhistoire" }
+  - { path: /nature-of-time/, num: { zh: 质, en: N, fr: N }, zh: "时间的本质", en: "The nature of time", fr: "La nature du temps" }
+  - { path: /paradoxes/, num: { zh: 悖, en: "?", fr: "?" }, zh: "时间悖论", en: "Paradoxes of time", fr: "Paradoxes du temps" }
+
+companion:
+  - { path: /course/, num: { zh: 讲, en: C, fr: C }, zh: "入门讲义", en: "Intro course", fr: "Cours d'introduction" }
+  - { path: /zh/kun/, langpath: { en: /en/kun/, fr: /fr/kun/ }, num: K, zh: "使用 KUN", en: "Using KUN", fr: "Utiliser KUN" }
+
+# Entry-sidebar group labels, keyed by timeline `chap`.
+entry_groups:
+  - { chap: "序", zh: "跨学科源头", en: "Cross-disciplinary origins", fr: "Origines interdisciplinaires" }
+  - { chap: "1", zh: "① 自回归", en: "① Autoregression", fr: "① Autorégression" }
+  - { chap: "2", zh: "② 理论奠基", en: "② Theoretical foundations", fr: "② Fondements théoriques" }
+  - { chap: "3", zh: "③ 指数平滑", en: "③ Exponential smoothing", fr: "③ Lissage exponentiel" }
+  - { chap: "4", zh: "④ 卡尔曼滤波", en: "④ Kalman filter", fr: "④ Filtre de Kalman" }
+  - { chap: "5", zh: "⑤ ARIMA", en: "⑤ ARIMA", fr: "⑤ ARIMA" }
+  - { chap: "6", zh: "⑥ 波动率与协整", en: "⑥ Volatility & cointegration", fr: "⑥ Volatilité et cointégration" }
+  - { chap: "7", zh: "⑦ 神经网络", en: "⑦ Neural networks", fr: "⑦ Réseaux de neurones" }
+  - { chap: "8", zh: "⑧ 机器学习", en: "⑧ Machine learning", fr: "⑧ Apprentissage automatique" }
+  - { chap: "9", zh: "⑨ 深度学习", en: "⑨ Deep learning", fr: "⑨ Apprentissage profond" }
+  - { chap: "10", zh: "⑩ 大模型与 KUN", en: "⑩ Foundation models & KUN", fr: "⑩ Modèles de fondation et KUN" }

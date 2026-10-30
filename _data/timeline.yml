@@ -1,13 +1,15 @@
-# 时间序列发展史 · 百年时间线（数据源）
-# 同时驱动：/history/ 时间线表格、条目页侧边栏、条目页上一篇/下一篇导航。
-# domain: math 数学 | phys 物理 | ctrl 控制/通信 | cs 计算机
-# chap: 章节标签（序/1..10）；chap_url: 章节页相对地址。
-# slug: 条目页地址 /history/e/<slug>/。
+# Time-series history · a century-long timeline (data source)
+# Drives: the /history/ timeline table, the entry-page sidebar, and entry-page prev/next navigation.
+# domain: math mathematics | phys physics | ctrl control/communications | cs computer science
+# chap: chapter label (序 = prelude / 1..10); chap_url: relative URL of the chapter page.
+# slug: entry page URL /history/e/<slug>/.
 
 - year: "1807"
   domain: math
   person: "Fourier"
   contribution: "傅里叶级数与傅里叶变换：任意信号分解为正弦波叠加，频域分析之始"
+  contribution_en: "Fourier series and Fourier transform: any signal decomposed into a sum of sinusoids; the birth of frequency-domain analysis"
+  contribution_fr: "Séries et transformée de Fourier : tout signal se décompose en somme de sinusoïdes ; naissance de l'analyse fréquentielle"
   slug: fourier
   chap: "序"
   chap_url: "foundations/"
@@ -16,6 +18,8 @@
   domain: math
   person: "Bachelier"
   contribution: "随机游走为股价建模：数理金融与布朗运动之始"
+  contribution_en: "Random walk to model stock prices: the birth of mathematical finance and Brownian motion"
+  contribution_fr: "Marche aléatoire pour modéliser les cours boursiers : naissance de la finance mathématique et du mouvement brownien"
   slug: bachelier
   chap: "序"
   chap_url: "foundations/"
@@ -24,6 +28,8 @@
   domain: phys
   person: "Einstein · Smoluchowski"
   contribution: "布朗运动理论 → 数学上的 Wiener 过程"
+  contribution_en: "Theory of Brownian motion → mathematically, the Wiener process"
+  contribution_fr: "Théorie du mouvement brownien → en mathématiques, le processus de Wiener"
   slug: brownian-motion
   chap: "序"
   chap_url: "foundations/"
@@ -32,6 +38,8 @@
   domain: math
   person: "Markov"
   contribution: "马尔可夫链：无记忆性（AR/HMM/MDP/MCMC 的骨架）"
+  contribution_en: "Markov chains: memorylessness (the backbone of AR/HMM/MDP/MCMC)"
+  contribution_fr: "Chaînes de Markov : absence de mémoire (ossature des AR/HMM/MDP/MCMC)"
   slug: markov
   chap: "序"
   chap_url: "foundations/"
@@ -40,6 +48,8 @@
   domain: phys
   person: "Langevin"
   contribution: "Langevin 方程：摩擦项 + 随机力"
+  contribution_en: "Langevin equation: friction term + random force"
+  contribution_fr: "Équation de Langevin : terme de friction + force aléatoire"
   slug: langevin
   chap: "序"
   chap_url: "foundations/"
@@ -48,6 +58,8 @@
   domain: math
   person: "Yule · Walker"
   contribution: "自回归 AR(p)、Yule–Walker 方程"
+  contribution_en: "Autoregression AR(p), Yule–Walker equations"
+  contribution_fr: "Autorégression AR(p), équations de Yule–Walker"
   slug: yule-ar
   chap: "1"
   chap_url: "01/"
@@ -56,6 +68,8 @@
   domain: math
   person: "Slutsky"
   contribution: "Slutsky 效应：滤波制造伪周期"
+  contribution_en: "Slutsky effect: filtering creates spurious cycles"
+  contribution_fr: "Effet Slutsky : le filtrage crée des cycles fallacieux"
   slug: slutsky
   chap: "1"
   chap_url: "01/"
@@ -64,6 +78,8 @@
   domain: phys
   person: "Ornstein · Uhlenbeck"
   contribution: "均值回复随机过程，离散化即 AR(1)"
+  contribution_en: "Mean-reverting stochastic process; discretized, it is AR(1)"
+  contribution_fr: "Processus stochastique à retour à la moyenne ; discrétisé, c'est un AR(1)"
   slug: ornstein-uhlenbeck
   chap: "序"
   chap_url: "foundations/"
@@ -72,6 +88,8 @@
   domain: math
   person: "Kolmogorov"
   contribution: "概率论公理化、遍历定理（时间均值=系综均值）"
+  contribution_en: "Axiomatization of probability, ergodic theorem (time average = ensemble average)"
+  contribution_fr: "Axiomatisation des probabilités, théorème ergodique (moyenne temporelle = moyenne d'ensemble)"
   slug: kolmogorov
   chap: "序"
   chap_url: "foundations/"
@@ -80,6 +98,8 @@
   domain: math
   person: "Khinchin"
   contribution: "Wiener–Khinchin 定理：自协方差 ↔ 功率谱"
+  contribution_en: "Wiener–Khinchin theorem: autocovariance ↔ power spectrum"
+  contribution_fr: "Théorème de Wiener–Khinchin : autocovariance ↔ spectre de puissance"
   slug: wiener-khinchin
   chap: "序"
   chap_url: "foundations/"
@@ -88,6 +108,8 @@
   domain: math
   person: "Lévy"
   contribution: "Lévy 过程、稳定分布（重尾）、鞅理论奠基"
+  contribution_en: "Lévy processes, stable distributions (heavy tails), foundations of martingale theory"
+  contribution_fr: "Processus de Lévy, lois stables (queues épaisses), fondements de la théorie des martingales"
   slug: levy
   chap: "序"
   chap_url: "foundations/"
@@ -96,6 +118,8 @@
   domain: math
   person: "Wold"
   contribution: "Wold 分解：平稳过程 = 确定项 + MA(∞)"
+  contribution_en: "Wold decomposition: stationary process = deterministic part + MA(∞)"
+  contribution_fr: "Décomposition de Wold : processus stationnaire = partie déterministe + MA(∞)"
   slug: wold
   chap: "2"
   chap_url: "02/"
@@ -104,6 +128,8 @@
   domain: ctrl
   person: "Wiener · Kolmogorov"
   contribution: "最优线性预测 = 条件期望（投影）"
+  contribution_en: "Optimal linear prediction = conditional expectation (projection)"
+  contribution_fr: "Prédiction linéaire optimale = espérance conditionnelle (projection)"
   slug: wiener-kolmogorov-prediction
   chap: "2"
   chap_url: "02/"
@@ -112,6 +138,8 @@
   domain: math
   person: "Itô"
   contribution: "随机微积分、Itô 引理 → 连续时间金融的引擎"
+  contribution_en: "Stochastic calculus, Itô's lemma → the engine of continuous-time finance"
+  contribution_fr: "Calcul stochastique, lemme d'Itô → moteur de la finance en temps continu"
   slug: ito
   chap: "序"
   chap_url: "foundations/"
@@ -120,6 +148,8 @@
   domain: math
   person: "Wald"
   contribution: "序贯分析 / SPRT、最优停时（变点检测之源）"
+  contribution_en: "Sequential analysis / SPRT, optimal stopping (origin of change-point detection)"
+  contribution_fr: "Analyse séquentielle / SPRT, arrêt optimal (origine de la détection de ruptures)"
   slug: wald-sprt
   chap: "序"
   chap_url: "foundations/"
@@ -128,6 +158,8 @@
   domain: ctrl
   person: "Gabor"
   contribution: "短时傅里叶变换 (STFT)：加窗傅里叶，兼顾时间与频率局部化"
+  contribution_en: "Short-time Fourier transform (STFT): windowed Fourier, localized in both time and frequency"
+  contribution_fr: "Transformée de Fourier à court terme (STFT) : Fourier fenêtrée, localisée en temps et en fréquence"
   slug: gabor-stft
   chap: "序"
   chap_url: "foundations/"
@@ -136,6 +168,8 @@
   domain: ctrl
   person: "Wiener"
   contribution: "《控制论》、Wiener–Hopf 最优滤波器"
+  contribution_en: "\"Cybernetics\", Wiener–Hopf optimal filter"
+  contribution_fr: "« Cybernétique », filtre optimal de Wiener–Hopf"
   slug: wiener-cybernetics
   chap: "序"
   chap_url: "foundations/"
@@ -144,6 +178,8 @@
   domain: ctrl
   person: "Shannon"
   contribution: "信息论：熵、信道容量、Nyquist–Shannon 采样定理"
+  contribution_en: "Information theory: entropy, channel capacity, Nyquist–Shannon sampling theorem"
+  contribution_fr: "Théorie de l'information : entropie, capacité de canal, théorème d'échantillonnage de Nyquist–Shannon"
   slug: shannon
   chap: "序"
   chap_url: "foundations/"
@@ -152,6 +188,8 @@
   domain: math
   person: "Kac · Feynman"
   contribution: "Feynman–Kac / 路径积分：PDE 解 = 路径期望"
+  contribution_en: "Feynman–Kac / path integrals: PDE solution = expectation over paths"
+  contribution_fr: "Feynman–Kac / intégrales de chemin : solution d'EDP = espérance sur les trajectoires"
   slug: feynman-kac
   chap: "序"
   chap_url: "foundations/"
@@ -160,6 +198,8 @@
   domain: cs
   person: "Brown"
   contribution: "简单指数平滑 SES（在线 O(1) 更新）"
+  contribution_en: "Simple exponential smoothing SES (online O(1) updates)"
+  contribution_fr: "Lissage exponentiel simple SES (mise à jour en ligne en O(1))"
   slug: brown-ses
   chap: "3"
   chap_url: "03/"
@@ -168,6 +208,8 @@
   domain: phys
   person: "Hurst"
   contribution: "R/S 重标极差、长程依赖（尼罗河洪水）"
+  contribution_en: "R/S rescaled range, long-range dependence (Nile floods)"
+  contribution_fr: "Étendue normalisée R/S, dépendance à long terme (crues du Nil)"
   slug: hurst
   chap: "序"
   chap_url: "foundations/"
@@ -176,6 +218,8 @@
   domain: math
   person: "Robbins"
   contribution: "多臂赌博机、序贯实验设计（探索 vs 利用）"
+  contribution_en: "Multi-armed bandits, sequential experimental design (exploration vs exploitation)"
+  contribution_fr: "Bandits manchots, plans d'expérience séquentiels (exploration vs exploitation)"
   slug: robbins-bandit
   chap: "序"
   chap_url: "foundations/"
@@ -184,6 +228,8 @@
   domain: math
   person: "Doob"
   contribution: "鞅理论：公平游戏 → 有效市场 / 无套利定价"
+  contribution_en: "Martingale theory: fair games → efficient markets / no-arbitrage pricing"
+  contribution_fr: "Théorie des martingales : jeux équitables → marchés efficients / évaluation sans arbitrage"
   slug: doob-martingale
   chap: "序"
   chap_url: "foundations/"
@@ -192,6 +238,8 @@
   domain: ctrl
   person: "Holt"
   contribution: "Holt 线性趋势法（水平 + 趋势递推）"
+  contribution_en: "Holt's linear trend method (level + trend recursion)"
+  contribution_fr: "Méthode de tendance linéaire de Holt (récurrence niveau + tendance)"
   slug: holt
   chap: "3"
   chap_url: "03/"
@@ -200,6 +248,8 @@
   domain: ctrl
   person: "Bellman"
   contribution: "动态规划、Bellman 方程、马尔可夫决策过程"
+  contribution_en: "Dynamic programming, Bellman equation, Markov decision processes"
+  contribution_fr: "Programmation dynamique, équation de Bellman, processus de décision markoviens"
   slug: bellman-dp
   chap: "序"
   chap_url: "foundations/"
@@ -208,6 +258,8 @@
   domain: ctrl
   person: "Kálmán"
   contribution: "卡尔曼滤波、状态空间模型（预测—更新）"
+  contribution_en: "Kalman filter, state-space models (predict–update)"
+  contribution_fr: "Filtre de Kalman, modèles espace d'état (prédiction–mise à jour)"
   slug: kalman
   chap: "4"
   chap_url: "04/"
@@ -216,6 +268,8 @@
   domain: ctrl
   person: "Winters"
   contribution: "Holt–Winters 季节性指数平滑"
+  contribution_en: "Holt–Winters seasonal exponential smoothing"
+  contribution_fr: "Lissage exponentiel saisonnier de Holt–Winters"
   slug: holt-winters
   chap: "4"
   chap_url: "04/"
@@ -224,6 +278,8 @@
   domain: math
   person: "Mandelbrot"
   contribution: "金融收益重尾、分数布朗运动与长记忆"
+  contribution_en: "Heavy tails in financial returns, fractional Brownian motion and long memory"
+  contribution_fr: "Queues épaisses des rendements financiers, mouvement brownien fractionnaire et mémoire longue"
   slug: mandelbrot
   chap: "序"
   chap_url: "foundations/"
@@ -232,6 +288,8 @@
   domain: phys
   person: "Lorenz"
   contribution: "确定性混沌、洛伦兹吸引子（可预测性极限）"
+  contribution_en: "Deterministic chaos, the Lorenz attractor (limits of predictability)"
+  contribution_fr: "Chaos déterministe, attracteur de Lorenz (limites de la prévisibilité)"
   slug: lorenz-chaos
   chap: "序"
   chap_url: "foundations/"
@@ -240,6 +298,8 @@
   domain: cs
   person: "Cooley · Tukey"
   contribution: "快速傅里叶变换 (FFT)：O(N log N) 算法，让频谱分析大规模可行"
+  contribution_en: "Fast Fourier transform (FFT): an O(N log N) algorithm making large-scale spectral analysis feasible"
+  contribution_fr: "Transformée de Fourier rapide (FFT) : algorithme en O(N log N) rendant l'analyse spectrale possible à grande échelle"
   slug: fft
   chap: "序"
   chap_url: "foundations/"
@@ -248,6 +308,8 @@
   domain: ctrl
   person: "Viterbi"
   contribution: "维特比算法：HMM / 卷积码的动态规划解码"
+  contribution_en: "Viterbi algorithm: dynamic-programming decoding for HMMs / convolutional codes"
+  contribution_fr: "Algorithme de Viterbi : décodage par programmation dynamique des HMM / codes convolutifs"
   slug: viterbi
   chap: "序"
   chap_url: "foundations/"
@@ -256,6 +318,8 @@
   domain: cs
   person: "Box · Jenkins"
   contribution: "ARIMA/SARIMA 与三阶段建模方法论"
+  contribution_en: "ARIMA/SARIMA and the three-stage modeling methodology"
+  contribution_fr: "ARIMA/SARIMA et la méthodologie de modélisation en trois étapes"
   slug: box-jenkins
   chap: "5"
   chap_url: "05/"
@@ -264,6 +328,8 @@
   domain: math
   person: "Black · Scholes · Merton"
   contribution: "期权定价：几何布朗运动 + Itô 引理"
+  contribution_en: "Option pricing: geometric Brownian motion + Itô's lemma"
+  contribution_fr: "Évaluation des options : mouvement brownien géométrique + lemme d'Itô"
   slug: black-scholes
   chap: "序"
   chap_url: "foundations/"
@@ -272,6 +338,8 @@
   domain: math
   person: "Malliavin"
   contribution: "Malliavin 微积分：对随机性求导，SDE 密度与 Greeks"
+  contribution_en: "Malliavin calculus: differentiating with respect to randomness, SDE densities and Greeks"
+  contribution_fr: "Calcul de Malliavin : dériver par rapport à l'aléa, densités d'EDS et Greeks"
   slug: malliavin
   chap: "序"
   chap_url: "foundations/"
@@ -280,6 +348,8 @@
   domain: ctrl
   person: "Åström · Ljung"
   contribution: "系统辨识：从输入输出拟合 ARX/ARMAX"
+  contribution_en: "System identification: fitting ARX/ARMAX from input–output data"
+  contribution_fr: "Identification des systèmes : ajuster des ARX/ARMAX à partir des entrées–sorties"
   slug: system-identification
   chap: "序"
   chap_url: "foundations/"
@@ -288,6 +358,8 @@
   domain: ctrl
   person: "Cutler · Ramaker"
   contribution: "模型预测控制 MPC：用滚动预测做闭环决策"
+  contribution_en: "Model predictive control (MPC): closed-loop decisions via receding-horizon prediction"
+  contribution_fr: "Commande prédictive (MPC) : décisions en boucle fermée par prédiction à horizon glissant"
   slug: mpc
   chap: "序"
   chap_url: "foundations/"
@@ -296,6 +368,8 @@
   domain: phys
   person: "Takens"
   contribution: "延迟嵌入定理：单变量序列重构相空间"
+  contribution_en: "Delay embedding theorem: reconstructing phase space from a univariate series"
+  contribution_fr: "Théorème de plongement par retards : reconstruire l'espace des phases à partir d'une série univariée"
   slug: takens
   chap: "序"
   chap_url: "foundations/"
@@ -304,6 +378,8 @@
   domain: cs
   person: "Engle"
   contribution: "ARCH：让条件方差随时间变化"
+  contribution_en: "ARCH: letting the conditional variance vary over time"
+  contribution_fr: "ARCH : une variance conditionnelle qui varie dans le temps"
   slug: arch
   chap: "6"
   chap_url: "06/"
@@ -312,6 +388,8 @@
   domain: phys
   person: "Grassberger · Procaccia"
   contribution: "关联维数：从序列估计吸引子分形维"
+  contribution_en: "Correlation dimension: estimating an attractor's fractal dimension from a series"
+  contribution_fr: "Dimension de corrélation : estimer la dimension fractale d'un attracteur à partir d'une série"
   slug: correlation-dimension
   chap: "序"
   chap_url: "foundations/"
@@ -320,6 +398,8 @@
   domain: cs
   person: "Bollerslev"
   contribution: "GARCH(1,1)：更简洁的波动率模型"
+  contribution_en: "GARCH(1,1): a more parsimonious volatility model"
+  contribution_fr: "GARCH(1,1) : un modèle de volatilité plus parcimonieux"
   slug: garch
   chap: "6"
   chap_url: "06/"
@@ -328,6 +408,8 @@
   domain: cs
   person: "Engle · Granger"
   contribution: "协整、误差修正模型、ADF 单位根检验"
+  contribution_en: "Cointegration, error-correction models, ADF unit-root test"
+  contribution_fr: "Cointégration, modèles à correction d'erreur, test de racine unitaire ADF"
   slug: cointegration
   chap: "6"
   chap_url: "06/"
@@ -336,6 +418,8 @@
   domain: cs
   person: "Sutton · Barto · Watkins"
   contribution: "强化学习：时序差分 (TD) 与 Q-learning"
+  contribution_en: "Reinforcement learning: temporal difference (TD) and Q-learning"
+  contribution_fr: "Apprentissage par renforcement : différence temporelle (TD) et Q-learning"
   slug: td-qlearning
   chap: "序"
   chap_url: "foundations/"
@@ -344,6 +428,8 @@
   domain: math
   person: "Mallat"
   contribution: "小波多分辨率分析 (MRA)：正交小波基 + 快速小波变换，时频自适应分辨率"
+  contribution_en: "Wavelet multiresolution analysis (MRA): orthogonal wavelet bases + fast wavelet transform, adaptive time–frequency resolution"
+  contribution_fr: "Analyse multirésolution par ondelettes (MRA) : bases d'ondelettes orthogonales + transformée rapide, résolution temps–fréquence adaptative"
   slug: wavelet-mra
   chap: "序"
   chap_url: "foundations/"
@@ -352,6 +438,8 @@
   domain: phys
   person: "Sugihara · May"
   contribution: "非线性预测：区分混沌与噪声（后启 CCM 因果）"
+  contribution_en: "Nonlinear prediction: distinguishing chaos from noise (precursor of CCM causality)"
+  contribution_fr: "Prédiction non linéaire : distinguer chaos et bruit (précurseur de la causalité CCM)"
   slug: nonlinear-prediction
   chap: "序"
   chap_url: "foundations/"
@@ -360,6 +448,8 @@
   domain: ctrl
   person: "Gordon et al."
   contribution: "粒子滤波 / 序贯蒙特卡洛：非线性非高斯状态估计"
+  contribution_en: "Particle filter / sequential Monte Carlo: nonlinear, non-Gaussian state estimation"
+  contribution_fr: "Filtre particulaire / Monte Carlo séquentiel : estimation d'état non linéaire et non gaussienne"
   slug: particle-filter
   chap: "序"
   chap_url: "foundations/"
@@ -368,6 +458,8 @@
   domain: ctrl
   person: "Evensen"
   contribution: "集合卡尔曼滤波 EnKF：数值天气预报的数据同化"
+  contribution_en: "Ensemble Kalman filter (EnKF): data assimilation for numerical weather prediction"
+  contribution_fr: "Filtre de Kalman d'ensemble (EnKF) : assimilation de données pour la prévision numérique du temps"
   slug: enkf
   chap: "序"
   chap_url: "foundations/"
@@ -376,6 +468,8 @@
   domain: phys
   person: "Peng et al."
   contribution: "DFA 去趋势波动分析：提取长程相关"
+  contribution_en: "Detrended fluctuation analysis (DFA): extracting long-range correlations"
+  contribution_fr: "Analyse des fluctuations redressées (DFA) : extraire les corrélations à long terme"
   slug: dfa
   chap: "序"
   chap_url: "foundations/"
@@ -384,6 +478,8 @@
   domain: cs
   person: "RNN"
   contribution: "循环神经网络、BPTT 与梯度消失问题"
+  contribution_en: "Recurrent neural networks, BPTT and the vanishing-gradient problem"
+  contribution_fr: "Réseaux de neurones récurrents, BPTT et problème de disparition du gradient"
   slug: rnn
   chap: "7"
   chap_url: "07/"
@@ -392,6 +488,8 @@
   domain: cs
   person: "Hochreiter · Schmidhuber"
   contribution: "LSTM：门控 + 细胞状态（常误差环）"
+  contribution_en: "LSTM: gates + cell state (constant error carousel)"
+  contribution_fr: "LSTM : portes + état de cellule (carrousel d'erreur constante)"
   slug: lstm
   chap: "7"
   chap_url: "07/"
@@ -400,6 +498,8 @@
   domain: math
   person: "Lyons"
   contribution: "粗糙路径理论 + 路径签名：序列的通用特征映射"
+  contribution_en: "Rough path theory + path signatures: a universal feature map for sequences"
+  contribution_fr: "Théorie des chemins rugueux + signatures : une représentation universelle des séquences"
   slug: rough-paths
   chap: "序"
   chap_url: "foundations/"
@@ -408,6 +508,8 @@
   domain: phys
   person: "Mantegna · Stanley"
   contribution: "经济物理：金融序列的标度律、幂律与胖尾"
+  contribution_en: "Econophysics: scaling laws, power laws and fat tails in financial series"
+  contribution_fr: "Éconophysique : lois d'échelle, lois de puissance et queues épaisses des séries financières"
   slug: econophysics
   chap: "序"
   chap_url: "foundations/"
@@ -416,6 +518,8 @@
   domain: cs
   person: "SVR"
   contribution: "支持向量回归：ε-不敏感损失 + 核技巧"
+  contribution_en: "Support vector regression: ε-insensitive loss + kernel trick"
+  contribution_fr: "Régression à vecteurs de support : perte ε-insensible + astuce du noyau"
   slug: svr
   chap: "8"
   chap_url: "08/"
@@ -424,6 +528,8 @@
   domain: cs
   person: "Friedman"
   contribution: "梯度提升 GBDT（函数空间梯度下降）"
+  contribution_en: "Gradient boosting GBDT (gradient descent in function space)"
+  contribution_fr: "Gradient boosting GBDT (descente de gradient dans l'espace des fonctions)"
   slug: gbdt
   chap: "8"
   chap_url: "08/"
@@ -432,6 +538,8 @@
   domain: ctrl
   person: "Jaeger"
   contribution: "回声状态网络 / 储备池计算：低成本预测混沌序列"
+  contribution_en: "Echo state networks / reservoir computing: low-cost prediction of chaotic series"
+  contribution_fr: "Réseaux à états échoïques / reservoir computing : prédiction peu coûteuse de séries chaotiques"
   slug: echo-state-network
   chap: "序"
   chap_url: "foundations/"
@@ -440,6 +548,8 @@
   domain: phys
   person: "Mezić · Schmid"
   contribution: "Koopman 算子 / 动态模态分解：高维序列的相干模态"
+  contribution_en: "Koopman operator / dynamic mode decomposition: coherent modes of high-dimensional series"
+  contribution_fr: "Opérateur de Koopman / décomposition en modes dynamiques : modes cohérents des séries de grande dimension"
   slug: koopman-dmd
   chap: "序"
   chap_url: "foundations/"
@@ -448,6 +558,8 @@
   domain: ctrl
   person: "Donoho · Candès · Tao"
   contribution: "压缩感知：稀疏信号的亚奈奎斯特采样与重构"
+  contribution_en: "Compressed sensing: sub-Nyquist sampling and reconstruction of sparse signals"
+  contribution_fr: "Acquisition comprimée : échantillonnage sous Nyquist et reconstruction de signaux parcimonieux"
   slug: compressed-sensing
   chap: "序"
   chap_url: "foundations/"
@@ -456,6 +568,8 @@
   domain: ctrl
   person: "Andrieu et al."
   contribution: "粒子 MCMC：非线性状态空间模型的参数推断"
+  contribution_en: "Particle MCMC: parameter inference for nonlinear state-space models"
+  contribution_fr: "MCMC particulaire : inférence des paramètres des modèles espace d'état non linéaires"
   slug: particle-mcmc
   chap: "序"
   chap_url: "foundations/"
@@ -464,6 +578,8 @@
   domain: math
   person: "Gatheral · Jaisson · Rosenbaum"
   contribution: "粗糙波动率：波动率轨迹是 H<½ 的分数布朗运动"
+  contribution_en: "Rough volatility: volatility paths are fractional Brownian motion with H<½"
+  contribution_fr: "Volatilité rugueuse : les trajectoires de volatilité sont un mouvement brownien fractionnaire avec H<½"
   slug: rough-volatility
   chap: "序"
   chap_url: "foundations/"
@@ -472,6 +588,8 @@
   domain: cs
   person: "DQN · AlphaGo"
   contribution: "深度强化学习（Atari、围棋）= 决策化的序列学习"
+  contribution_en: "Deep reinforcement learning (Atari, Go) = sequence learning for decision-making"
+  contribution_fr: "Apprentissage par renforcement profond (Atari, go) = apprentissage séquentiel orienté décision"
   slug: deep-rl
   chap: "序"
   chap_url: "foundations/"
@@ -480,6 +598,8 @@
   domain: cs
   person: "Vaswani et al."
   contribution: "Transformer：自注意力，任意位置直接交互"
+  contribution_en: "Transformer: self-attention, direct interaction between any positions"
+  contribution_fr: "Transformer : auto-attention, interaction directe entre toutes les positions"
   slug: transformer
   chap: "9"
   chap_url: "09/"
@@ -488,6 +608,8 @@
   domain: cs
   person: "Amazon DeepAR"
   contribution: "自回归 RNN 概率预测、跨序列全局模型"
+  contribution_en: "Autoregressive RNN probabilistic forecasting, global models across series"
+  contribution_fr: "Prévision probabiliste par RNN autorégressif, modèles globaux sur plusieurs séries"
   slug: deepar
   chap: "9"
   chap_url: "09/"
@@ -496,6 +618,8 @@
   domain: cs
   person: "N-BEATS"
   contribution: "纯前馈 + 残差堆叠的可解释深度模型"
+  contribution_en: "Interpretable deep model with pure feed-forward + residual stacking"
+  contribution_fr: "Modèle profond interprétable, purement feed-forward + empilement résiduel"
   slug: nbeats
   chap: "9"
   chap_url: "09/"
@@ -504,6 +628,8 @@
   domain: phys
   person: "Raissi · Lu"
   contribution: "PINN 物理信息网络、DeepONet 神经算子（解 PDE）"
+  contribution_en: "PINN physics-informed networks, DeepONet neural operators (solving PDEs)"
+  contribution_fr: "Réseaux informés par la physique PINN, opérateurs neuronaux DeepONet (résolution d'EDP)"
   slug: pinn-deeponet
   chap: "序"
   chap_url: "foundations/"
@@ -512,6 +638,8 @@
   domain: phys
   person: "Li et al."
   contribution: "傅里叶神经算子 FNO：学习函数到函数的映射"
+  contribution_en: "Fourier neural operator (FNO): learning function-to-function maps"
+  contribution_fr: "Opérateur neuronal de Fourier (FNO) : apprendre des applications de fonction à fonction"
   slug: fno
   chap: "序"
   chap_url: "foundations/"
@@ -520,6 +648,8 @@
   domain: ctrl
   person: "Gu et al. (HiPPO · S4)"
   contribution: "深度状态空间模型：Kalman 状态空间反超 Transformer"
+  contribution_en: "Deep state-space models: Kalman-style state space overtakes the Transformer"
+  contribution_fr: "Modèles espace d'état profonds : l'espace d'état à la Kalman dépasse le Transformer"
   slug: s4
   chap: "序"
   chap_url: "foundations/"
@@ -528,6 +658,8 @@
   domain: cs
   person: "DLinear"
   contribution: "分解 + 单层线性，竟超越复杂 Transformer"
+  contribution_en: "Decomposition + a single linear layer, surprisingly beating complex Transformers"
+  contribution_fr: "Décomposition + une seule couche linéaire, qui surpasse étonnamment des Transformers complexes"
   slug: dlinear
   chap: "10"
   chap_url: "10/"
@@ -536,6 +668,8 @@
   domain: cs
   person: "PatchTST"
   contribution: "分块 token + 通道独立，降维并保留局部语义"
+  contribution_en: "Patch tokens + channel independence: reduces dimension while keeping local semantics"
+  contribution_fr: "Tokens par patchs + indépendance des canaux : réduit la dimension en préservant la sémantique locale"
   slug: patchtst
   chap: "10"
   chap_url: "10/"
@@ -544,6 +678,8 @@
   domain: phys
   person: "FourCastNet · GraphCast"
   contribution: "数据驱动天气预报 = 全球尺度时空时间序列预测"
+  contribution_en: "Data-driven weather forecasting = global-scale spatiotemporal time-series prediction"
+  contribution_fr: "Prévision météo pilotée par les données = prédiction de séries spatio-temporelles à l'échelle du globe"
   slug: neural-weather
   chap: "序"
   chap_url: "foundations/"
@@ -552,6 +688,8 @@
   domain: ctrl
   person: "Mamba (Gu · Dao)"
   contribution: "选择性状态空间模型：线性时间扫描的长序列建模"
+  contribution_en: "Selective state-space model: long-sequence modeling with linear-time scans"
+  contribution_fr: "Modèle espace d'état sélectif : modélisation de longues séquences par balayage en temps linéaire"
   slug: mamba
   chap: "序"
   chap_url: "foundations/"
@@ -559,7 +697,11 @@
 - year: "2020s"
   domain: math
   person: "Neural CDE · 签名核"
+  person_en: "Neural CDE · signature kernels"
+  person_fr: "Neural CDE · noyaux de signature"
   contribution: "粗糙路径/签名用于不规则、缺失值序列的机器学习"
+  contribution_en: "Rough paths / signatures for machine learning on irregular series with missing values"
+  contribution_fr: "Chemins rugueux / signatures pour l'apprentissage sur des séries irrégulières à valeurs manquantes"
   slug: neural-cde
   chap: "序"
   chap_url: "foundations/"
@@ -568,6 +710,8 @@
   domain: cs
   person: "Kernel U-Net (KUN)"
   contribution: "层次化 U 形 + 可插拔核（线性/MLP/注意力）"
+  contribution_en: "Hierarchical U-shape + pluggable kernels (linear/MLP/attention)"
+  contribution_fr: "Forme en U hiérarchique + noyaux interchangeables (linéaire/MLP/attention)"
   slug: kun
   chap: "10"
   chap_url: "10/"
@@ -576,6 +720,8 @@
   domain: cs
   person: "TimesFM · Chronos · Moirai"
   contribution: "海量预训练的时间序列基础模型（零样本预测）"
+  contribution_en: "Time-series foundation models pretrained at massive scale (zero-shot forecasting)"
+  contribution_fr: "Modèles de fondation pour séries temporelles pré-entraînés à grande échelle (prévision zero-shot)"
   slug: foundation-models
   chap: "10"
   chap_url: "10/"

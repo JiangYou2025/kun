@@ -4,7 +4,7 @@ $ErrorActionPreference = 'Stop'
 
 # 确保 Ruby 在 PATH 中（winget 安装位置）
 if (-not (Get-Command ruby -ErrorAction SilentlyContinue)) {
-  $env:Path = 'C:\Ruby33-x64\bin;' + $env:Path
+  $env:Path = 'C:\Ruby34-x64\bin;' + $env:Path
 }
 
 # 切到仓库根目录（脚本所在目录的上一级）

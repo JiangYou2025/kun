@@ -108,21 +108,62 @@ $$\text{解码器：}\quad (1,\, C_{\text{latent}}) \xrightarrow{\;\;} \cdots \x
 
 KUN **一次性输出整个预测时域**（direct multi-output），而不是预测一步、再把它喂回去预测下一步。这避免了递归预测的**误差累积**——预测越往后，递归方式的误差滚雪球越严重。
 
-## 让它得名的关键：可插拔的核
+## 让它得名的关键：可替换的核
 
-U 形是骨架，**核（kernel）才是 KUN 的灵魂**。在 U 形的每个节点上，那个“把一组片段映射到另一组片段”的运算，并不是固定的卷积，而是一个可以替换的小函数 $\mathcal{K}_l$：
+U 形是骨架，**核（kernel）才是 KUN 的灵魂**。在 U 形的每个节点上，那个“把一组片段映射到另一组片段”的运算，不是写死的卷积，而是一个**可以整块替换的模块** $\mathcal{K}_l$：
 
 $$\text{第 } l \text{ 层：}\quad \mathbf{z}_{l+1} = \mathcal{K}_l(\mathbf{z}_l)$$
 
-而 $\mathcal{K}_l$ 可以是：
+### 骨架固定，核随意换
 
-| 核类型 | 表达力 | 开销 | 何时选它 |
-|--------|--------|------|---------|
-| **线性核** | 低 | 极小，$O(L)$ | 默认起点；与 DLinear 思路一致，又快又是强基线 |
-| **[MLP](../../foundations/mlp/) 核** | 中 | 中 | 需要一点非线性时 |
-| **[注意力](../../foundations/attention/)核** | 高 | 大，但只作用在被下采样后的短序列上 | 数据复杂、验证误差证明值得时 |
+KUN 把一个模型拆成两部分：
 
-**关键在于**：你通过**替换核**、而不是重写模型，来在算力和精度之间权衡。把“算力 vs. 精度”的选择，变成了“给这一层换一个 $\mathcal{K}_l$”。而且注意力核作用的是**已经被下采样、变短了的序列**，所以即便用注意力，开销也远小于在原始长序列上直接做 $O(L^2)$ 自注意力。
+- **骨架**负责“怎么切、怎么缩、怎么还原”：切 patch、逐层下采样、对称上采样、跳跃连接、直接多输出。这一部分对所有模型都一样，写一次就够了。
+- **核**只负责一件事：在这一层里，把一组片段变成另一组片段。
+
+两者之间只有一个约定：核接收形状为（片段数，通道数）的输入，输出约定好形状的结果。只要满足这个接口，任何网络都能放进 U 形的任意一层。于是：
+
+> **构建一个新模型 = 写一个新核**，而不必从头设计一个新架构。新核自动继承骨架带来的多尺度结构、跳跃连接和直接多输出。
+
+### 换一个核，就是一个新模型
+
+| 每层放什么核 | 得到的模型 | 特点 |
+|--------------|-----------|------|
+| 全部**线性核** | 层次化线性模型 | 开销极小，$O(L)$；与 DLinear 思路一致，是又快又强的基线 |
+| 全部 **[MLP](../../foundations/mlp/) 核** | 层次化 MLP | 加入适量非线性 |
+| 浅层线性、深层**[注意力](../../foundations/attention/)核** | 混合模型 | 注意力只作用在下采样后的短序列上，开销可控 |
+| **LSTM / 卷积核** | 层次化 RNN / CNN | 直接复用经典算子 |
+| **你自己写的核**（状态空间模型、MoE、傅里叶算子……） | 你的新模型 | 只写核，骨架现成 |
+
+仓库里的 [`kun_lib_v2.py`](https://github.com/JiangYou2025/kun/blob/main/notebooks/kun_lib_v2.py) 已经内置了 linear、conv、lstm、transformer 四种核；每一层可以用不同的核，也可以混入自己写的核。
+
+### 写一个自己的核
+
+一个核就是一个继承 `Kernel` 的小模块：在构造函数里拿到输入/输出的形状和通道数，在 `forward` 里完成映射。下面把 GRU 包装成一个核，只需十几行：
+
+```python
+import torch.nn as nn
+from math import prod
+from kun_lib_v2 import Kernel
+
+class GRUKernel(Kernel):
+    """示例：用 GRU 当核"""
+    def __init__(self, input_shape, output_shape, input_dim, output_dim, **kw):
+        super().__init__(input_shape, output_shape, input_dim, output_dim, **kw)
+        self.rnn = nn.GRU(input_dim, output_dim, batch_first=True)
+        self.resize = nn.Linear(prod(input_shape), prod(output_shape))
+
+    def forward(self, x):                       # (..., *input_shape, input_dim)
+        x = x.reshape(-1, prod(self.input_shape), self.input_dim)
+        h, _ = self.rnn(x)                      # (batch, 片段数, output_dim)
+        h = self.resize(h.transpose(1, 2)).transpose(1, 2)   # 片段数 -> 目标片段数
+        return h.reshape(-1, *self.output_shape, self.output_dim)
+
+# 前两层用内置线性核，最深一层换成自己的 GRU 核（列表长度 = 层数）
+kernel = ["linear", "linear", GRUKernel]
+```
+
+**关键在于**：你通过**替换核**、而不是重写模型，来尝试新想法、在算力和精度之间权衡。把“设计一个新模型”变成了“给某一层换一个 $\mathcal{K}_l$”。而且深层的核作用在**已经被下采样、变短了的序列**上，所以即便用注意力，开销也远小于在原始长序列上直接做 $O(L^2)$ 自注意力。
 
 ## 复杂度：为什么是 O(L)
 

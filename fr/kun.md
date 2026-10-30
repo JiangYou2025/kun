@@ -1,120 +1,89 @@
 ---
-updated: "2026-05-31"
+updated: "2026-06-11"
 lang: fr
 ref: kun
 permalink: /fr/kun/
-title: "Utiliser KUN — Kernel U-Net"
-lead: "KUN (Kernel U-Net) est une architecture hiérarchique et symétrique pour la prévision multivariée de séries temporelles à long horizon. Cette page explique l'idée qui la sous-tend et donne une recette pas à pas pour l'exécuter sur vos données."
-prev: forecasting
+title: "Les questions de pointe en séries temporelles en 2026"
+lead: "Après près d'un siècle de développement, la prévision de séries temporelles dispose d'une vaste panoplie d'outils éprouvés. Mais en 2026, les chercheurs se demandent toujours : peut-on faire mieux ? Cette page passe en revue les six défis de pointe les plus actifs du moment et montre comment Kernel U-Net tente de répondre à certains d'entre eux."
+prev: linear-autoregression
+next: kernel-u-net
 math: true
 ---
 
-## L'idée en une image
+## L'état de la prévision
 
-KUN emprunte sa forme au **U-Net** utilisé en segmentation d'images : un **encodeur** qui compresse progressivement l'entrée, et un **décodeur symétrique** qui la dilate progressivement vers une prédiction, l'information circulant entre les niveaux correspondants.
+Après cent ans de développement (de l'autorégression de Yule en 1927 jusqu'à aujourd'hui), la prévision de séries temporelles a accumulé une grande quantité d'outils éprouvés. Mais les chercheurs continuent de se demander : **peut-on faire mieux ?**
 
-```
-fenêtre d'entrée
-   │  découpée en patches
-   ▼
-[ Encodeur ]  patch → patch → patch       (sous-échantillonnage : moins d'unités, plus grossières)
-   │             │      │       │
-   │          skip   skip    skip          (les niveaux correspondants sont reliés)
-   ▼             ▼      ▼       ▼
-[ Décodeur ]  patch ← patch ← patch       (sur-échantillonnage : on reconstruit la résolution)
-   │
-   ▼
-horizon de prévision
-```
+En 2026, les directions les plus actives du domaine peuvent se résumer en six grandes questions de pointe.
 
-La particularité qui donne son nom à KUN : à chaque nœud du U, l'opération est un **noyau (kernel) interchangeable**, et non une convolution fixe. Un noyau n'est qu'une petite fonction qui transforme un segment en un autre — ce peut être une **couche linéaire, un MLP, un RNN ou un bloc d'attention**. Vous choisissez le noyau par niveau, si bien que le même squelette peut être rendu léger ou expressif selon vos données.
+## 🧩 Six grandes questions de pointe
 
-## Pourquoi cette conception fonctionne
+<div class="cards" markdown="0">
+  <div class="card">
+    <div style="font-size:2.2rem;text-align:center;margin-bottom:4px">🌍</div>
+    <h3>Modèles de fondation · Foundation Models</h3>
+    <p>GPT a transformé le TAL ; les modèles de fondation peuvent-ils transformer les séries temporelles ? TimesFM (Google), Chronos (Amazon), Moirai (Salesforce) et d'autres sont pré-entraînés sur des masses de données temporelles et visent la « prévision zero-shot » — prédire sans même avoir vu vos données. Mais la diversité des distributions en séries temporelles dépasse de loin celle du texte, et l'efficacité du transfert reste une question ouverte.</p>
+    <p style="color:var(--accent);font-size:.88rem"><strong>Défi central&nbsp;:</strong> un seul modèle peut-il couvrir à la fois l'électricité, la finance, la météo et la santé&nbsp;?</p>
+  </div>
 
-- **La hiérarchie épouse le temps.** Les courts patches près de l'entrée capturent le détail local à haute fréquence ; les niveaux plus profonds voient un contexte plus long et plus grossier. Une série vit rarement à une seule échelle, et le U en capture plusieurs à la fois.
-- **La symétrie garde l'efficacité.** Comme le décodeur reflète l'encodeur, le modèle reconstruit un horizon complet sans explosion quadratique en longueur — un avantage sur les Transformers classiques pour les longues séquences.
-- **Les noyaux apportent la souplesse.** Les noyaux linéaires offrent une référence rapide et solide (dans l'esprit de DLinear) ; les noyaux d'attention ajoutent de la capacité là où les données l'exigent. On arbitre calcul/précision en échangeant des noyaux, sans réécrire le modèle.
-- **Multi-sortie directe.** KUN prédit tout l'horizon d'un coup, évitant l'accumulation d'erreurs de la prévision récursive.
+  <div class="card">
+    <div style="font-size:2.2rem;text-align:center;margin-bottom:4px">📏</div>
+    <h3>Séquences très longues · Ultra-Long Horizon</h3>
+    <p>Les modèles classiques peinent déjà à prévoir 96 pas, alors que les besoins réels se chiffrent souvent en milliers, voire en dizaines de milliers de pas : planification électrique annuelle, modélisation du changement climatique, analyse de séquences génomiques. La complexité en O(N²) du Transformer l'empêche de traiter directement des séquences aussi longues, ce qui a donné naissance à l'attention linéaire, aux modèles à espace d'états (Mamba/S4) et aux architectures hiérarchiques.</p>
+    <p style="color:var(--accent);font-size:.88rem"><strong>Défi central&nbsp;:</strong> comment conserver la capacité à modéliser les dépendances à longue portée avec une complexité en O(N)&nbsp;?</p>
+  </div>
 
-## Pas à pas : prévoir avec KUN
+  <div class="card">
+    <div style="font-size:2.2rem;text-align:center;margin-bottom:4px">🎯</div>
+    <h3>Quantification de l'incertitude · Uncertainty</h3>
+    <p>Une prévision ponctuelle (un seul nombre) est loin de suffire — les décideurs ont besoin de savoir « à quel point vous en êtes sûr ». La prévision probabiliste, la régression quantile et la prédiction conforme (conformal prediction) deviennent la norme. Entre 2024 et 2026, la prédiction conforme a connu un essor fulgurant grâce à sa « garantie de couverture en échantillon fini, sans hypothèse de distribution ».</p>
+    <p style="color:var(--accent);font-size:.88rem"><strong>Défi central&nbsp;:</strong> comment produire des intervalles de prévision à la fois étroits et fiables&nbsp;?</p>
+  </div>
 
-> **Note sur l'API.** Les extraits ci-dessous montrent la *forme* d'un pipeline d'entraînement typique afin que vous l'adaptiez à l'interface réelle de KUN dans ce dépôt. Remplacez le chemin d'import, le nom de la classe et les noms d'arguments par ceux du code une fois publiés. Considérez-le comme un gabarit, pas comme du code prêt à copier-coller.
+  <div class="card">
+    <div style="font-size:2.2rem;text-align:center;margin-bottom:4px">🚨</div>
+    <h3>Prévision d'anomalies · Anomaly Prediction</h3>
+    <p>Dans bien des situations, la question n'est pas « quelle sera la prochaine valeur ? » mais « va-t-il se passer quelque chose ? » : panne d'équipement, surcharge du réseau électrique, arythmie cardiaque. La difficulté tient à ce que les anomalies sont rares et changeantes, tandis que l'objectif glisse de la « détection après coup » vers « l'alerte précoce ». L'approche courante : modéliser d'abord le comportement normal, puis traiter tout écart marqué comme un signal.</p>
+    <p style="color:var(--accent);font-size:.88rem"><strong>Défi central&nbsp;:</strong> comment repérer une anomalie à l'avance, et non après coup, quand les exemples sont rarissimes et que leur forme ne cesse de changer&nbsp;?</p>
+  </div>
 
-### 1. Récupérer le code et l'installer
+  <div class="card">
+    <div style="font-size:2.2rem;text-align:center;margin-bottom:4px">🌐</div>
+    <h3>Prévision spatio-temporelle · Spatio-Temporal</h3>
+    <p>Prévisions météorologiques, trafic routier, propagation d'épidémies — ces données évoluent dans le temps, mais possèdent aussi une structure spatiale. GraphCast (DeepMind) utilise des réseaux de neurones sur graphes pour la prévision météorologique mondiale et dépasse en précision les modèles numériques traditionnels. Modéliser simultanément les dépendances temporelles et la topologie spatiale est la difficulté centrale de la prévision spatio-temporelle.</p>
+    <p style="color:var(--accent);font-size:.88rem"><strong>Défi central&nbsp;:</strong> comment fusionner la structure de graphe (l'espace) et la structure séquentielle (le temps)&nbsp;?</p>
+  </div>
 
-```bash
-git clone https://github.com/JiangYou2025/kun.git
-cd kun
-pip install -r requirements.txt   # ou : pip install -e .
-```
-
-### 2. Mettre en forme les données
-
-KUN attend le format à fenêtre glissante de la page [Séries temporelles](./../time-series/) : une entrée de longueur `L` (rétrospection) vers une sortie de longueur `H` (horizon), avec `C` canaux (variables).
-
-```python
-# x : tableau de forme (n_échantillons, L, C)  -> les fenêtres de rétrospection
-# y : tableau de forme (n_échantillons, H, C)  -> les cibles à prédire
-```
-
-Normalisez toujours **par canal** (soustraire la moyenne d'entraînement, diviser par l'écart-type d'entraînement) et **découpez selon le temps**.
-
-### 3. Configurer le modèle
-
-```python
-from kun import KernelUNet            # à adapter à l'import réel
-
-model = KernelUNet(
-    input_len=336,     # L — fenêtre de rétrospection
-    pred_len=96,       # H — horizon de prévision
-    n_channels=7,      # C — nombre de variables
-    patch_sizes=[16, 8, 4],   # comment chaque niveau découpe la séquence
-    kernel="linear",          # "linear" | "mlp" | "attention" — noyaux par niveau
-)
-```
-
-Commencez par `kernel="linear"` et un horizon court. Il s'entraîne en quelques secondes et vous donne la référence à dépasser — exactement la discipline de la page [Comment prévoir](./../forecasting/).
-
-### 4. Entraîner
-
-```python
-import torch
-opt = torch.optim.Adam(model.parameters(), lr=1e-3)
-loss_fn = torch.nn.L1Loss()          # MAE — robuste et interprétable
-
-for epoch in range(50):
-    for xb, yb in train_loader:
-        opt.zero_grad()
-        pred = model(xb)             # (batch, H, C)
-        loss = loss_fn(pred, yb)
-        loss.backward()
-        opt.step()
-```
-
-### 5. Évaluer et prévoir
-
-```python
-model.eval()
-with torch.no_grad():
-    pred = model(x_test)             # prévoir l'horizon réservé
-mae = (pred - y_test).abs().mean()
-print("MAE de test :", mae.item())
-```
-
-Comparez ce nombre à la **référence naïve saisonnière**. Si KUN gagne, vous tenez un vrai modèle ; sinon, revoyez vos fenêtres, votre normalisation et votre découpage.
-
-## Un ordre de réglage raisonnable
-
-1. **Rétrospection `L`** — un contexte plus long aide généralement les longs horizons, jusqu'à un certain point.
-2. **Tailles de patch** — plus de niveaux = plus de hiérarchie ; gardez chaque taille de patch diviseur de la longueur du niveau.
-3. **Choix du noyau** — passez de `linear` → `mlp` → `attention` seulement si l'erreur de validation justifie le surcoût.
-4. **Taux d'apprentissage et époques** — utilisez l'arrêt précoce sur le MAE de validation.
-
-## Pour aller plus loin
-
-- Relisez [Comment prévoir](./../forecasting/) et lancez d'abord les références — KUN n'a de sens que par rapport à elles.
-- Ouvrez une issue ou lisez le code source sur [GitHub](https://github.com/JiangYou2025/kun) pour connaître l'API exacte et actuelle.
-
-<div class="note">
-  <strong>Citer KUN.</strong> Si KUN aide votre recherche ou votre produit, merci de citer les travaux Kernel U-Net de Jiang You et de renvoyer vers ce dépôt.
+  <div class="card">
+    <div style="font-size:2.2rem;text-align:center;margin-bottom:4px">🛡️</div>
+    <h3>Généralisation · Generalization</h3>
+    <p>Un modèle brille sur des jeux de données de référence bien propres, puis s'effondre dans le monde réel : données manquantes, dérive des capteurs, changements brusques de distribution (le COVID en a été un gigantesque). Comment éviter que le modèle ne s'effondre face à des « situations jamais vues » ? L'adaptation de domaine, l'apprentissage par transfert, le méta-apprentissage et l'apprentissage en ligne sont aujourd'hui les principales armes.</p>
+    <p style="color:var(--accent);font-size:.88rem"><strong>Défi central&nbsp;:</strong> comment garder un modèle efficace sur de nouveaux domaines et de nouvelles distributions&nbsp;?</p>
+  </div>
 </div>
+
+## Répondre à ces questions avec Kernel U-Net
+
+Face à ces défis, la piste explorée sur ce site est **KUN (Kernel U-Net)**. KUN découpe un modèle en deux parties : un **squelette en U** fixe et, à chaque niveau, un **noyau interchangeable**. Répondre à un nouveau problème ne demande donc presque jamais de repenser le modèle ; il suffit en général de modifier un seul endroit : **changer de noyau**, **ajouter un composant au squelette** ou **changer de tête de sortie**. Le tableau ci-dessous indique le point d'entrée pour chacune des six questions. La plupart sont des pistes encore en cours d'exploration, non des réponses achevées :
+
+| Question de pointe | Ce qui change | L'approche de KUN |
+|--------------------|---------------|-------------------|
+| Modèles de fondation | Changer de noyau | Utiliser des noyaux MoE (mélange d'experts) et davantage de niveaux, pour voir si des données de domaines plus variés peuvent être apprises par un même socle |
+| Séquences très longues | Ajouter un composant | Ajouter une couche de mémoire au squelette en U pour retenir un historique plus long ; le sous-échantillonnage niveau par niveau raccourcit en outre la séquence en profondeur, où l'on peut donc se permettre des noyaux plus lourds |
+| Quantification de l'incertitude | Changer de tête de sortie | Prévisions ponctuelles par défaut ; une régression quantile ou une prédiction conforme peut être branchée en sortie pour fournir des intervalles de prévision |
+| Prédiction d'anomalies | Changer de tête de sortie | Remplacer « prédire les valeurs futures » par « prédire la distribution (densité) future », et donner l'alerte dès que les observations réelles tombent dans une zone de faible densité |
+| Prévision spatio-temporelle | Modifier le squelette | Appliquer aussi la hiérarchie le long des axes spatiaux, afin que le sous-échantillonnage / suréchantillonnage niveau par niveau couvre à la fois le temps et l'espace |
+| Généralisation | Changer de noyau | Prévision adaptative : choisir ou ajuster le noyau de chaque niveau selon les caractéristiques des données, pour se transférer à des domaines et des distributions jamais vus |
+
+L'intuition centrale : **écrire le squelette une seule fois, et concrétiser les idées nouvelles en changeant de noyau ou en ajoutant des composants.** Ces questions de pointe n'exigent donc pas un modèle géant ; une puissance de calcul ordinaire suffit pour se lancer. Chaque nouvelle piste revient à écrire un nouveau noyau ou un nouveau module, puis à le brancher sur le même squelette léger.
+
+> L'idée complète de KUN, son architecture couche par couche, l'analyse de complexité et le tutoriel de prise en main sont réunis sur une page dédiée :
+> **[Comprendre en profondeur Kernel U-Net](../kernel-u-net/)**.
+
+## Et ensuite ?
+
+- **Pour voir comment KUN répond à ces défis** : lisez [Comprendre en profondeur Kernel U-Net](../kernel-u-net/), qui couvre tout, de la structure en U au tutoriel pas à pas.
+- **Pour consolider vos bases en mathématiques et en apprentissage automatique** : retournez aux [cours fondamentaux](../foundations/).
+- **Pour voir comment ces questions sont apparues pas à pas** : lisez l'[histoire des séries temporelles](../history/).
+
+<div class="hint">Cette page ne fait que recenser les « questions » ; KUN est l'une des « réponses » possibles, et tous les détails se trouvent dans <a href="{{ '/fr/kernel-u-net/' | relative_url }}">Comprendre en profondeur Kernel U-Net</a>.</div>

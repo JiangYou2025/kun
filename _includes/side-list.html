@@ -1,0 +1,5 @@
+<ul>
+{% for it in include.items %}{% assign num = it.num[include.lang] | default: it.num %}{% assign href = it.langpath[include.lang] | default: it.path %}{% if href == it.path %}{% assign href = include.lp | append: it.path %}{% endif %}
+  <li><a href="{{ href | relative_url }}" {% if include.u == it.path %}class="active"{% endif %}><span class="num">{{ num }}</span>{{ it[include.lang] }}</a></li>
+{% endfor %}
+</ul>

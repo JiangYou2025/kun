@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="{{ page.lang | default: 'zh' }}">
+{% assign lang = page.lang | default: 'zh' %}
+{% assign ui = site.data.ui[lang] %}
+{% if lang == 'zh' %}{% assign lp = '' %}{% assign u = page.url %}{% else %}{% assign lp = '/' | append: lang %}{% assign u = page.url | remove_first: lp %}{% endif %}
+<html lang="{{ lang }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if page.title %}{{ page.title }} · 时间序列入门{% else %}时间序列入门{% endif %}</title>
-  <meta name="description" content="{{ page.lead | default: '时间序列与预测入门讲义' }}">
+  <title>{% if page.title %}{{ page.title }} · {{ ui.course_brand }}{% else %}{{ ui.course_brand }}{% endif %}</title>
+  <meta name="description" content="{{ page.lead | default: ui.course_desc }}">
   <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
   <link rel="icon" href="{{ '/assets/favicon.svg' | relative_url }}" type="image/svg+xml">
   {% if page.math %}
@@ -20,15 +23,16 @@
 <body>
 <header class="site-header">
   <div class="bar">
-    <a class="brand" href="{{ '/course/' | relative_url }}"><span class="logo">⨃</span> <strong>时间序列入门</strong></a>
+    <a class="brand" href="{{ lp | append: '/course/' | relative_url }}"><span class="logo">⨃</span> <strong>{{ ui.course_brand }}</strong></a>
     <input type="checkbox" id="nav-toggle" class="nav-toggle">
     <label for="nav-toggle" class="nav-toggle-label" aria-label="Menu"><span></span></label>
     <nav class="site-nav">
-      <a href="{{ '/course/' | relative_url }}">目录</a>
-      <a href="{{ '/foundations/' | relative_url }}">基础课</a>
-      <a href="{{ '/history/' | relative_url }}">发展史</a>
-      <a href="{{ '/zh/' | relative_url }}">KUN 站点</a>
+      <a href="{{ lp | append: '/course/' | relative_url }}">{{ ui.nav_course_index }}</a>
+      <a href="{{ lp | append: '/foundations/' | relative_url }}">{{ ui.nav_foundations }}</a>
+      <a href="{{ lp | append: '/history/' | relative_url }}">{{ ui.nav_history }}</a>
+      <a href="{{ '/' | append: lang | append: '/' | relative_url }}">{{ ui.nav_kun_site }}</a>
       <a href="https://github.com/JiangYou2025/kun">GitHub</a>
+      {% include lang-switch.html u=u lang=lang %}
     </nav>
   </div>
 </header>
@@ -40,16 +44,16 @@
 
   {% if page.prev or page.next %}
   <nav class="pager">
-    {% if page.prev %}<a class="prev" href="{{ page.prev | relative_url }}">← 上一讲</a>{% endif %}
-    {% if page.next %}<a class="next" href="{{ page.next | relative_url }}">下一讲 →</a>{% endif %}
+    {% if page.prev %}<a class="prev" href="{{ lp | append: page.prev | relative_url }}">← {{ ui.prev_lecture }}</a>{% endif %}
+    {% if page.next %}<a class="next" href="{{ lp | append: page.next | relative_url }}">{{ ui.next_lecture }} →</a>{% endif %}
   </nav>
   {% endif %}
 
   {% unless page.no_comments %}
   <div class="github-star-banner" style="margin:3rem 0 2rem;padding:1.2rem 1.5rem;border-radius:10px;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem">
     <div>
-      <strong style="font-size:1.05rem">觉得这份讲义有用？</strong>
-      <p style="margin:.3rem 0 0;color:var(--muted);font-size:.88rem">在 GitHub 上给个 Star，帮助更多人发现这个项目</p>
+      <strong style="font-size:1.05rem">{{ ui.star_course }}</strong>
+      <p style="margin:.3rem 0 0;color:var(--muted);font-size:.88rem">{{ ui.star_hint }}</p>
     </div>
     <a href="https://github.com/JiangYou2025/kun" target="_blank" rel="noopener"
        style="display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.2rem;border-radius:6px;background:var(--accent);color:var(--bg);font-weight:600;font-size:.92rem;text-decoration:none;white-space:nowrap;transition:opacity .2s"
@@ -60,8 +64,8 @@
   </div>
 
   <section class="page-reactions" id="reactions">
-    <h2 style="margin-bottom:.5rem">反馈与讨论</h2>
-    <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem">点个表情或留言讨论（需 GitHub 账号）</p>
+    <h2 style="margin-bottom:.5rem">{{ ui.feedback }}</h2>
+    <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem">{{ ui.feedback_hint }}</p>
     <script src="https://giscus.app/client.js"
       data-repo="JiangYou2025/kun"
       data-repo-id="R_kgDOStMZRw"
@@ -73,7 +77,7 @@
       data-emit-metadata="0"
       data-input-position="top"
       data-theme="preferred_color_scheme"
-      data-lang="zh-CN"
+      data-lang="{{ ui.giscus }}"
       data-loading="lazy"
       crossorigin="anonymous"
       async>
@@ -84,13 +88,13 @@
 
 <footer class="site-footer">
   <div class="bar" style="flex-wrap:wrap;justify-content:center;gap:8px 16px">
-    <span>© Jiang You · 时间序列入门</span>
+    <span>© Jiang You · {{ ui.course_brand }}</span>
     <span style="display:inline-flex;gap:12px">
       <a id="lect-email" style="color:var(--muted)" href="#" title="Email">✉</a>
       <a href="https://scholar.google.com/citations?user=9V6G_CYAAAAJ&hl=zh-CN" target="_blank" rel="noopener" style="color:var(--muted)" title="Google Scholar">🎓</a>
       <a href="https://github.com/JiangYou2025/kun" style="color:var(--muted)" title="GitHub">⌨</a>
     </span>
-    {% if page.updated %}<span class="muted" style="width:100%;text-align:center;font-size:12px">最后编辑 {{ page.updated }}</span>{% endif %}
+    {% if page.updated %}<span class="muted" style="width:100%;text-align:center;font-size:12px">{{ ui.updated }} {{ page.updated }}</span>{% endif %}
   </div>
 </footer>
 <script>!function(){var a="jiang.you",b="esiee.fr",e=document.getElementById("lect-email");e.href="mai"+"lto:"+a+"@"+b}()</script>

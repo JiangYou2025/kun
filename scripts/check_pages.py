@@ -11,8 +11,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASEURL = "/kun"  # from _config.yml
 
 # Folders/files that carry front matter pages
-SCAN_DIRS = ["course", "foundations", "zh", "en", "fr", "history"]
-SCAN_ROOT_FILES = ["index.html", "nature-of-time.md", "paradoxes.md", "prehistory.md"]
+SCAN_DIRS = ["course", "foundations", "zh", "en", "fr", "history", "tasks",
+             "prehistory", "nature-of-time", "paradoxes", "applications"]
+SCAN_ROOT_FILES = ["index.html", "nature-of-time.md", "paradoxes.md", "prehistory.md", "applications.md"]
 
 FM_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -120,6 +121,9 @@ def main():
     def ref_to_permalink(val, src_lang_dir):
         # zh/en/fr pages use bare ref slugs like "frontier-2026"
         if val.startswith("/"):
+            # en/fr mirrors keep the Chinese prev/next; the layouts add the prefix
+            if src_lang_dir in ("en", "fr") and not val.startswith(f"/{src_lang_dir}/"):
+                val = f"/{src_lang_dir}{val}"
             return norm(val)
         return norm(f"/{src_lang_dir}/{val}/")
 

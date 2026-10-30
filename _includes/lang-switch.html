@@ -1,0 +1,5 @@
+<span class="lang-switch">
+  {% for l in site.languages %}{% if l == 'zh' %}{% assign href = include.u %}{% else %}{% assign href = '/' | append: l | append: include.u %}{% endif %}
+  <a href="{{ href | relative_url }}" class="lang {% if l == include.lang %}current{% endif %}">{{ site.data.i18n[l].label }}</a>
+  {% endfor %}
+</span>
