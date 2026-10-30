@@ -36,6 +36,8 @@ $$
 
 在训练[神经网络](../neural-network/)时，画一条**学习曲线**（横轴 epoch，纵轴损失）：如果训练[损失](../loss-function/)持续下降而验证损失开始**回升**，那个拐点就是过拟合的起点——也是[早停](../regularization/)该出手的地方。
 
+{% include fviz/polyfit.html %}
+
 ## 为什么会发生
 
 从[偏差—方差](../bias-variance/)视角看，过拟合 = **高方差**。常见诱因：

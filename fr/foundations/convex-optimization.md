@@ -21,6 +21,8 @@ Représentez-vous la fonction objectif comme un relief :
 
 Si l'optimisation convexe est si appréciée, c'est parce qu'elle est « sans piège » : inutile de craindre de rester bloqué sur une solution sous-optimale.
 
+{% include fviz/convex-landscape.html %}
+
 ## Formulation mathématique
 
 **Ensemble convexe** : le segment reliant deux points quelconques de l'ensemble reste dans l'ensemble.

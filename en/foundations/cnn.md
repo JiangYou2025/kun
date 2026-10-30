@@ -49,6 +49,8 @@ A few common knobs:
 - **padding**: pad both ends with zeros so the output has the same length as the input;
 - **dilation**: leave gaps between the kernel's sampling points to enlarge the receptive field without adding parameters (causal dilated convolutions, as in WaveNet/TCN, are common for time series).
 
+{% include fviz/conv1d.html %}
+
 ## A concrete example
 
 Convolve the input $\mathbf{x} = [3, 3, 5, 5, 5]$ with a length-3 kernel $\mathbf{w} = [1, 0, -1]$ (a simple "edge detector"), with no padding, stride 1 and $b=0$:

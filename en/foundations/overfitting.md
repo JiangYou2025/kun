@@ -36,6 +36,8 @@ $$
 
 When training a [neural network](../neural-network/), plot a **learning curve** (epochs on the horizontal axis, loss on the vertical axis): if the training [loss](../loss-function/) keeps falling while the validation loss starts to **rise again**, that turning point is where overfitting begins — and where [early stopping](../regularization/) should step in.
 
+{% include fviz/polyfit.html %}
+
 ## Why it happens
 
 From the [bias–variance](../bias-variance/) point of view, overfitting = **high variance**. Common causes:

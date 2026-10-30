@@ -58,6 +58,8 @@ $$\ell_\delta(y,\hat y)=\begin{cases}\frac12 (y-\hat y)^2 & |y-\hat y|\le \delta
 
 $\delta$ is the switching point: errors within $\delta$ are squared (sensitive, smooth), and beyond $\delta$ the loss becomes linear (so outliers do not throw it off).
 
+{% include fviz/loss-outlier.html %}
+
 ## Classification losses: predicting a class
 
 When the task is classification (cat or dog, spam or not), the model usually outputs a **probability** $\hat p$. The most common choice here is **[cross-entropy](../cross-entropy/)**.

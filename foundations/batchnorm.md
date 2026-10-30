@@ -56,6 +56,8 @@ $$
 
 为什么归一化之后还要 $\gamma, \beta$？因为强行把每层都压成"标准正态"可能损失表达力。给网络 $\gamma, \beta$ 这两个旋钮，它可以在需要时**把分布学回去**（甚至当 $\gamma=\sqrt{\sigma_B^2+\epsilon},\ \beta=\mu_B$ 时恢复原始输入），所以 BN 不会削弱模型能力。
 
+{% include fviz/batchnorm-hist.html %}
+
 ## 训练与推理的差别（关键）
 
 这是 BN 最容易出错的地方。

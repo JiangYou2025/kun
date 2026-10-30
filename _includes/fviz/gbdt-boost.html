@@ -1,0 +1,81 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-gbdt" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="m"></span> m<input type="range" data-k="m" min="0" max="150" step="1" value="1"></label>
+  <label><span data-t="lr"></span> η<input type="range" data-k="lr" min="0.05" max="1" step="0.05" value="0.3"></label>
+  <button data-k="new" data-t="new"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🌲 梯度提升：每棵新树去拟合残差', hint: '基学习器是深度 2 的回归树（只有 4 个台阶）。右图：当前模型 F₍ₘ₋₁₎ 留下的残差 rᵢ = yᵢ − F₍ₘ₋₁₎(xᵢ)，以及第 m 棵树对它的拟合 hₘ（绿）。左图：把 η·hₘ 加进去后得到的 Fₘ。拖动轮数 m，看残差越来越小、模型越来越贴合；轮数太多时新数据误差会回升。', m: '轮数', lr: '学习率', new: '换一批数据', model: '模型 Fₘ', resid: '残差 与 第 m 棵树 hₘ', train: '训练 MSE', test: '新数据 MSE', r0: 'm = 0：只用平均值作预测' },
+    en: { title: '🌲 Gradient boosting: each new tree fits the residuals', hint: 'The base learner is a depth-2 regression tree (just 4 steps). Right: the residuals rᵢ = yᵢ − F₍ₘ₋₁₎(xᵢ) left by the current model, and the m-th tree hₘ fitted to them (green). Left: Fₘ, obtained by adding η·hₘ. Drag the number of rounds m: the residuals shrink and the model hugs the data more closely; with too many rounds the error on fresh data creeps back up.', m: 'rounds', lr: 'learning rate', new: 'new data', model: 'model Fₘ', resid: 'residuals and the m-th tree hₘ', train: 'training MSE', test: 'MSE on fresh data', r0: 'm = 0: predict with the mean only' },
+    fr: { title: '🌲 Gradient boosting : chaque nouvel arbre ajuste les résidus', hint: 'L’apprenant de base est un arbre de régression de profondeur 2 (4 marches seulement). À droite : les résidus rᵢ = yᵢ − F₍ₘ₋₁₎(xᵢ) laissés par le modèle actuel, et le m-ième arbre hₘ ajusté sur eux (vert). À gauche : Fₘ, obtenu en ajoutant η·hₘ. Faites varier le nombre de tours m : les résidus diminuent et le modèle colle de plus en plus aux données ; avec trop de tours, l’erreur sur de nouvelles données remonte.', m: 'tours', lr: 'taux d’apprentissage', new: 'nouvelles données', model: 'modèle Fₘ', resid: 'résidus et m-ième arbre hₘ', train: 'MSE d’entraînement', test: 'MSE sur nouvelles données', r0: 'm = 0 : on prédit seulement la moyenne' }
+  };
+  var W = 560, H = 290, M = 150;
+  var o = FV.init('fv-gbdt', T, W, H); if (!o) return;
+  var truth = function (x) { return Math.sin(1.4 * x) + 0.25 * x; };
+  var xs, ys, tx, ty, trees, F0, lrUsed;
+  function stump(r, idx, depth) {
+    var mean = 0; idx.forEach(function (i) { mean += r[i]; }); mean /= idx.length;
+    if (depth === 0 || idx.length < 4) return { v: mean };
+    var best = null, bs = Infinity, sl = 0, sq = 0, tot = 0, totq = 0;
+    idx.forEach(function (i) { tot += r[i]; totq += r[i] * r[i]; });
+    for (var j = 0; j < idx.length - 1; j++) {
+      sl += r[idx[j]]; sq += r[idx[j]] * r[idx[j]];
+      var nl = j + 1, nr = idx.length - nl;
+      if (nl < 2 || nr < 2) continue;
+      var sc = sq - sl * sl / nl + (totq - sq) - (tot - sl) * (tot - sl) / nr;
+      if (sc < bs) { bs = sc; best = j; }
+    }
+    if (best === null) return { v: mean };
+    var t = (xs[idx[best]] + xs[idx[best + 1]]) / 2;
+    return { t: t, L: stump(r, idx.slice(0, best + 1), depth - 1), R: stump(r, idx.slice(best + 1), depth - 1) };
+  }
+  function ev(nd, x) { while (nd.L) nd = x <= nd.t ? nd.L : nd.R; return nd.v; }
+  function F(x, k, lr) { var s = F0; for (var i = 0; i < k; i++) s += lr * ev(trees[i], x); return s; }
+  function fit(lr) {
+    var idx = xs.map(function (_, i) { return i; }), f = ys.map(function () { return F0; });
+    trees = [];
+    for (var k = 0; k < M; k++) {
+      var r = ys.map(function (y, i) { return y - f[i]; }), h = stump(r, idx, 2);
+      trees.push(h); f = f.map(function (v, i) { return v + lr * ev(h, xs[i]); });
+    }
+    lrUsed = lr;
+  }
+  function data() {
+    xs = []; ys = []; tx = []; ty = [];
+    for (var i = 0; i < 40; i++) xs.push(-3 + 6 * Math.random());
+    xs.sort(function (a, b) { return a - b; });
+    xs.forEach(function (x) { ys.push(truth(x) + 0.3 * FV.gauss()); });
+    for (i = 0; i < 300; i++) { var x = -3 + 6 * Math.random(); tx.push(x); ty.push(truth(x) + 0.3 * FV.gauss()); }
+    F0 = ys.reduce(function (a, b) { return a + b; }, 0) / ys.length; lrUsed = null;
+  }
+  o.q('new').addEventListener('click', function () { data(); o.redraw(); });
+  o.draw = function (c) {
+    var ctx = o.ctx, k = o.v('m'), lr = o.v('lr');
+    if (lrUsed !== lr) fit(lr);
+    var m1 = FV.map(W, H, [-3.1, 3.1], [-2.2, 2.2], { l: 30, r: W / 2 + 6, t: 24, b: 22 });
+    var m2 = FV.map(W, H, [-3.1, 3.1], [-2.2, 2.2], { l: W / 2 + 26, r: 10, t: 24, b: 22 });
+    FV.axes(ctx, m1, c, { xt: [-3, 0, 3] }); FV.axes(ctx, m2, c, { xt: [-3, 0, 3] });
+    FV.label(ctx, o.t.model, m1.p.l, 15, c.text); FV.label(ctx, o.t.resid, m2.p.l, 15, c.text);
+    FV.curve(ctx, m1, truth, c.muted, 1.2, [5, 4]);
+    xs.forEach(function (x, i) { FV.dot(ctx, m1.X(x), m1.Y(ys[i]), 3.2, c.text); });
+    FV.curve(ctx, m1, function (x) { return F(x, k, lr); }, c.accent, 2.5);
+    if (k > 0) {
+      xs.forEach(function (x, i) { var r = ys[i] - F(x, k - 1, lr); FV.line(ctx, m2.X(x), m2.Y(0), m2.X(x), m2.Y(r), c.warn, 1); FV.dot(ctx, m2.X(x), m2.Y(r), 3.2, c.warn); });
+      FV.curve(ctx, m2, function (x) { return ev(trees[k - 1], x); }, c.good, 2.5);
+    } else FV.label(ctx, o.t.r0, (m2.X(-3) + m2.X(3)) / 2, m2.Y(0) - 8, c.muted, 'center');
+    var tr = 0, te = 0;
+    xs.forEach(function (x, i) { var e = ys[i] - F(x, k, lr); tr += e * e; });
+    tx.forEach(function (x, i) { var e = ty[i] - F(x, k, lr); te += e * e; });
+    o.out('m = ' + k + '　' + o.t.train + ' = ' + (tr / xs.length).toFixed(3) + '　' + o.t.test + ' = <b>' + (te / tx.length).toFixed(3) + '</b>');
+  };
+  data(); o.redraw();
+})();
+</script>
+</div>

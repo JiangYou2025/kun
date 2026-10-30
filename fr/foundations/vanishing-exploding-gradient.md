@@ -57,6 +57,8 @@ $$
 
 Après 30 couches, le gradient est amplifié plus de mille fois, et une seule mise à jour suffit à envoyer les paramètres à NaN.
 
+{% include fviz/grad-product.html %}
+
 ## Comment y remédier
 
 C'est la motivation commune de plusieurs innovations clés de l'[apprentissage profond](../dl/) :

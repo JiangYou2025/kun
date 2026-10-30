@@ -50,6 +50,8 @@ Explication symbole par symbole :
 
 Plus $J$ est petit, plus les points de chaque cluster sont serrés autour de leur centre, et plus les clusters sont « compacts ». L'étape d'« affectation » fait choisir à chaque point le centre le plus proche, l'étape de « mise à jour » place le centre sur la moyenne — ces deux étapes font toutes deux décroître $J$, donc l'algorithme converge forcément (mais éventuellement vers un **optimum local** ; c'est pourquoi on le lance souvent plusieurs fois avec des initialisations différentes pour garder le meilleur résultat, ce que sklearn fait par défaut).
 
+{% include fviz/kmeans.html %}
+
 ## Comment choisir k
 
 C'est à vous de fixer $k$ ; comment le choisir raisonnablement ? Deux outils courants :

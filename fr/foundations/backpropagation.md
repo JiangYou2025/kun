@@ -98,6 +98,8 @@ gw1 = d1*x
 print(round(gw1,3), round(gw2,3))               # 0.115 0.152
 ```
 
+{% include fviz/backprop-graph.html %}
+
 ## Pourquoi c'est important / où l'utiliser
 
 - **Sans rétropropagation, pas d'apprentissage profond moderne.** C'est elle qui rend l'entraînement de réseaux à des millions de paramètres faisable en pratique.

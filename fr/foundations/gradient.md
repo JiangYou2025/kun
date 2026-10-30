@@ -18,6 +18,8 @@ Pour une fonction d'une seule variable, la « dérivée » est un nombre (la p
 
 Debout sur une montagne, le gradient est comme une flèche : elle **pointe vers la montée la plus raide**, et **plus elle est longue, plus la pente est forte**. Pour descendre, on marche dans le sens opposé à la flèche. Une fois au fond de la vallée (un minimum), plus aucune direction ne monte et la longueur de la flèche devient 0 — c'est ce qu'on appelle un « gradient nul ».
 
+{% include fviz/gradient-field.html %}
+
 ## Formulation mathématique
 
 Pour $f(x_1,x_2,\dots,x_n)$, le gradient est le vecteur formé de ses **dérivées partielles** :

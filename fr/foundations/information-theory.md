@@ -57,6 +57,8 @@ $$
 
 Ces quantités s'emboîtent les unes dans les autres : l'entropie est la base, entropie croisée = entropie + divergence KL, et l'information mutuelle mesure « de combien la connaissance de $Y$ réduit l'incertitude sur $X$ ».
 
+{% include fviz/cross-entropy.html %}
+
 ## Un exemple concret
 
 Une source de 4 lettres $\{A,B,C,D\}$ a pour probabilités $[0.5,0.25,0.125,0.125]$. Son entropie vaut :

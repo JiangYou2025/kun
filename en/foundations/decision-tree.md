@@ -68,6 +68,8 @@ We pick the cut that minimizes the weighted sum of the two children's MSE — th
 
 **Leaves give the prediction**: a classification leaf outputs the **majority class** of its samples; a regression leaf outputs the **mean** of its $y$ values.
 
+{% include fviz/tree-split.html %}
+
 ## Overfitting and how to control it
 
 Decision trees have a dangerous talent: if you let one keep growing, it can memorize the training set **word for word** — every sample gets its own leaf and the training error is 0, but this is textbook [overfitting](../overfitting/), and it falls apart on new data. A tree that is too deep memorizes noise, not patterns.

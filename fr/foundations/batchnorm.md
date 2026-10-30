@@ -56,6 +56,8 @@ Explication symbole par symbole :
 
 Pourquoi ajouter $\gamma, \beta$ après la normalisation ? Parce que forcer chaque couche à suivre une « loi normale centrée réduite » pourrait nuire à son pouvoir d'expression. En donnant au réseau ces deux boutons de réglage $\gamma, \beta$, il peut **réapprendre la distribution** si nécessaire (et même retrouver l'entrée d'origine lorsque $\gamma=\sqrt{\sigma_B^2+\epsilon},\ \beta=\mu_B$) ; la BN n'affaiblit donc pas la capacité du modèle.
 
+{% include fviz/batchnorm-hist.html %}
+
 ## Entraînement et inférence : la différence (point clé)
 
 C'est là que la BN donne le plus souvent lieu à des erreurs.

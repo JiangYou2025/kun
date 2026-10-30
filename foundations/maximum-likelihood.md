@@ -50,6 +50,8 @@ $$
 \hat\theta=\arg\min_\theta\ \Big(-\sum_i\log p(x_i\mid\theta)\Big)
 $$
 
+{% include fviz/mle-normal.html %}
+
 ## 一个具体例子
 
 回到 7 正 3 反。似然 $L(p)=p^7(1-p)^3$，取对数：

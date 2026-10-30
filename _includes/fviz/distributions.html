@@ -1,0 +1,93 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-dist" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="d"><button data-v="bern" data-t="bern"></button><button data-v="bin" class="on" data-t="bin"></button><button data-v="pois" data-t="pois"></button><button data-v="norm" data-t="norm"></button></span>
+</div>
+<div class="ctl">
+  <label><span data-k="la"></span><input type="range" data-k="a" min="0" max="1" step="0.01" value="0.3"></label>
+  <label data-k="lbw"><span data-k="lb"></span><input type="range" data-k="b" min="1" max="30" step="1" value="10"></label>
+  <span data-g="smp"><button data-v="draw" data-t="draw"></button><button data-v="clear" data-t="clear"></button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🎲 随机变量与分布：参数如何决定均值和方差', hint: '选一种分布、拖动参数：柱子（或曲线）是每个取值的概率（密度），紫色竖线是均值 E[X]，阴影带是 ±1 个标准差。点“抽 1000 个样本”，橙色点（正态分布时是橙色直方图）是样本里各取值出现的频率——样本越多越贴近理论分布，样本均值也越接近 E[X]。', bern: '伯努利', bin: '二项', pois: '泊松', norm: '正态', draw: '抽 1000 个样本', clear: '清除样本', mean: '均值 E[X]', var: '方差 Var(X)', smean: '样本均值', svar: '样本方差', n: '样本数', prob: '概率', dens: '密度' },
+    en: { title: '🎲 Random variables and distributions: how parameters set the mean and variance', hint: 'Pick a distribution and drag its parameters: the bars (or the curve) give the probability (density) of each value, the purple line is the mean E[X], and the shaded band is ±1 standard deviation. Press “draw 1000 samples”: the orange dots (an orange histogram for the normal) are the observed frequencies in the sample. The more samples, the closer they get to the theoretical distribution, and the closer the sample mean gets to E[X].', bern: 'Bernoulli', bin: 'binomial', pois: 'Poisson', norm: 'normal', draw: 'draw 1000 samples', clear: 'clear samples', mean: 'mean E[X]', var: 'variance Var(X)', smean: 'sample mean', svar: 'sample variance', n: 'samples', prob: 'probability', dens: 'density' },
+    fr: { title: '🎲 Variables aléatoires et lois : comment les paramètres fixent la moyenne et la variance', hint: 'Choisissez une loi et faites varier ses paramètres : les barres (ou la courbe) donnent la probabilité (la densité) de chaque valeur, la ligne violette est l’espérance E[X] et la bande ombrée correspond à ±1 écart-type. Cliquez sur « tirer 1000 échantillons » : les points orange (un histogramme orange pour la loi normale) sont les fréquences observées. Plus il y a d’échantillons, plus elles se rapprochent de la loi théorique, et plus la moyenne empirique s’approche de E[X].', bern: 'Bernoulli', bin: 'binomiale', pois: 'Poisson', norm: 'normale', draw: 'tirer 1000 échantillons', clear: 'effacer', mean: 'espérance E[X]', var: 'variance Var(X)', smean: 'moyenne empirique', svar: 'variance empirique', n: 'échantillons', prob: 'probabilité', dens: 'densité' }
+  };
+  var W = 560, H = 280;
+  var o = FV.init('fv-dist', T, W, H); if (!o) return;
+  var D = {
+    bern: { a: ['p', 0.01, 0.99, 0.01, 0.3], b: null },
+    bin: { a: ['p', 0.01, 0.99, 0.01, 0.3], b: ['n', 1, 30, 1, 10] },
+    pois: { a: ['λ', 0.2, 15, 0.1, 3], b: null },
+    norm: { a: ['μ', -3, 3, 0.1, 0], b: ['σ', 0.3, 3, 0.1, 1] }
+  };
+  var d = 'bin', S = [];
+  function setup() {
+    var s = D[d], ia = o.q('a'), ib = o.q('b');
+    ia.min = s.a[1]; ia.max = s.a[2]; ia.step = s.a[3]; ia.value = s.a[4]; o.q('la').textContent = s.a[0];
+    o.q('lbw').style.display = s.b ? '' : 'none';
+    if (s.b) { ib.min = s.b[1]; ib.max = s.b[2]; ib.step = s.b[3]; ib.value = s.b[4]; o.q('lb').textContent = s.b[0]; }
+    S = [];
+  }
+  FV.group(o, 'd', function (v) { d = v; setup(); });
+  o.root.querySelectorAll('[data-g="smp"] button').forEach(function (b) {
+    b.addEventListener('click', function () { if (b.getAttribute('data-v') === 'clear') S = []; else for (var i = 0; i < 1000; i++) S.push(sample()); o.redraw(); });
+  });
+  o.root.querySelectorAll('input').forEach(function (e) { e.addEventListener('input', function () { S = []; }, true); });
+  function lf(k) { var s = 0; for (var i = 2; i <= k; i++) s += Math.log(i); return s; }
+  function pmf(k, a, b) {
+    if (d === 'bern') return k === 1 ? a : k === 0 ? 1 - a : 0;
+    if (d === 'bin') return k < 0 || k > b ? 0 : Math.exp(lf(b) - lf(k) - lf(b - k) + k * Math.log(a) + (b - k) * Math.log(1 - a));
+    if (d === 'pois') return Math.exp(-a + k * Math.log(a) - lf(k));
+  }
+  function sample() {
+    var a = o.v('a'), b = o.v('b'), i, k;
+    if (d === 'bern') return Math.random() < a ? 1 : 0;
+    if (d === 'bin') { k = 0; for (i = 0; i < b; i++) if (Math.random() < a) k++; return k; }
+    if (d === 'pois') { var L = Math.exp(-a), p = 1; k = 0; do { k++; p *= Math.random(); } while (p > L); return k - 1; }
+    return a + b * FV.gauss();
+  }
+  setup();
+  o.draw = function (c) {
+    var ctx = o.ctx, a = o.v('a'), b = o.v('b'), mu, va, xr, ymax, k;
+    if (d === 'bern') { mu = a; va = a * (1 - a); xr = [-0.8, 1.8]; }
+    else if (d === 'bin') { mu = b * a; va = b * a * (1 - a); xr = [-0.8, b + 0.8]; }
+    else if (d === 'pois') { mu = a; va = a; xr = [-0.8, Math.max(10, Math.ceil(a + 4.5 * Math.sqrt(a))) + 0.8]; }
+    else { mu = a; va = b * b; xr = [-8, 8]; }
+    var sd = Math.sqrt(va), disc = d !== 'norm', P = [];
+    if (disc) { for (k = 0; k <= xr[1]; k++) P.push(pmf(k, a, b)); ymax = Math.max.apply(null, P); }
+    else ymax = 1 / (b * Math.sqrt(2 * Math.PI));
+    /* empirical frequencies */
+    var E = {}, sm = 0, sv = 0, bw = 0.5;
+    S.forEach(function (x) { var key = disc ? x : Math.floor(x / bw); E[key] = (E[key] || 0) + 1; sm += x; });
+    if (S.length) { sm /= S.length; S.forEach(function (x) { sv += (x - sm) * (x - sm); }); sv /= Math.max(1, S.length - 1); }
+    Object.keys(E).forEach(function (key) { var f = E[key] / S.length / (disc ? 1 : bw); if (f > ymax) ymax = f; });
+    var m = FV.map(W, H, xr, [0, ymax * 1.15], { l: 44, r: 12, t: 14, b: 26 });
+    ctx.save(); ctx.globalAlpha = 0.13; ctx.fillStyle = c.accent2;
+    ctx.fillRect(m.X(Math.max(xr[0], mu - sd)), m.p.t, m.X(Math.min(xr[1], mu + sd)) - m.X(Math.max(xr[0], mu - sd)), H - m.p.t - m.p.b); ctx.restore();
+    FV.axes(ctx, m, c, { xt: disc ? FV.ticks([0, xr[1] - 0.8], 8).filter(function (v) { return v === Math.round(v); }) : null, yt: FV.ticks(m.yr, 4), yl: disc ? o.t.prob : o.t.dens });
+    if (disc) {
+      var w = Math.min(28, (m.X(1) - m.X(0)) * 0.6);
+      P.forEach(function (p, k) { ctx.fillStyle = c.accent; ctx.fillRect(m.X(k) - w / 2, m.Y(p), w, m.Y(0) - m.Y(p)); });
+    } else FV.curve(ctx, m, function (x) { return Math.exp(-(x - a) * (x - a) / (2 * b * b)) / (b * Math.sqrt(2 * Math.PI)); }, c.accent, 2.5);
+    Object.keys(E).forEach(function (key) {
+      var f = E[key] / S.length / (disc ? 1 : bw), x = disc ? +key : (+key + 0.5) * bw;
+      if (x < xr[0] || x > xr[1]) return;
+      if (disc) FV.dot(ctx, m.X(x), m.Y(f), 4.5, c.warn); else { ctx.save(); ctx.strokeStyle = c.warn; ctx.lineWidth = 1.5; ctx.strokeRect(m.X(x - bw / 2), m.Y(f), m.X(bw) - m.X(0), m.Y(0) - m.Y(f)); ctx.restore(); }
+    });
+    FV.line(ctx, m.X(mu), m.p.t, m.X(mu), H - m.p.b, c.accent2, 2);
+    FV.label(ctx, 'E[X]', m.X(mu) + 4, m.p.t + 12, c.accent2);
+    var sp = D[d], s = sp.a[0] + ' = ' + a + (sp.b ? ', ' + sp.b[0] + ' = ' + b : '') + '　→　' + o.t.mean + ' = <b>' + FV.fmt(mu, 3) + '</b>　' + o.t.var + ' = <b>' + FV.fmt(va, 3) + '</b>　σ = ' + FV.fmt(sd, 3);
+    if (S.length) s += '<br>' + o.t.n + ' = ' + S.length + '　' + o.t.smean + ' = ' + sm.toFixed(3) + '　' + o.t.svar + ' = ' + sv.toFixed(3);
+    o.out(s);
+  };
+  o.redraw();
+})();
+</script>
+</div>

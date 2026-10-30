@@ -47,6 +47,8 @@ Two key properties:
 - **Non-negativity**: $D_{\mathrm{KL}}(p\parallel q)\ge 0$, with equality if and only if $p=q$ (Gibbs' inequality).
 - **Asymmetry**: $D_{\mathrm{KL}}(p\parallel q)\ne D_{\mathrm{KL}}(q\parallel p)$.
 
+{% include fviz/kl-asym.html %}
+
 ## A concrete example
 
 True $p=[0.5,0.5]$, approximation $q=[0.9,0.1]$ (base 2):

@@ -1,0 +1,60 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-reluapprox" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="n"></span><input type="range" data-k="n" min="1" max="30" step="1" value="8"></label>
+  <label><span data-t="k"></span><input type="range" data-k="k" min="1" max="8" step="1" value="8"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🧩 用一层 ReLU 神经元拼出任意曲线', hint: '一个隐藏层、n 个 ReLU 神经元，输出 ŷ(x) = c + Σ vᵢ·max(0, x − tᵢ)。每个神经元是一段“铰链”：在拐点 tᵢ 之前为 0，之后按斜率 vᵢ 直线上升或下降（下图）。拖动 k 把神经元一个个加进来：每加一个，上图的折线就在它的拐点处弯一次。增加 n，折线就越来越贴近虚线目标——这就是通用逼近定理的直观含义。', n: '隐藏神经元数 n', k: '已加入前 k 个', top: '前 k 个神经元之和', unit: '第 k 个神经元', kink: '拐点', slope: '斜率改变', err: '最大误差（全部 n 个）', par: '参数个数' },
+    en: { title: '🧩 Building any curve from one layer of ReLU neurons', hint: 'One hidden layer with n ReLU neurons gives ŷ(x) = c + Σ vᵢ·max(0, x − tᵢ). Each neuron is a “hinge”: 0 before its kink tᵢ, then a straight line with slope vᵢ (bottom panel). Drag k to add the neurons one at a time: each new one bends the top curve at its kink. As n grows the piecewise-linear curve hugs the dashed target ever more closely — the intuition behind the universal approximation theorem.', n: 'hidden neurons n', k: 'first k added', top: 'sum of the first k neurons', unit: 'neuron k', kink: 'kink', slope: 'slope change', err: 'max error (all n)', par: 'parameters' },
+    fr: { title: '🧩 Construire n’importe quelle courbe avec une couche de neurones ReLU', hint: 'Une couche cachée de n neurones ReLU donne ŷ(x) = c + Σ vᵢ·max(0, x − tᵢ). Chaque neurone est une « charnière » : nul avant son point tᵢ, puis une droite de pente vᵢ (panneau du bas). Faites varier k pour ajouter les neurones un par un : chaque nouveau neurone plie la courbe du haut en son point. Quand n augmente, la ligne brisée épouse de mieux en mieux la cible en pointillés : c’est l’intuition du théorème d’approximation universelle.', n: 'neurones cachés n', k: 'k premiers ajoutés', top: 'somme des k premiers neurones', unit: 'neurone k', kink: 'point', slope: 'changement de pente', err: 'erreur max (les n)', par: 'paramètres' }
+  };
+  var W = 560, H = 380;
+  var o = FV.init('fv-reluapprox', T, W, H); if (!o) return;
+  var A = 0, B = 2 * Math.PI, g = function (x) { return Math.sin(x) + 0.4 * Math.sin(3 * x); };
+  var lastN = o.v('n');
+  // Keep k within 1..n; when n changes, show all neurons again.
+  o.root.addEventListener('input', function () {
+    var n = o.v('n'), kq = o.q('k');
+    kq.max = n;
+    if (n !== lastN) { kq.value = n; lastN = n; }
+  }, true);
+  var m1 = FV.map(W, H, [A, B], [-2, 2], { l: 38, r: 12, t: 12, b: 136 });
+  o.draw = function (c) {
+    var ctx = o.ctx, n = o.v('n'), k = Math.min(o.v('k'), n), t = [], v = [], s = [], i;
+    for (i = 0; i <= n; i++) t.push(A + (B - A) * i / n);
+    for (i = 0; i < n; i++) s.push((g(t[i + 1]) - g(t[i])) / (t[i + 1] - t[i]));
+    for (i = 0; i < n; i++) v.push(i ? s[i] - s[i - 1] : s[0]);
+    var c0 = g(A);
+    var part = function (K) { return function (x) { var y = c0; for (var j = 0; j < K; j++) y += v[j] * Math.max(0, x - t[j]); return y; }; };
+    var net = part(n), sumK = part(k), unit = function (x) { return v[k - 1] * Math.max(0, x - t[k - 1]); };
+
+    FV.axes(ctx, m1, c, { xt: [0, 1, 2, 3, 4, 5, 6] });
+    FV.curve(ctx, m1, g, c.muted, 2, [6, 4]);
+    if (k < n) { ctx.save(); ctx.globalAlpha = 0.3; FV.curve(ctx, m1, net, c.accent, 1.5); ctx.restore(); }
+    FV.curve(ctx, m1, sumK, c.accent, 2.6);
+    for (i = 0; i < k; i++) FV.dot(ctx, m1.X(t[i]), m1.Y(sumK(t[i])), i === k - 1 ? 5 : 3, i === k - 1 ? c.warn : c.accent);
+    FV.legend(ctx, m1, [['sin x + 0.4 sin 3x', c.muted], [o.t.top + ' (k = ' + k + ')', c.accent]], c);
+
+    var top = Math.max(0.2, Math.abs(unit(B))) * 1.15, yr = v[k - 1] >= 0 ? [-top * 0.15, top] : [-top, top * 0.15];
+    var m2 = FV.map(W, H, [A, B], yr, { l: 38, r: 12, t: H - 112, b: 22 });
+    FV.axes(ctx, m2, c, { xt: [0, 1, 2, 3, 4, 5, 6], yt: [0], xl: 'x' });
+    FV.line(ctx, m2.X(t[k - 1]), m2.p.t, m2.X(t[k - 1]), H - m2.p.b, c.warn, 1, [3, 3]);
+    FV.curve(ctx, m2, unit, c.warn, 2.6);
+    FV.label(ctx, o.t.unit.replace('k', k) + ': ' + FV.fmt(v[k - 1], 2) + ' · max(0, x − ' + FV.fmt(t[k - 1], 2) + ')', m2.p.l + 8, m2.p.t + 14, c.warn);
+
+    var e = 0;
+    for (var j = 0; j <= 600; j++) { var x = A + (B - A) * j / 600; e = Math.max(e, Math.abs(net(x) - g(x))); }
+    o.out('k = ' + k + '　' + o.t.kink + ' t = ' + FV.fmt(t[k - 1], 2) + '　' + o.t.slope + ' v = ' + FV.fmt(v[k - 1], 2) +
+      '<br>n = <b>' + n + '</b>　' + o.t.err + ' = <b>' + FV.fmt(e, 3) + '</b>　' + o.t.par + ' = ' + (3 * n + 1));
+  };
+  o.redraw();
+})();
+</script>
+</div>

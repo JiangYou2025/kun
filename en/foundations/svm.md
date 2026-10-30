@@ -36,6 +36,8 @@ $$\min_{w,b}\ \frac{1}{2}\|w\|^2 \quad \text{s.t.}\quad y_i\,(w^\top x_i + b) \g
 
 Here $y_i \in \{-1, +1\}$ is the class label. The constraint $y_i(w^\top x_i + b)\ge 1$ means "every point must stay on the correct side of the street, outside its edge". The points that **lie exactly on the edge** (where equality holds) are the **support vectors**.
 
+{% include fviz/svm-margin.html %}
+
 ## Soft margin and the parameter C
 
 Real data is often noisy and overlapping, and insisting that "every point is classified correctly" can make the margin very narrow, or leave the problem with no solution at all. Hence the **soft margin**: a few points are allowed to cross the boundary, but at a price. The optimization objective becomes

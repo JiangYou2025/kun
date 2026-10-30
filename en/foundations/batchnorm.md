@@ -56,6 +56,8 @@ Symbol by symbol:
 
 Why still need $\gamma, \beta$ after normalizing? Because forcing every layer into a "standard normal" could cost expressive power. Giving the network the two knobs $\gamma, \beta$ lets it **learn the distribution back** when needed (it even recovers the original input when $\gamma=\sqrt{\sigma_B^2+\epsilon},\ \beta=\mu_B$), so BN does not weaken the model.
 
+{% include fviz/batchnorm-hist.html %}
+
 ## Training vs. inference (crucial)
 
 This is where BN most often goes wrong.

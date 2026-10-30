@@ -49,6 +49,8 @@ Quelques réglages courants :
 - **padding (remplissage)** : on ajoute des zéros aux deux extrémités pour que la sortie ait la même longueur que l'entrée ;
 - **dilation (dilatation)** : on laisse des espaces entre les points échantillonnés par le noyau, ce qui élargit le champ récepteur sans ajouter de paramètres (les convolutions causales dilatées, comme dans WaveNet/TCN, sont courantes pour les séries temporelles).
 
+{% include fviz/conv1d.html %}
+
 ## Un exemple concret
 
 Convoluons l'entrée $\mathbf{x} = [3, 3, 5, 5, 5]$ avec un noyau de longueur 3, $\mathbf{w} = [1, 0, -1]$ (un simple « détecteur de contours »), sans padding, avec un stride de 1 et $b=0$ :

@@ -60,6 +60,8 @@ Picture a robot looking for the exit of a maze:
 
 At first the robot bumps around at random, but once it has reached the exit and collected the $+10$, that "benefit" **propagates backward cell by cell** through the value function, gradually raising the value of cells close to the exit. After many rounds, the robot has learned a nearly optimal route. This is what algorithms such as **Q-learning** do.
 
+{% include fviz/rl-gridworld.html %}
+
 ## Exploration and exploitation
 
 Reinforcement learning has an unavoidable dilemma — the **exploration vs exploitation** tradeoff:

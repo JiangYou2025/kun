@@ -22,6 +22,8 @@ math: true
 - **[链式法则](../chain-rule/)**：复合函数求导，**[反向传播](../backpropagation/)**的数学原理
 - **积分**：求面积 / 累积量，概率密度归一化要用
 
+{% include fviz/derivative.html %}
+
 ## 2. [线性代数](../linear-algebra/)
 
 数据与模型的"语言"——一切都是向量和矩阵。
@@ -33,6 +35,8 @@ math: true
 - **特征值与特征向量**：稳定性、主方向
 - **矩阵分解（[PCA](../pca/) / [SVD](../svd/)）**：降维与压缩
 
+{% include fviz/matrix-transform.html %}
+
 ## 3. [概率与统计](../probability-statistics/)
 
 在**不确定性**下推理与决策的工具。
@@ -43,6 +47,8 @@ math: true
 - **大数定律与中心极限定理**：为什么"平均"和"正态"无处不在
 - **估计**：[极大似然](../maximum-likelihood/) (MLE)、最大后验 (MAP)
 - **假设检验与置信区间**：判断"差异是否显著"
+
+{% include fviz/clt.html %}
 
 ## 4. [优化](../optimization/)
 
@@ -63,6 +69,8 @@ $$\theta^\* = \arg\min_\theta \; \mathcal{L}(\theta)$$
 - **[交叉熵](../cross-entropy/) (cross-entropy)**：分类任务最常用的损失
 - **[KL 散度](../kl-divergence/)**：两个分布的"距离"
 - **互信息**：两个变量共享多少信息
+
+{% include fviz/cross-entropy.html %}
 
 ---
 

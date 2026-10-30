@@ -45,6 +45,8 @@ $$
 \hat{y} = \sigma^{(L)}\Big(W^{(L)} \, \sigma^{(L-1)}\big(\cdots \sigma^{(1)}(W^{(1)} x + b^{(1)}) \cdots\big) + b^{(L)}\Big)
 $$
 
+{% include fviz/backprop-graph.html %}
+
 ## 一个具体例子
 
 假设一个最小网络：输入 2 维，隐藏层 2 个神经元用 ReLU，输出层 1 个神经元（线性）。给定

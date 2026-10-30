@@ -29,6 +29,10 @@ Write code that is both correct and fast.
 - **Common algorithms**: sorting, searching, recursion, [dynamic programming](../dynamic-programming/)
 - **Numerical stability**: floating-point error, overflow and underflow
 
+{% include fviz/big-o.html %}
+
+{% include fviz/binary-search.html %}
+
 ## 3. The scientific computing stack
 
 Everyday tools for time series and machine learning.

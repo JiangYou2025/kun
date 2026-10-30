@@ -57,6 +57,8 @@ $$
 
 After 30 layers the gradient is amplified more than a thousandfold, and a single update can push the parameters to NaN.
 
+{% include fviz/grad-product.html %}
+
 ## How to mitigate it
 
 This is the common motivation behind several key innovations in [deep learning](../dl/):

@@ -64,6 +64,8 @@ print(round(theta, 4))   # ≈ 2.0
 
 When a function is too complex to solve analytically (as neural networks are), we switch to **iterative** methods such as [gradient descent](../gradient-descent/) that approach the solution step by step.
 
+{% include fviz/optimizer.html %}
+
 ## Why it matters / where it is used
 
 - **Training = optimization**: almost all "learning" can be written as "minimize some loss".

@@ -24,6 +24,8 @@ Chaque atelier compte de nombreux ouvriers (les neurones). Chacun accomplit une 
 
 Un ouvrier seul est bien limité, mais des milliers d'ouvriers collaborant couche par couche peuvent, ensemble, reproduire des régularités extrêmement complexes. **La puissance d'un réseau de neurones ne vient pas d'un neurone isolé, mais de la composition en couches et du nombre colossal de paramètres.**
 
+{% include fviz/relu-approx.html %}
+
 ## Formulation mathématique
 
 Le calcul d'un neurone est une « somme pondérée + activation » :

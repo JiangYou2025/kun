@@ -54,6 +54,8 @@ if torch.cuda.is_available():
 
 典型结果是 GPU 比 CPU 快几十倍。注意两个细节：`.cuda()` 把张量搬进显存；`synchronize()` 是因为 GPU 调用是**异步**的，不同步就会把时间算错。
 
+{% include fviz/gpu-crossover.html %}
+
 ## 在时间序列预测中的意义
 
 训练 **KUN / Kernel U-Net** 这类模型几乎离不开 GPU：

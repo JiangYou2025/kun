@@ -42,6 +42,8 @@ $$\text{generalization gap} = R(f) - R_{emp}(f)$$
 
 A common but dangerous mistake: focusing only on pushing training error down. Training error can be driven all the way to 0 (as long as the model is complex enough and memorizes hard enough), but generalization error usually first falls and then rises — exactly the signal of overfitting.
 
+{% include fviz/learning-curve.html %}
+
 ## Mathematical formulation: empirical risk vs expected risk
 
 To make this intuition rigorous, we introduce two "risks".

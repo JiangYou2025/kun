@@ -1,0 +1,57 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-chain" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="x0"></span><input type="range" data-k="x" min="-1.9" max="1.6" step="0.01" value="0.8"></label>
+  <label><span data-t="h"></span> Δx<input type="range" data-k="h" min="0.01" max="0.5" step="0.01" value="0.25"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '⛓️ 链式法则：局部斜率一路相乘', hint: '复合函数 y = sin(x²)：先 u = g(x) = x²，再 y = f(u) = sin u。给 x 一个小推动 Δx（橙）：经过第一段被放大为 Δu ≈ g′(x)·Δx（紫），再经过第二段变成 Δy ≈ f′(u)·Δu（粉）。所以整体斜率 = 两段斜率之积。试着把 x 移到 f′(u) < 0 的地方：乘积变负，y 反向变化。', x0: '位置 x', h: '推动', p1: '① u = g(x) = x²', p2: '② y = f(u) = sin u', p3: '③ y = sin(x²)', prod: '乘积', meas: '实测 Δy/Δx' },
+    en: { title: '⛓️ The chain rule: local slopes multiply along the chain', hint: 'The composite y = sin(x²): first u = g(x) = x², then y = f(u) = sin u. Give x a small nudge Δx (orange): the first stage turns it into Δu ≈ g′(x)·Δx (purple), the second stage into Δy ≈ f′(u)·Δu (pink). So the overall slope is the product of the two slopes. Move x to a place where f′(u) < 0: the product turns negative and y moves the other way.', x0: 'position x', h: 'nudge', p1: '① u = g(x) = x²', p2: '② y = f(u) = sin u', p3: '③ y = sin(x²)', prod: 'product', meas: 'measured Δy/Δx' },
+    fr: { title: '⛓️ La règle de dérivation en chaîne : les pentes locales se multiplient', hint: 'La composée y = sin(x²) : d’abord u = g(x) = x², puis y = f(u) = sin u. Donnez à x une petite poussée Δx (orange) : le premier étage la transforme en Δu ≈ g′(x)·Δx (violet), le second en Δy ≈ f′(u)·Δu (rose). La pente globale est donc le produit des deux pentes. Placez x là où f′(u) < 0 : le produit devient négatif et y varie en sens inverse.', x0: 'position x', h: 'poussée', p1: '① u = g(x) = x²', p2: '② y = f(u) = sin u', p3: '③ y = sin(x²)', prod: 'produit', meas: 'Δy/Δx mesuré' }
+  };
+  var W = 560, H = 270;
+  var o = FV.init('fv-chain', T, W, H); if (!o) return;
+  var g = function (x) { return x * x; }, dg = function (x) { return 2 * x; };
+  var f = function (u) { return Math.sin(u); }, df = function (u) { return Math.cos(u); };
+  var pw = 186;
+  function panel(i, xr, yr) { var l = 6 + i * pw; return FV.map(W, H, xr, yr, { l: l + 30, r: W - (l + pw - 8), t: 28, b: 24 }); }
+  var m1 = panel(0, [-2, 2], [0, 4]), m2 = panel(1, [0, 4], [-1.2, 1.2]), m3 = panel(2, [-2, 2], [-1.2, 1.2]);
+  function seg(ctx, m, a, b, horiz, col) {
+    ctx.save(); ctx.lineWidth = 7; ctx.strokeStyle = col; ctx.globalAlpha = 0.85; ctx.beginPath();
+    if (horiz) { var Y = H - m.p.b; ctx.moveTo(m.X(a), Y); ctx.lineTo(m.X(b), Y); }
+    else { var X = m.p.l; ctx.moveTo(X, m.Y(a)); ctx.lineTo(X, m.Y(b)); }
+    ctx.stroke(); ctx.restore();
+  }
+  function guides(ctx, m, x0, y0, x1, y1, c) {
+    FV.line(ctx, m.X(x0), H - m.p.b, m.X(x0), m.Y(y0), c.muted, 1, [3, 3]); FV.line(ctx, m.p.l, m.Y(y0), m.X(x0), m.Y(y0), c.muted, 1, [3, 3]);
+    FV.line(ctx, m.X(x1), H - m.p.b, m.X(x1), m.Y(y1), c.muted, 1, [3, 3]); FV.line(ctx, m.p.l, m.Y(y1), m.X(x1), m.Y(y1), c.muted, 1, [3, 3]);
+  }
+  o.draw = function (c) {
+    var ctx = o.ctx, x = o.v('x'), h = o.v('h'), x2 = x + h, u = g(x), u2 = g(x2), y = f(u), y2 = f(u2);
+    var s1 = dg(x), s2 = df(u), s = s1 * s2;
+    [[m1, o.t.p1, function (t) { return g(t); }, x, u, x2, u2, s1, c.warn, c.accent2],
+     [m2, o.t.p2, function (t) { return f(t); }, u, y, u2, y2, s2, c.accent2, c.pink],
+     [m3, o.t.p3, function (t) { return f(g(t)); }, x, y, x2, y2, s, c.warn, c.pink]].forEach(function (P) {
+      var m = P[0];
+      FV.axes(ctx, m, c, { xt: FV.ticks(m.xr, 4), yt: FV.ticks(m.yr, 4) });
+      FV.label(ctx, P[1], m.p.l, 16, c.text, 'left', '12px system-ui,sans-serif');
+      FV.curve(ctx, m, P[2], c.accent, 2.2);
+      FV.curve(ctx, m, function (t) { return P[4] + P[7] * (t - P[3]); }, c.text, 1.2, [5, 4]);
+      guides(ctx, m, P[3], P[4], P[5], P[6], c);
+      seg(ctx, m, P[3], P[5], true, P[8]);
+      seg(ctx, m, P[4], P[6], false, P[9]);
+      FV.dot(ctx, m.X(P[3]), m.Y(P[4]), 4.5, c.text);
+    });
+    o.out('g′(x) = 2x = <b>' + s1.toFixed(2) + '</b>　×　f′(u) = cos u = <b>' + s2.toFixed(2) + '</b>　=　' + o.t.prod + ' <b>' + s.toFixed(2) +
+      '</b>　· ' + o.t.meas + ' = ' + ((y2 - y) / h).toFixed(2));
+  };
+  o.redraw();
+})();
+</script>
+</div>

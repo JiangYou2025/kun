@@ -65,6 +65,8 @@ Prenons patience=3 et min_delta=0. Lors d'un entraînement, la perte de validati
 
 À l'époque 3, on atteint le minimum de 0.39 et on le sauvegarde. Ensuite, les époques 4, 5 et 6 n'apportent aucune amélioration trois fois de suite ; wait atteint patience=3, on **s'arrête** donc à l'époque 6 et l'on **revient aux poids de l'époque 3**. Même si l'époque 7 pouvait (ou non) amener un rebond, on ne parie pas — l'arrêt précoce choisit prudemment de s'arrêter au meilleur point connu.
 
+{% include fviz/early-stop.html %}
+
 ## Pourquoi c'est important / où l'utiliser
 
 - **Une [régularisation](../regularization/) presque gratuite** : sans modifier l'architecture du réseau ni la fonction de perte, simplement en « s'arrêtant au bon moment », on améliore nettement la généralisation.

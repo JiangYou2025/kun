@@ -1,0 +1,56 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-entropy" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label>A<input type="range" data-k="w0" min="0" max="10" step="0.1" value="5"></label>
+  <label>B<input type="range" data-k="w1" min="0" max="10" step="0.1" value="2.5"></label>
+  <label>C<input type="range" data-k="w2" min="0" max="10" step="0.1" value="1.25"></label>
+  <label>D<input type="range" data-k="w3" min="0" max="10" step="0.1" value="1.25"></label>
+</div>
+<div class="ctl">
+  <span data-g="pre"><button data-v="5,5,5,5" data-t="uni"></button><button data-v="5,2.5,1.25,1.25" class="on" data-t="skew"></button><button data-v="10,0.1,0.1,0.1" data-t="sure"></button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🎰 熵 = 平均“惊讶程度”', hint: '4 种结果 A–D，滑块调它们的相对权重（自动归一化为概率）。每个矩形的宽度是概率 pᵢ，高度是“惊讶度” −log₂ pᵢ（越罕见越惊讶），所以矩形总面积 Σ pᵢ·(−log₂ pᵢ) 就是熵 H，紫色虚线是这个平均高度。均匀分布时熵最大（2 比特），几乎确定时熵趋近 0。', uni: '均匀', skew: '偏斜', sure: '几乎确定', H: '熵 H', max: '最大可能 log₂4 = 2 比特', bits: '比特', yl: '惊讶度 −log₂ p（比特）', xl: '概率 p（宽度）' },
+    en: { title: '🎰 Entropy = average “surprise”', hint: 'Four outcomes A–D; the sliders set their relative weights (normalised to probabilities). Each rectangle is as wide as its probability pᵢ and as tall as its “surprise” −log₂ pᵢ (the rarer, the more surprising), so the total area Σ pᵢ·(−log₂ pᵢ) is exactly the entropy H; the purple dashed line is that average height. The uniform distribution has the largest entropy (2 bits); an almost certain outcome drives it towards 0.', uni: 'uniform', skew: 'skewed', sure: 'almost certain', H: 'entropy H', max: 'maximum possible log₂4 = 2 bits', bits: 'bits', yl: 'surprise −log₂ p (bits)', xl: 'probability p (width)' },
+    fr: { title: '🎰 L’entropie = la « surprise » moyenne', hint: 'Quatre issues A–D ; les curseurs fixent leurs poids relatifs (normalisés en probabilités). Chaque rectangle a pour largeur la probabilité pᵢ et pour hauteur la « surprise » −log₂ pᵢ (plus c’est rare, plus c’est surprenant) : l’aire totale Σ pᵢ·(−log₂ pᵢ) est donc exactement l’entropie H, et la ligne violette en pointillés est cette hauteur moyenne. La loi uniforme a l’entropie maximale (2 bits) ; une issue presque certaine la fait tendre vers 0.', uni: 'uniforme', skew: 'asymétrique', sure: 'presque certain', H: 'entropie H', max: 'maximum possible log₂4 = 2 bits', bits: 'bits', yl: 'surprise −log₂ p (bits)', xl: 'probabilité p (largeur)' }
+  };
+  var W = 560, H = 280;
+  var o = FV.init('fv-entropy', T, W, H); if (!o) return;
+  FV.group(o, 'pre', function (v) { v.split(',').forEach(function (x, i) { o.q('w' + i).value = x; }); });
+  o.root.addEventListener('input', function () { o.root.querySelectorAll('[data-g="pre"] button').forEach(function (b) { b.classList.remove('on'); }); });
+  var m = FV.map(W, H, [0, 1], [0, 7], { l: 40, r: 14, t: 22, b: 28 });
+  var lg = function (x) { return Math.log(x) / Math.LN2; };
+  o.draw = function (c) {
+    var ctx = o.ctx, w = [0, 1, 2, 3].map(function (i) { return o.v('w' + i); }), s = w.reduce(function (a, b) { return a + b; }, 0);
+    if (s <= 0) { w = [1, 1, 1, 1]; s = 4; }
+    var p = w.map(function (x) { return x / s; }), Hh = 0;
+    p.forEach(function (q) { if (q > 0) Hh -= q * lg(q); });
+    FV.axes(ctx, m, c, { yt: [0, 1, 2, 3, 4, 5, 6, 7] });
+    FV.label(ctx, o.t.yl, m.p.l, 14, c.muted, 'left', '11px system-ui,sans-serif');
+    FV.label(ctx, o.t.xl, W - m.p.r, 14, c.muted, 'right', '11px system-ui,sans-serif');
+    var cols = [c.accent, c.blue, c.warn, c.pink], x = 0;
+    p.forEach(function (q, i) {
+      if (q <= 0) return;
+      var h = -lg(q), X0 = m.X(x), X1 = m.X(x + q), top = m.Y(Math.min(h, 7));
+      ctx.globalAlpha = 0.55; ctx.fillStyle = cols[i]; ctx.fillRect(X0, top, X1 - X0, m.Y(0) - top);
+      ctx.globalAlpha = 1; ctx.strokeStyle = cols[i]; ctx.lineWidth = 1.5; ctx.strokeRect(X0, top, X1 - X0, m.Y(0) - top);
+      if (X1 - X0 > 26) {
+        FV.label(ctx, 'ABCD'[i], (X0 + X1) / 2, top - 6, c.text, 'center', 'bold 12px system-ui,sans-serif');
+        FV.label(ctx, (100 * q).toFixed(0) + '%', (X0 + X1) / 2, m.Y(0) - 6, c.text, 'center', '11px system-ui,sans-serif');
+      }
+      x += q;
+    });
+    FV.line(ctx, m.p.l, m.Y(Hh), W - m.p.r, m.Y(Hh), c.accent2, 2, [6, 4]);
+    FV.label(ctx, 'H = ' + Hh.toFixed(2), W - m.p.r - 4, m.Y(Hh) - 6, c.accent2, 'right', 'bold 12px system-ui,sans-serif');
+    o.out(p.map(function (q, i) { return 'p(' + 'ABCD'[i] + ') = ' + q.toFixed(2); }).join('　') + '<br>' + o.t.H + ' = <b>' + Hh.toFixed(3) + ' ' + o.t.bits + '</b>　(' + o.t.max + ')');
+  };
+  o.redraw();
+})();
+</script>
+</div>

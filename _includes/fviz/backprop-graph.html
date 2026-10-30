@@ -1,0 +1,84 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-backprop" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <button data-k="prev">◀</button><button data-k="next" data-t="next"></button><button data-k="reset" data-t="reset"></button>
+  <label>w₁<input type="range" data-k="w1" min="-3" max="3" step="0.05" value="0.5"></label>
+  <label>w₂<input type="range" data-k="w2" min="-3" max="3" step="0.05" value="2"></label>
+  <label>x<input type="range" data-k="x" min="-2" max="2" step="0.05" value="1"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🔁 计算图上的前向与反向传播', hint: '网络：z₁ = w₁x，a₁ = σ(z₁)，ŷ = w₂a₁，损失 L = ½(ŷ − y)²，目标 y = 1。按“下一步”：先从左到右算出每个节点的值（青绿），再从右到左用链式法则把梯度 ∂L/∂· 传回来（粉）。每个节点只需要“上游梯度 × 本地导数”。', next: '下一步 ▶', reset: '重来', s0: '还没开始：按“下一步”做前向传播。', fw: '前向', bw: '反向', check: '数值验证：', done: '完成：反向传播一次就得到了所有参数的梯度。' },
+    en: { title: '🔁 Forward and backward passes on a computational graph', hint: 'Network: z₁ = w₁x, a₁ = σ(z₁), ŷ = w₂a₁, loss L = ½(ŷ − y)² with target y = 1. Press “next”: first each node’s value is computed from left to right (teal), then the chain rule carries the gradients ∂L/∂· back from right to left (pink). Each node only needs “upstream gradient × local derivative”.', next: 'next ▶', reset: 'reset', s0: 'Not started yet: press “next” to run the forward pass.', fw: 'forward', bw: 'backward', check: 'numerical check: ', done: 'Done: one backward pass gives the gradient of every parameter.' },
+    fr: { title: '🔁 Passes avant et arrière sur un graphe de calcul', hint: 'Réseau : z₁ = w₁x, a₁ = σ(z₁), ŷ = w₂a₁, perte L = ½(ŷ − y)² avec la cible y = 1. Appuyez sur « suivant » : on calcule d’abord la valeur de chaque nœud de gauche à droite (turquoise), puis la règle de dérivation en chaîne ramène les gradients ∂L/∂· de droite à gauche (rose). Chaque nœud n’a besoin que de « gradient amont × dérivée locale ».', next: 'suivant ▶', reset: 'recommencer', s0: 'Pas encore commencé : appuyez sur « suivant » pour la passe avant.', fw: 'avant', bw: 'arrière', check: 'vérification numérique : ', done: 'Terminé : une seule passe arrière donne le gradient de tous les paramètres.' }
+  };
+  var W = 560, H = 280, NS = 8;
+  var o = FV.init('fv-backprop', T, W, H); if (!o) return;
+  var step = 0;
+  o.q('next').addEventListener('click', function () { step = Math.min(NS, step + 1); o.redraw(); });
+  o.q('prev').addEventListener('click', function () { step = Math.max(0, step - 1); o.redraw(); });
+  o.q('reset').addEventListener('click', function () { step = 0; o.redraw(); });
+  var sig = function (z) { return 1 / (1 + Math.exp(-z)); };
+  var fwd = function (x, w1, w2) { var z1 = w1 * x, a1 = sig(z1), yh = w2 * a1; return { z1: z1, a1: a1, yh: yh, L: 0.5 * (yh - 1) * (yh - 1) }; };
+  /* nodes: label, position, leaf?, step at which value / gradient appear */
+  var N = {
+    x:  { s: 'x',  X: 46,  Y: 70,  leaf: 1, f: 0, b: 8 },
+    w1: { s: 'w₁', X: 46,  Y: 180, leaf: 1, f: 0, b: 8 },
+    z1: { s: '×',  X: 150, Y: 125, f: 1, b: 7, n: 'z₁' },
+    a1: { s: 'σ',  X: 250, Y: 125, f: 2, b: 6, n: 'a₁' },
+    w2: { s: 'w₂', X: 250, Y: 235, leaf: 1, f: 0, b: 6 },
+    yh: { s: '×',  X: 355, Y: 175, f: 3, b: 5, n: 'ŷ' },
+    y:  { s: 'y',  X: 355, Y: 60,  leaf: 1, f: 0, b: 99 },
+    L:  { s: 'L',  X: 470, Y: 125, f: 4, b: 4, n: 'L' }
+  };
+  var E = [['x', 'z1'], ['w1', 'z1'], ['z1', 'a1'], ['a1', 'yh'], ['w2', 'yh'], ['yh', 'L'], ['y', 'L']];
+  o.draw = function (c) {
+    var ctx = o.ctx, x = o.v('x'), w1 = o.v('w1'), w2 = o.v('w2'), F = fwd(x, w1, w2);
+    var gyh = F.yh - 1, gw2 = gyh * F.a1, ga1 = gyh * w2, gz1 = ga1 * F.a1 * (1 - F.a1), gw1 = gz1 * x, gx = gz1 * w1;
+    var val = { x: x, w1: w1, z1: F.z1, a1: F.a1, w2: w2, yh: F.yh, y: 1, L: F.L };
+    var grad = { x: gx, w1: gw1, z1: gz1, a1: ga1, w2: gw2, yh: gyh, L: 1 };
+    var back = step > 4;
+    E.forEach(function (e) {
+      var a = N[e[0]], b = N[e[1]], dx = b.X - a.X, dy = b.Y - a.Y, d = Math.sqrt(dx * dx + dy * dy), r = 23;
+      var x0 = a.X + dx / d * r, y0 = a.Y + dy / d * r, x1 = b.X - dx / d * r, y1 = b.Y - dy / d * r;
+      var fOn = !back && step === b.f, bOn = back && step === a.b && step !== b.b;
+      if (bOn) FV.arrow(ctx, x1, y1, x0, y0, c.pink, 2.5);
+      else FV.arrow(ctx, x0, y0, x1, y1, fOn ? c.accent : c.muted, fOn ? 2.5 : 1.2);
+    });
+    Object.keys(N).forEach(function (k) {
+      var n = N[k], cur = n.leaf ? (back && step === n.b) : (step === n.f || step === n.b);
+      ctx.beginPath();
+      if (n.leaf) ctx.rect(n.X - 20, n.Y - 15, 40, 30); else ctx.arc(n.X, n.Y, 21, 0, 2 * Math.PI);
+      ctx.fillStyle = c.surface; ctx.fill();
+      ctx.lineWidth = cur ? 3 : 1.5; ctx.strokeStyle = cur ? (back ? c.pink : c.accent) : c.muted; ctx.stroke();
+      FV.label(ctx, n.s, n.X, n.Y + 5, c.text, 'center', 'bold 15px system-ui,sans-serif');
+      var top = n.leaf ? n.Y - 21 : n.Y - 29, bot = n.leaf ? n.Y + 31 : n.Y + 39;
+      if (step >= n.f) FV.label(ctx, (n.n ? n.n + ' = ' : '') + FV.fmt(val[k], 3), n.X, top, c.accent, 'center', 'bold 12px system-ui,sans-serif');
+      if (step >= n.b && grad[k] != null) FV.label(ctx, '∂L/∂' + (n.n || n.s) + ' = ' + FV.fmt(grad[k], 3), n.X, bot, c.pink, 'center', 'bold 12px system-ui,sans-serif');
+    });
+    FV.label(ctx, (back ? o.t.bw : o.t.fw) + ' ' + step + ' / ' + NS, W - 10, 18, back ? c.pink : c.accent, 'right');
+    var f = function (v) { return FV.fmt(v, 3); }, s;
+    switch (step) {
+      case 0: s = o.t.s0; break;
+      case 1: s = 'z₁ = w₁·x = ' + f(w1) + ' × ' + f(x) + ' = <b>' + f(F.z1) + '</b>'; break;
+      case 2: s = 'a₁ = σ(z₁) = 1 / (1 + e^(−' + f(F.z1) + ')) = <b>' + f(F.a1) + '</b>'; break;
+      case 3: s = 'ŷ = w₂·a₁ = ' + f(w2) + ' × ' + f(F.a1) + ' = <b>' + f(F.yh) + '</b>'; break;
+      case 4: s = 'L = ½(ŷ − y)² = ½(' + f(F.yh) + ' − 1)² = <b>' + f(F.L) + '</b>'; break;
+      case 5: s = '∂L/∂ŷ = ŷ − y = <b>' + f(gyh) + '</b>'; break;
+      case 6: s = '∂L/∂w₂ = ∂L/∂ŷ · a₁ = <b>' + f(gw2) + '</b>　∂L/∂a₁ = ∂L/∂ŷ · w₂ = <b>' + f(ga1) + '</b>'; break;
+      case 7: s = '∂L/∂z₁ = ∂L/∂a₁ · σ′(z₁) = ' + f(ga1) + ' × a₁(1 − a₁) = ' + f(ga1) + ' × ' + f(F.a1 * (1 - F.a1)) + ' = <b>' + f(gz1) + '</b>'; break;
+      default:
+        var h = 1e-5, num = (fwd(x, w1 + h, w2).L - fwd(x, w1 - h, w2).L) / (2 * h);
+        s = '∂L/∂w₁ = ∂L/∂z₁ · x = <b>' + f(gw1) + '</b>　(' + o.t.check + f(num) + ')　' + o.t.done;
+    }
+    o.out(s);
+  };
+  o.redraw();
+})();
+</script>
+</div>

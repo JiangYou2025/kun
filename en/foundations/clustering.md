@@ -50,6 +50,8 @@ Symbol by symbol:
 
 The smaller $J$, the more tightly the points in each cluster gather around their center, and the more "solid" the clusters. The "assign" step lets each point choose its nearest center, and the "update" step places each center at the mean — both steps decrease $J$, so the algorithm is guaranteed to converge (but possibly to a **local optimum**, which is why it is common to run several times with different initializations and keep the best; sklearn does this by default).
 
+{% include fviz/kmeans.html %}
+
 ## How to choose k
 
 You have to pick $k$ yourself — so how do you choose it sensibly? Two common tools:

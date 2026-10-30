@@ -70,6 +70,8 @@ posterior = sens*prior / evidence
 print(round(posterior, 3))   # 0.167
 ```
 
+{% include fviz/bayes-test.html %}
+
 ## 为什么重要 / 用在哪
 
 贝叶斯定理是**从数据中学习**的统一框架：

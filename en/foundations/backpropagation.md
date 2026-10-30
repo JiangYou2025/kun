@@ -98,6 +98,8 @@ gw1 = d1*x
 print(round(gw1,3), round(gw2,3))               # 0.115 0.152
 ```
 
+{% include fviz/backprop-graph.html %}
+
 ## Why it matters / where it is used
 
 - **Without backpropagation there would be no modern deep learning.** It makes training networks with millions of parameters computationally feasible.

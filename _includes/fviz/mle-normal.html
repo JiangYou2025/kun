@@ -1,0 +1,48 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-mle" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label>μ<input type="range" data-k="mu" min="0" max="7" step="0.05" value="5.2"></label>
+  <label>σ<input type="range" data-k="sg" min="0.4" max="3" step="0.05" value="0.7"></label>
+  <span data-g="fit"><button data-v="mle" data-t="fit"></button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🔍 极大似然：调参数，让数据“最不意外”', hint: '上图：横轴上 12 个观测点和一条候选正态分布 N(μ, σ²)。每个点上的紫色竖线是它的密度 p(xᵢ | μ, σ)，似然就是这些竖线高度的乘积，对数似然是它们对数之和。把曲线挪到点密集处、宽度合适，竖线整体变高，似然就变大。下图是固定 σ 时对数似然随 μ 的变化：峰值正好在样本均值 x̄ 处（★）。', fit: '跳到极大似然解', ll: '对数似然 ℓ(μ, σ)', best: '极大似然解：', curve: 'ℓ(μ)，σ 固定' },
+    en: { title: '🔍 Maximum likelihood: tune the parameters so the data are “least surprising”', hint: 'Top: 12 observations on the axis and a candidate normal distribution N(μ, σ²). The purple stem on each point is its density p(xᵢ | μ, σ); the likelihood is the product of those stem heights, the log-likelihood the sum of their logs. Move the curve to where the points cluster and give it the right width: the stems grow overall and the likelihood increases. Bottom: the log-likelihood as a function of μ with σ held fixed. Its peak sits exactly at the sample mean x̄ (★).', fit: 'jump to the MLE', ll: 'log-likelihood ℓ(μ, σ)', best: 'maximum-likelihood estimate: ', curve: 'ℓ(μ) with σ fixed' },
+    fr: { title: '🔍 Maximum de vraisemblance : régler les paramètres pour que les données soient « le moins surprenantes »', hint: 'En haut : 12 observations sur l’axe et une loi normale candidate N(μ, σ²). La tige violette sur chaque point est sa densité p(xᵢ | μ, σ) ; la vraisemblance est le produit des hauteurs de ces tiges, la log-vraisemblance la somme de leurs logarithmes. Placez la courbe là où les points se concentrent, avec la bonne largeur : les tiges s’allongent dans l’ensemble et la vraisemblance augmente. En bas : la log-vraisemblance en fonction de μ, σ étant fixé. Son maximum tombe exactement sur la moyenne empirique x̄ (★).', fit: 'aller à l’estimateur du MV', ll: 'log-vraisemblance ℓ(μ, σ)', best: 'estimateur du maximum de vraisemblance : ', curve: 'ℓ(μ) à σ fixé' }
+  };
+  var W = 560, H = 320;
+  var o = FV.init('fv-mle', T, W, H); if (!o) return;
+  var X = [1.3, 2.1, 2.4, 2.8, 3.0, 3.3, 3.5, 3.7, 4.1, 4.4, 5.0, 5.9], n = X.length, xb = 0, s2 = 0;
+  X.forEach(function (x) { xb += x / n; }); X.forEach(function (x) { s2 += (x - xb) * (x - xb) / n; });
+  var sh = Math.sqrt(s2);
+  FV.group(o, 'fit', function () { o.q('mu').value = xb.toFixed(2); o.q('sg').value = sh.toFixed(2); });
+  o.root.addEventListener('input', function () { var b = o.root.querySelector('[data-g="fit"] button'); b.classList.remove('on'); });
+  var pdf = function (x, mu, s) { return Math.exp(-(x - mu) * (x - mu) / (2 * s * s)) / (s * Math.sqrt(2 * Math.PI)); };
+  var ll = function (mu, s) { var t = 0; X.forEach(function (x) { t += Math.log(pdf(x, mu, s)); }); return t; };
+  var m1 = FV.map(W, H, [0, 7.5], [0, 1.05], { l: 44, r: 12, t: 10, b: 152 });
+  var m2 = FV.map(W, H, [0, 7.5], [-100, -10], { l: 44, r: 12, t: 200, b: 24 });
+  o.draw = function (c) {
+    var ctx = o.ctx, mu = o.v('mu'), s = o.v('sg');
+    FV.axes(ctx, m1, c, { yt: [0, 0.5, 1] });
+    FV.curve(ctx, m1, function (x) { return pdf(x, mu, s); }, c.accent, 2.5);
+    X.forEach(function (x) { var p = pdf(x, mu, s); FV.line(ctx, m1.X(x), m1.Y(0), m1.X(x), m1.Y(Math.min(p, 1.05)), c.accent2, 2.5); FV.dot(ctx, m1.X(x), m1.Y(0), 4, c.text); });
+    FV.label(ctx, 'N(' + mu.toFixed(2) + ', ' + s.toFixed(2) + '²)', W - 16, m1.p.t + 14, c.accent, 'right');
+    FV.axes(ctx, m2, c, { yt: [-100, -60, -20] });
+    FV.label(ctx, o.t.curve, m2.p.l + 6, m2.p.t + 12, c.muted, 'left', '11px system-ui,sans-serif');
+    FV.curve(ctx, m2, function (u) { return ll(u, s); }, c.accent2, 2);
+    var L = ll(mu, s);
+    if (L >= m2.yr[0]) FV.dot(ctx, m2.X(mu), m2.Y(L), 5, c.warn);
+    else FV.label(ctx, '▼', m2.X(mu), H - m2.p.b - 2, c.warn, 'center');
+    FV.label(ctx, '★', m2.X(xb), m2.Y(ll(xb, s)) - 4, c.good, 'center', '15px system-ui,sans-serif');
+    o.out(o.t.ll + ' = Σ log p(xᵢ) = <b>' + L.toFixed(2) + '</b><br>' + o.t.best + 'μ̂ = x̄ = ' + xb.toFixed(2) + ', σ̂ = ' + sh.toFixed(2) + ' → ℓ = ' + ll(xb, sh).toFixed(2));
+  };
+  o.redraw();
+})();
+</script>
+</div>

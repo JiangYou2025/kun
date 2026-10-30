@@ -1,0 +1,60 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-lossout" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="out"></span><input type="range" data-k="oy" min="-4" max="20" step="0.1" value="15"></label>
+  <label><span data-t="delta"></span> δ<input type="range" data-k="d" min="0.2" max="4" step="0.1" value="1"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🎯 MSE、MAE 与 Huber：谁会被一个离群点带偏？', hint: '右图：9 个点大致在一条直线上，红色那个是离群点，拖动滑块改变它的高度。三条直线分别是最小化 MSE、MAE、Huber 损失得到的最佳拟合。MSE 把残差平方，离群点的“拉力”随距离越来越大，整条线被拽过去；MAE 和 Huber 对大残差只按线性惩罚，几乎不受影响。左图是三种损失随残差 r 的形状。', out: '离群点高度', delta: 'Huber 阈值', r: '损失 vs 残差 r', slope: '斜率：', pull: '离群点对损失的贡献：' },
+    en: { title: '🎯 MSE, MAE and Huber: which one is dragged off by a single outlier?', hint: 'Right: 9 points lie roughly on a line; the red one is an outlier, and the slider moves it up and down. The three lines are the best fits under MSE, MAE and Huber loss. MSE squares the residuals, so the outlier’s “pull” keeps growing with its distance and drags the whole line towards it; MAE and Huber penalise large residuals only linearly and barely move. Left: the shape of the three losses as a function of the residual r.', out: 'outlier height', delta: 'Huber threshold', r: 'loss vs residual r', slope: 'slope:', pull: 'outlier’s contribution to the loss:' },
+    fr: { title: '🎯 MSE, MAE et Huber : laquelle se laisse entraîner par une seule valeur aberrante ?', hint: 'À droite : 9 points à peu près alignés ; le rouge est une valeur aberrante, que le curseur déplace verticalement. Les trois droites sont les meilleurs ajustements au sens de la MSE, de la MAE et de la perte de Huber. La MSE élève les résidus au carré : la « traction » de la valeur aberrante grandit avec sa distance et entraîne toute la droite ; la MAE et Huber ne pénalisent les grands résidus que linéairement et bougent à peine. À gauche : la forme des trois pertes en fonction du résidu r.', out: 'hauteur de la valeur aberrante', delta: 'seuil de Huber', r: 'perte selon le résidu r', slope: 'pente :', pull: 'contribution de la valeur aberrante à la perte :' }
+  };
+  var W = 560, H = 290;
+  var o = FV.init('fv-lossout', T, W, H); if (!o) return;
+  var XS = [0, 1, 2, 3, 4, 5, 6, 7, 9], YS = [1.2, 1.4, 2.3, 2.4, 3.1, 3.4, 4.1, 4.4, 5.6], OX = 8;
+  /* weighted least squares for a line, then iteratively reweighted for MAE / Huber */
+  function wls(xs, ys, w) {
+    var sw = 0, sx = 0, sy = 0, sxx = 0, sxy = 0;
+    for (var i = 0; i < xs.length; i++) { sw += w[i]; sx += w[i] * xs[i]; sy += w[i] * ys[i]; sxx += w[i] * xs[i] * xs[i]; sxy += w[i] * xs[i] * ys[i]; }
+    var a = (sw * sxy - sx * sy) / (sw * sxx - sx * sx); return [a, (sy - a * sx) / sw];
+  }
+  function fit(xs, ys, kind, d) {
+    var w = xs.map(function () { return 1; }), p = wls(xs, ys, w);
+    if (kind === 'mse') return p;
+    for (var it = 0; it < 200; it++) {
+      w = xs.map(function (x, i) { var r = Math.abs(ys[i] - p[0] * x - p[1]); return kind === 'mae' ? 1 / Math.max(r, 1e-6) : (r <= d ? 1 : d / r); });
+      p = wls(xs, ys, w);
+    }
+    return p;
+  }
+  var mL = FV.map(W, H, [-4, 4], [0, 8], { l: 30, r: 400, t: 22, b: 26 });
+  var mR = FV.map(W, H, [-0.5, 9.5], [-5, 21], { l: 200, r: 12, t: 12, b: 26 });
+  o.draw = function (c) {
+    var ctx = o.ctx, oy = o.v('oy'), d = o.v('d');
+    var xs = XS.concat([OX]), ys = YS.concat([oy]);
+    var L = { mse: function (r) { return r * r; }, mae: function (r) { return Math.abs(r); }, hub: function (r) { var a = Math.abs(r); return a <= d ? 0.5 * r * r : d * (a - 0.5 * d); } };
+    var cols = { mse: c.warn, mae: c.blue, hub: c.good };
+    FV.axes(ctx, mL, c, { xt: [-4, -2, 0, 2, 4], yt: [0, 2, 4, 6, 8] });
+    FV.label(ctx, o.t.r, 4, 12, c.muted, 'left', '11px system-ui,sans-serif');
+    ['mse', 'mae', 'hub'].forEach(function (k) { FV.curve(ctx, mL, L[k], cols[k], 2); });
+    FV.label(ctx, 'MSE', mL.X(-2.6), mL.Y(7.4), c.warn, 'center'); FV.label(ctx, 'MAE', mL.X(-3.4), mL.Y(4.6), c.blue, 'center'); FV.label(ctx, 'Huber', mL.X(3.1), mL.Y(1.6), c.good, 'center');
+    FV.axes(ctx, mR, c, { xt: [0, 2, 4, 6, 8], yt: [0, 5, 10, 15, 20] });
+    var P = {};
+    ['mse', 'mae', 'hub'].forEach(function (k) { P[k] = fit(xs, ys, k, d); var p = P[k]; FV.curve(ctx, mR, function (x) { return p[0] * x + p[1]; }, cols[k], 2.2); });
+    XS.forEach(function (x, i) { FV.dot(ctx, mR.X(x), mR.Y(YS[i]), 4.5, c.text); });
+    FV.dot(ctx, mR.X(OX), mR.Y(oy), 6, c.bad);
+    FV.legend(ctx, { p: { l: mR.p.l, t: mR.p.t } }, [['MSE', c.warn], ['MAE', c.blue], ['Huber (δ = ' + d.toFixed(1) + ')', c.good]], c);
+    var r = function (k) { return oy - P[k][0] * OX - P[k][1]; };
+    o.out(o.t.slope + '　MSE <b>' + P.mse[0].toFixed(2) + '</b>　MAE <b>' + P.mae[0].toFixed(2) + '</b>　Huber <b>' + P.hub[0].toFixed(2) + '</b><br>' +
+      o.t.pull + '　MSE r² = ' + L.mse(r('mse')).toFixed(1) + '　MAE |r| = ' + L.mae(r('mae')).toFixed(1) + '　Huber = ' + L.hub(r('hub')).toFixed(1));
+  };
+  o.redraw();
+})();
+</script>
+</div>

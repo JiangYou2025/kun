@@ -57,6 +57,8 @@ $$
 
 These quantities are tightly linked: entropy is the foundation, cross-entropy = entropy + KL divergence, and mutual information measures "how much knowing $Y$ reduces the uncertainty about $X$".
 
+{% include fviz/cross-entropy.html %}
+
 ## A concrete example
 
 A 4-letter source $\{A,B,C,D\}$ has probabilities $[0.5,0.25,0.125,0.125]$. Its entropy is:

@@ -1,0 +1,58 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-conv1d" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="k"><button data-v="avg" class="on" data-t="avg"></button><button data-v="edge" data-t="edge"></button><button data-v="spike" data-t="spike"></button></span>
+  <label><span data-t="pos"></span> t<input type="range" data-k="t" min="0" max="45" step="1" value="20"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🔍 一维卷积：同一个小核沿时间滑动', hint: '上：输入序列（台阶 + 季节波动 + 噪声 + 一个尖峰）。阴影是核当前覆盖的窗口，每个点上标着它乘的权重。下：输出 yₜ = Σ wᵢ·xₜ₊ᵢ，画在窗口中心。换不同的核：平均核把噪声抹平，边缘核 [1, 0, −1] 只在变化处响应，尖峰核 [−1, 2, −1] 专挑孤立的突跳。拖动 t 看核如何滑动；核的权重在所有位置共享。', avg: '平均 [⅕×5]', edge: '边缘 [1, 0, −1]', spike: '尖峰 [−1, 2, −1]', pos: '位置', inp: '输入 x', outp: '输出 y' },
+    en: { title: '🔍 1-D convolution: one small kernel sliding along time', hint: 'Top: the input series (a step + a seasonal wave + noise + one spike). The shaded band is the window the kernel currently covers, each point labelled with the weight it is multiplied by. Bottom: the output yₜ = Σ wᵢ·xₜ₊ᵢ, drawn at the window centre. Switch kernels: the averaging kernel smooths out the noise, the edge kernel [1, 0, −1] responds only where the level changes, the spike kernel [−1, 2, −1] picks out isolated jumps. Drag t to slide the kernel; its weights are shared across all positions.', avg: 'average [⅕×5]', edge: 'edge [1, 0, −1]', spike: 'spike [−1, 2, −1]', pos: 'position', inp: 'input x', outp: 'output y' },
+    fr: { title: '🔍 Convolution 1D : un petit noyau qui glisse le long du temps', hint: 'En haut : la série d’entrée (une marche + une onde saisonnière + du bruit + un pic). La bande colorée est la fenêtre couverte par le noyau, chaque point portant le poids qui le multiplie. En bas : la sortie yₜ = Σ wᵢ·xₜ₊ᵢ, placée au centre de la fenêtre. Changez de noyau : le noyau moyenneur lisse le bruit, le noyau de bord [1, 0, −1] ne réagit qu’aux changements de niveau, le noyau de pic [−1, 2, −1] repère les sauts isolés. Faites glisser t ; les poids du noyau sont partagés à toutes les positions.', avg: 'moyenne [⅕×5]', edge: 'bord [1, 0, −1]', spike: 'pic [−1, 2, −1]', pos: 'position', inp: 'entrée x', outp: 'sortie y' }
+  };
+  var W = 560, H = 300, N = 48;
+  var o = FV.init('fv-conv1d', T, W, H); if (!o) return;
+  var K = { avg: [0.2, 0.2, 0.2, 0.2, 0.2], edge: [1, 0, -1], spike: [-1, 2, -1] }, kn = 'avg';
+  FV.group(o, 'k', function (v) { kn = v; });
+  var s = 7, rnd = function () { s = (s * 16807) % 2147483647; return s / 2147483647; };
+  var x = [];
+  for (var i = 0; i < N; i++) x.push((i < 24 ? 2 : 5) + 0.8 * Math.sin(2 * Math.PI * i / 12) + 0.6 * (rnd() - 0.5) + (i === 37 ? 2.5 : 0));
+  var p = { l: 34, r: 12, t: 20, b: 8 }, h = 142;
+  var mt = FV.map(W, h, [-0.5, N - 0.5], [-0.5, 8.5], p);
+  o.draw = function (c) {
+    var ctx = o.ctx, w = K[kn], k = w.length, t = Math.min(o.v('t'), N - k), y = [];
+    for (var j = 0; j <= N - k; j++) { var v = 0; for (var q = 0; q < k; q++) v += w[q] * x[j + q]; y.push(v); }
+    var lo = Math.min.apply(null, y), hi = Math.max.apply(null, y), pad = (hi - lo) * 0.15 + 0.2;
+    lo = Math.min(lo - pad, -0.3); hi = Math.max(hi + pad, 0.3);
+    FV.axes(ctx, mt, c, { xt: [], yt: [0, 2, 4, 6, 8] });
+    FV.label(ctx, o.t.inp, p.l + 4, 13, c.text);
+    ctx.save(); ctx.fillStyle = c.accent; ctx.globalAlpha = 0.15;
+    ctx.fillRect(mt.X(t - 0.5), p.t, mt.X(t + k - 0.5) - mt.X(t - 0.5), h - p.t - p.b); ctx.restore();
+    ctx.beginPath(); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.2;
+    x.forEach(function (v, i) { i ? ctx.lineTo(mt.X(i), mt.Y(v)) : ctx.moveTo(mt.X(i), mt.Y(v)); }); ctx.stroke();
+    x.forEach(function (v, i) { FV.dot(ctx, mt.X(i), mt.Y(v), i >= t && i < t + k ? 4 : 2.5, i >= t && i < t + k ? c.accent : c.muted); });
+    for (q = 0; q < k; q++) FV.label(ctx, kn === 'avg' ? '⅕' : String(w[q]).replace('-', '−'), mt.X(t + q), mt.Y(x[t + q]) - 8, c.accent, 'center', 'bold 11px system-ui,sans-serif');
+    ctx.save(); ctx.translate(0, h + 8);
+    var mb = FV.map(W, H - h - 8, [-0.5, N - 0.5], [lo, hi], { l: 34, r: 12, t: 18, b: 22 }), off = (k - 1) / 2;
+    FV.axes(ctx, mb, c, { xt: [0, 8, 16, 24, 32, 40, 47], yt: FV.ticks([lo, hi], 4), xl: 't' });
+    FV.label(ctx, o.t.outp, 38, 12, c.text);
+    ctx.beginPath(); ctx.strokeStyle = c.warn; ctx.lineWidth = 2;
+    y.forEach(function (v, j) { if (j <= t) { j ? ctx.lineTo(mb.X(j + off), mb.Y(v)) : ctx.moveTo(mb.X(j + off), mb.Y(v)); } }); ctx.stroke();
+    ctx.save(); ctx.globalAlpha = 0.25;
+    y.forEach(function (v, j) { if (j > t) FV.dot(ctx, mb.X(j + off), mb.Y(v), 2, c.warn); }); ctx.restore();
+    FV.dot(ctx, mb.X(t + off), mb.Y(y[t]), 5, c.warn);
+    ctx.restore();
+    FV.line(ctx, mt.X(t + off), h - p.b, mt.X(t + off), h + 8 + mb.Y(y[t]), c.accent, 1, [3, 3]);
+    var terms = [];
+    for (q = 0; q < k; q++) terms.push((kn === 'avg' ? '0.2' : w[q]) + '·' + FV.fmt(x[t + q], 2));
+    o.out('y<sub>' + t + '</sub> = ' + terms.join(' + ').replace(/\+ -/g, '− ') + ' = <b>' + FV.fmt(y[t], 2) + '</b>');
+  };
+  o.redraw();
+})();
+</script>
+</div>

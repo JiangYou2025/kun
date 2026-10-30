@@ -30,6 +30,8 @@ Instead of writing rules explicitly, we **learn from data** a mapping $f_\theta:
 - **Support vector machines ([SVM](../svm/))**: maximum-margin classification
 - **Clustering and dimensionality reduction**: K-means, [PCA](../pca/)
 
+{% include fviz/kmeans.html %}
+
 ## 3. [The training pipeline](../training-pipeline/)
 
 - **[Loss function](../loss-function/)**: MSE / MAE for regression, [cross-entropy](../cross-entropy/) for classification
@@ -37,6 +39,8 @@ Instead of writing rules explicitly, we **learn from data** a mapping $f_\theta:
 - **Data splitting**: training / validation / test
 - **[Cross-validation](../cross-validation/)**: more robust hyperparameter selection (**time series require chronological splits** and must not be randomly shuffled)
 - **Hyperparameter tuning**: grid / random / Bayesian search
+
+{% include fviz/ts-split.html %}
 
 ## 4. [Generalization](../generalization/): the central challenge
 
@@ -46,6 +50,8 @@ The goal is to perform well on **unseen** data, not to memorize the training set
 - **[Overfitting](../overfitting/)**: too complex, memorizes noise, high variance
 - **[Bias–variance trade-off](../bias-variance/)**: finding the right level of complexity
 - **[Regularization](../regularization/)**: $\ell_1$ / $\ell_2$, [early stopping](../early-stopping/), pruning — constraining the model
+
+{% include fviz/polyfit.html %}
 
 ## 5. [Evaluation metrics](../evaluation-metrics/)
 

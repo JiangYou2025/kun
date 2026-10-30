@@ -68,6 +68,8 @@ print(a + b)
 # 2026-01-03    23.0   ← 3 + 20
 ```
 
+{% include fviz/resample.html %}
+
 ## Relevance to time series forecasting
 
 Almost all the data fed to **KUN / Kernel U-Net** passes through Pandas first:

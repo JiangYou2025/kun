@@ -13,16 +13,17 @@ math: true
 
 ## KUN in one sentence
 
-**KUN (Kernel U-Net) = the hierarchical shape of a U-Net + pluggable kernels.** It takes the "downsampling encoder, upsampling decoder, skip connections" design of the [U-Net](../foundations/u-net/) from image segmentation, carries it over to time series, and replaces the fixed convolution at each node with a small function you are free to choose: linear, an [MLP](../foundations/mlp/), or [attention](../foundations/attention/).
+**KUN (Kernel U-Net) = a fixed U-shaped skeleton + interchangeable kernels.** The skeleton is borrowed from the [U-Net](../foundations/u-net/) of image segmentation — downsampling encoder, upsampling decoder, skip connections — and carried over to time series. The operation at each node is no longer a hard-wired convolution but a kernel you can swap out wholesale: linear, an [MLP](../foundations/mlp/), [attention](../foundations/attention/), or a module you write yourself. **Swap the kernel and you get a new model.**
 
 ## What problem KUN solves
 
-Recall [Frontier problems in time series, 2026](../kun/): long-horizon forecasting faces two unavoidable tensions.
+Recall [Frontier problems in time series, 2026](../kun/): long-horizon forecasting faces two unavoidable tensions, and research faces a very practical nuisance as well.
 
 1. **Multiple scales** — a real series stacks a long-term trend, mid-range cycles and short-term high-frequency detail on top of each other, like a composite of several waveforms. A model that looks at only one scale is incomplete.
 2. **Efficiency vs. expressiveness** — the [Transformer](../foundations/transformer/) captures long-range dependencies with self-attention, but its complexity is $O(L^2)$, which becomes unaffordable for long sequences; a minimalist linear model (DLinear), on the other hand, is fast and strong but struggles to express complex structure.
+3. **The cost of trying a new idea** — each new sequence model is usually rewritten end to end, from patching and encoding to decoding and output, even when the genuinely new part is just the one operator in the middle.
 
-KUN's answer: **separate the scales naturally with a hierarchical structure, and slide freely between "fast" and "powerful" with pluggable kernels.**
+KUN's answer: **separate the scales naturally with a hierarchical structure, slide freely between "fast" and "powerful" with interchangeable kernels, and write the skeleton once, so that trying a new idea only means writing a new kernel.**
 
 ## First, see clearly: a series is "multi-scale"
 
@@ -272,3 +273,20 @@ Compare this number with a **seasonal naive baseline**. If KUN wins, you have a 
 <div class="note">
   <strong>Citing KUN.</strong> If KUN helps your research or product, please cite Jiang You's Kernel U-Net work and include a link to this repository.
 </div>
+
+```bibtex
+@inproceedings{you_2024_kernel_u_net,
+  author={You, Jiang and Cela, Arben and Natowicz, René and Ouanounou, Jacob and Siarry, Patrick},
+  booktitle={2024 International Conference on INnovations in Intelligent SysTems and Applications (INISTA)},
+  title={Kernel-U-Net: Multivariate Time Series Forecasting using Custom Kernels},
+  year={2024},
+  pages={1-8},
+  doi={10.1109/INISTA62901.2024.10683862}}
+```
+
+Related work:
+
+- Anomaly prediction: [Anomaly Prediction: A Novel Approach with Explicit Delay and Horizon (ICCP 2024)](https://arxiv.org/abs/2408.04377)
+- Spatio-temporal forecasting: [Enhancing Spatio-Temporal Forecasting with Spatial Neighbourhood Fusion: A Case Study on Mobility in Peru (ICASSP 2026)](https://arxiv.org/abs/2507.00031)
+- Adaptive forecasting: [Dynamic Perturbed Adaptive Method for Infinite Task-Conflicting Time Series (arXiv 2025)](https://arxiv.org/abs/2505.11902)
+- Robust forecasting: [Robust Time Series Forecasting with Non-Heavy-Tailed Gaussian Loss-Weighted Sampler (arXiv 2024)](https://arxiv.org/abs/2406.13871)

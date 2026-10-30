@@ -22,6 +22,8 @@ Toute transformation linéaire (toute matrice), aussi compliquée soit-elle, peu
 
 Les « facteurs d'échelle » sont les **valeurs singulières** ; elles mesurent « la force d'action » de la matrice dans chacune de ses directions principales. Les directions associées à de grandes valeurs singulières portent la structure principale des données / de la transformation, tandis que celles associées à de petites valeurs singulières correspondent souvent à du bruit ou à des détails secondaires — **éliminer les petites valeurs singulières = compresser / débruiter**, et c'est là que réside toute la puissance de la SVD.
 
+{% include fviz/svd-lowrank.html %}
+
 ## Formulation mathématique
 
 Toute matrice $A\in\mathbb{R}^{m\times n}$ peut se décomposer en :

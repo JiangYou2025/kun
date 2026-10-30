@@ -50,6 +50,8 @@ $$
 \hat\theta=\arg\min_\theta\ \Big(-\sum_i\log p(x_i\mid\theta)\Big)
 $$
 
+{% include fviz/mle-normal.html %}
+
 ## Un exemple concret
 
 Revenons aux 7 piles et 3 faces. La vraisemblance vaut $L(p)=p^7(1-p)^3$ ; en prenant le logarithme :

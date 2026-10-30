@@ -65,6 +65,8 @@ plt.legend(); plt.title("趋势分解")
 
 注意数据在 Pandas、NumPy、Matplotlib 之间**自由流动**，几乎不用手动转换——这正是统一栈的价值。
 
+{% include fviz/rolling-trend.html %}
+
 ## 在时间序列预测中的意义
 
 做 **KUN / Kernel U-Net** 这类预测，整条栈各司其职：

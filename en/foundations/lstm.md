@@ -69,6 +69,8 @@ If the forget gate $f_t \approx 1$, the gradient **flows back almost unchanged**
 
 Intuitively: information "goes straight" along $c_t$ instead of being "repeatedly multiplied by matrices and squashed", so it can travel far.
 
+{% include fviz/bptt-gradient.html %}
+
 ## A concrete example
 
 Suppose one dimension of the cell state currently holds $c_{t-1} = 0.8$ (representing the information "the sentence began with a plural subject"). At this step:

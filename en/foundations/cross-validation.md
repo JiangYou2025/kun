@@ -79,6 +79,8 @@ print(-scores.mean())                        # mean MAE
 
 Note: the folds produced by `TimeSeriesSplit` are **not equal-sized, non-overlapping** random blocks, but a rolling structure in which "the training set keeps growing and the validation set always lies in the future".
 
+{% include fviz/ts-split.html %}
+
 ## Why it matters for time series forecasting
 
 This is the **most important** part of this page. Time series data have a "direction of time": the future cannot be used to predict the past, so cross-validation needs special treatment.

@@ -32,6 +32,8 @@ Imagine a binary classification task — red and blue points on a plane, and we 
 
 The same data, five "worldviews". That is the most intuitive picture of what "model families" means.
 
+{% include fviz/model-families.html %}
+
 ## A tour of the model families
 
 ### Linear models

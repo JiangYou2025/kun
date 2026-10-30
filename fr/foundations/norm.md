@@ -22,6 +22,8 @@ Une norme est une fonction qui mesure la « **longueur / taille** » d'un vecteu
 
 La norme formalise la notion intuitive de « taille / distance » en admettant plusieurs façons raisonnables de la mesurer. Elle indique aussi « à quel point un vecteur est parcimonieux, à quel point il est extrême » — exactement ce qu'exploite la régularisation.
 
+{% include fviz/norm-ball.html %}
+
 ## Formulation mathématique
 
 Pour un vecteur $\mathbf{x}=(x_1,\dots,x_n)$ :

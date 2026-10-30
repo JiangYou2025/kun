@@ -324,3 +324,18 @@ kbd{background:var(--surface-2);border:1px solid var(--border);border-radius:5px
 /* Reactions / Giscus */
 .page-reactions{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)}
 .page-reactions h2{font-size:1.1rem;margin-bottom:1rem;color:var(--muted)}
+
+/* Interactive figures (_includes/fviz/) */
+.fviz{margin:1.6em 0;padding:16px 18px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.fviz h4{margin:0 0 4px;font-size:1.02rem}
+.fviz .hint{margin:0 0 10px;color:var(--muted);font-size:.88rem}
+.fviz canvas{display:block;width:100%;height:auto;border-radius:8px;background:var(--bg);border:1px solid var(--border);touch-action:manipulation}
+.fviz .ctl{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;margin:10px 0 0;font-size:.88rem;color:var(--muted)}
+.fviz .ctl label{display:inline-flex;align-items:center;gap:6px}
+.fviz .ctl [data-g]{display:inline-flex;flex-wrap:wrap;gap:6px}
+.fviz input[type=range]{width:130px;accent-color:var(--accent)}
+.fviz button{padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);cursor:pointer;font-size:.85rem}
+.fviz button.on{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.fviz button:hover{opacity:.85}
+.fviz .out{margin:10px 0 0;font-size:.9rem;color:var(--text);font-variant-numeric:tabular-nums}
+.fviz .out b{color:var(--accent)}

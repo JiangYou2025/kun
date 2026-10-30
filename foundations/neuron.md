@@ -41,6 +41,8 @@ $$ a = \sigma(z) = \sigma(\mathbf{w}^\top \mathbf{x} + b) $$
 
 如果没有 $\sigma$（即 $\sigma$ 是恒等函数），那么无论叠多少层，整个网络都只是一连串线性变换的复合，仍然只是一个线性函数——这就是为什么[激活函数](../activation-function/)不可或缺。
 
+{% include fviz/neuron-2d.html %}
+
 ## 一个具体例子
 
 假设一个神经元有两个输入 $x_1, x_2$，权重 $\mathbf{w} = (0.5,\ -1.2)$，偏置 $b = 0.3$，激活函数用 ReLU（$\mathrm{ReLU}(z)=\max(0,z)$）。

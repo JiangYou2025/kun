@@ -1,0 +1,79 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-kmeans" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label>k<input type="range" data-k="k" min="1" max="6" step="1" value="3"></label>
+  <button data-k="step" data-t="step"></button>
+  <button data-k="run" data-t="run"></button>
+  <button data-k="init" data-t="init"></button>
+  <button data-k="new" data-t="new"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🎯 K-means 聚类：分配、更新、重复', hint: 'K-means 交替做两件事：① 把每个点分给最近的中心（上色）；② 把每个中心挪到它那组点的平均位置（×）。点“单步”一步步看，或点“运行到收敛”。改变 k、换一组随机初始中心，结果可能不同：K-means 只保证找到局部最优。', step: '单步', run: '运行到收敛', init: '重新初始化中心', new: '新数据', it: '迭代', phA: '下一步：分配', phU: '下一步：更新中心', inertia: '组内平方和', conv: '✓ 已收敛' },
+    en: { title: '🎯 K-means clustering: assign, update, repeat', hint: 'K-means alternates two steps: ① assign every point to its nearest centre (colour); ② move every centre to the mean of its group (×). Use “step” to go one move at a time, or “run to convergence”. Change k or draw new random initial centres and the result may differ: K-means only guarantees a local optimum.', step: 'step', run: 'run to convergence', init: 're-initialise centres', new: 'new data', it: 'iteration', phA: 'next: assign', phU: 'next: update centres', inertia: 'within-cluster sum of squares', conv: '✓ converged' },
+    fr: { title: '🎯 Partitionnement K-means : affecter, mettre à jour, recommencer', hint: 'K-means alterne deux étapes : ① affecter chaque point au centre le plus proche (couleur) ; ② déplacer chaque centre à la moyenne de son groupe (×). Utilisez « pas » pour avancer étape par étape, ou « lancer jusqu’à convergence ». Changez k ou tirez de nouveaux centres initiaux : le résultat peut différer, car K-means ne garantit qu’un optimum local.', step: 'pas', run: 'lancer jusqu’à convergence', init: 'réinitialiser les centres', new: 'nouvelles données', it: 'itération', phA: 'prochaine étape : affecter', phU: 'prochaine étape : mettre à jour', inertia: 'somme des carrés intra-groupe', conv: '✓ convergé' }
+  };
+  var W = 560, H = 320;
+  var o = FV.init('fv-kmeans', T, W, H); if (!o) return;
+  var pts = [], cen = [], trail = [], lab = [], phase = 0, it = 0, conv = false, K = 3;
+  function data() {
+    pts = []; var nb = 3 + Math.floor(Math.random() * 2);
+    for (var b = 0; b < nb; b++) {
+      var cx = 0.15 + 0.7 * Math.random(), cy = 0.15 + 0.7 * Math.random(), s = 0.05 + 0.04 * Math.random();
+      for (var i = 0; i < 50; i++) pts.push([cx + s * FV.gauss(), cy + s * FV.gauss()]);
+    }
+    init();
+  }
+  function init() {
+    K = o.v('k'); cen = []; trail = []; lab = pts.map(function () { return -1; }); phase = 0; it = 0; conv = false;
+    var idx = pts.map(function (_, i) { return i; }).sort(function () { return Math.random() - 0.5; });
+    for (var k = 0; k < K; k++) { cen.push(pts[idx[k]].slice()); trail.push([pts[idx[k]].slice()]); }
+  }
+  function d2(a, b) { return (a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]); }
+  function step() {
+    if (conv) return;
+    if (phase === 0) {
+      var changed = false;
+      pts.forEach(function (p, i) {
+        var best = 0; for (var k = 1; k < K; k++) if (d2(p, cen[k]) < d2(p, cen[best])) best = k;
+        if (lab[i] !== best) { lab[i] = best; changed = true; }
+      });
+      if (!changed && it > 0) conv = true;
+      it++;
+    } else {
+      for (var k = 0; k < K; k++) {
+        var sx = 0, sy = 0, n = 0;
+        pts.forEach(function (p, i) { if (lab[i] === k) { sx += p[0]; sy += p[1]; n++; } });
+        if (n) { cen[k] = [sx / n, sy / n]; trail[k].push(cen[k].slice()); }
+      }
+    }
+    phase = 1 - phase;
+  }
+  o.root.addEventListener('input', function () { if (o.v('k') !== K) init(); }, true);
+  o.q('step').addEventListener('click', function () { step(); o.redraw(); });
+  o.q('run').addEventListener('click', function () { for (var i = 0; i < 200 && !conv; i++) step(); o.redraw(); });
+  o.q('init').addEventListener('click', function () { init(); o.redraw(); });
+  o.q('new').addEventListener('click', function () { data(); o.redraw(); });
+  o.draw = function (c) {
+    var ctx = o.ctx, pal = [c.accent, c.warn, c.accent2, c.pink, c.good, c.blue];
+    var X = function (x) { return 10 + x * (W - 20); }, Y = function (y) { return H - 10 - y * (H - 20); };
+    pts.forEach(function (p, i) { FV.dot(ctx, X(p[0]), Y(p[1]), 3.2, lab[i] < 0 ? c.muted : pal[lab[i]]); });
+    cen.forEach(function (q, k) {
+      ctx.save(); ctx.beginPath(); ctx.strokeStyle = pal[k]; ctx.lineWidth = 1.2; ctx.setLineDash([3, 3]);
+      trail[k].forEach(function (t, j) { j ? ctx.lineTo(X(t[0]), Y(t[1])) : ctx.moveTo(X(t[0]), Y(t[1])); }); ctx.stroke(); ctx.restore();
+      var x = X(q[0]), y = Y(q[1]);
+      FV.line(ctx, x - 8, y - 8, x + 8, y + 8, c.text, 5); FV.line(ctx, x - 8, y + 8, x + 8, y - 8, c.text, 5);
+      FV.line(ctx, x - 7, y - 7, x + 7, y + 7, pal[k], 3); FV.line(ctx, x - 7, y + 7, x + 7, y - 7, pal[k], 3);
+    });
+    var sse = 0; pts.forEach(function (p, i) { if (lab[i] >= 0) sse += d2(p, cen[lab[i]]); });
+    o.out(o.t.it + ' ' + it + '　' + (conv ? '<b>' + o.t.conv + '</b>' : phase === 0 ? o.t.phA : o.t.phU) + '　' + o.t.inertia + ' = ' + (lab[0] < 0 ? '—' : sse.toFixed(3)));
+  };
+  data(); o.redraw();
+})();
+</script>
+</div>

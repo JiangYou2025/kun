@@ -25,6 +25,8 @@ Pour qu'un problème se prête à la DP, il doit en général satisfaire deux co
 - **Sous-problèmes qui se chevauchent** : les mêmes petits problèmes reviennent de façon répétée (sinon la mise en cache ne sert à rien).
 - **Sous-structure optimale** : la solution optimale du grand problème peut se construire à partir des solutions optimales des petits.
 
+{% include fviz/fib-memo.html %}
+
 ## Points essentiels
 
 La DP s'implémente selon deux styles équivalents :

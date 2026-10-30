@@ -60,6 +60,8 @@ Explication symbole par symbole :
 
 Intuition : $\dfrac{\hat m_t}{\sqrt{\hat v_t}}$ **normalise automatiquement** le pas effectif de chaque paramètre — dans une direction où le gradient est durablement grand, le dénominateur est grand et le pas se réduit ; dans le cas inverse, il s'agrandit.
 
+{% include fviz/optimizer.html %}
+
 ## Un exemple concret
 
 Pour un seul paramètre, première étape : $g_1 = 0.1$, $\beta_1=0.9,\beta_2=0.999,\eta=0.001,\epsilon=10^{-8}$.

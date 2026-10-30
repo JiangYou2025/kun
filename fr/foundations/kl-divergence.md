@@ -47,6 +47,8 @@ Deux propriétés clés :
 - **Positivité** : $D_{\mathrm{KL}}(p\parallel q)\ge 0$, avec égalité si et seulement si $p=q$ (inégalité de Gibbs).
 - **Asymétrie** : $D_{\mathrm{KL}}(p\parallel q)\ne D_{\mathrm{KL}}(q\parallel p)$.
 
+{% include fviz/kl-asym.html %}
+
 ## Un exemple concret
 
 Vraie distribution $p=[0.5,0.5]$, approximation $q=[0.9,0.1]$ (logarithme en base 2) :

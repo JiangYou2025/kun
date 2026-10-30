@@ -1,0 +1,84 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-svd" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="rank"></span> k<input type="range" data-k="k" min="1" max="32" step="1" value="3"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🗜️ SVD 低秩近似：只留最大的几个奇异值', hint: '左边是一张 32×32 的小图（就是一个 32×32 矩阵），中间是只用前 k 个奇异值重建的结果 A_k = σ₁u₁v₁ᵀ + … + σ_k u_k v_kᵀ，右边是全部奇异值（亮色为已使用的）。拖动 k：横平竖直的方块几个秩就到位了，斜线和圆弧要更多秩；奇异值衰减得很快，所以少数几项就抓住了大部分结构。', rank: '秩', orig: '原图（秩 ', approx: '秩-# 近似', sv: '奇异值 σᵢ', en: '保留的能量 Σσᵢ²', err: '相对误差', store: '存储量' },
+    en: { title: '🗜️ Low-rank approximation with SVD: keep only the largest singular values', hint: 'On the left is a small 32×32 image (that is, a 32×32 matrix); in the middle, its reconstruction from the first k singular values only, A_k = σ₁u₁v₁ᵀ + … + σ_k u_k v_kᵀ; on the right, all the singular values (bright ones are in use). Drag k: the axis-aligned blocks are in place after a few ranks, while the diagonal and the arc need many more. The singular values decay fast, so a handful of terms already capture most of the structure.', rank: 'rank', orig: 'original (rank ', approx: 'rank-# approximation', sv: 'singular values σᵢ', en: 'energy kept Σσᵢ²', err: 'relative error', store: 'numbers stored' },
+    fr: { title: '🗜️ Approximation de rang faible par SVD : ne garder que les plus grandes valeurs singulières', hint: 'À gauche, une petite image 32×32 (c’est-à-dire une matrice 32×32) ; au milieu, sa reconstruction à partir des k premières valeurs singulières seulement, A_k = σ₁u₁v₁ᵀ + … + σ_k u_k v_kᵀ ; à droite, toutes les valeurs singulières (en couleur vive celles qui sont utilisées). Faites varier k : les blocs alignés sur les axes sont en place après quelques rangs, tandis que la diagonale et l’arc en demandent beaucoup plus. Les valeurs singulières décroissent vite, si bien que quelques termes captent déjà l’essentiel de la structure.', rank: 'rang', orig: 'original (rang ', approx: 'approximation de rang #', sv: 'valeurs singulières σᵢ', en: 'énergie conservée Σσᵢ²', err: 'erreur relative', store: 'nombres stockés' }
+  };
+  var W = 560, H = 216, N = 32;
+  var o = FV.init('fv-svd', T, W, H); if (!o) return;
+  /* the picture: a little house with a roof line, a window, a door and a sun */
+  var A = [];
+  for (var r = 0; r < N; r++) { A.push([]); for (var c = 0; c < N; c++) {
+    var v = 0;
+    if (r >= 16 && r <= 29 && c >= 4 && c <= 21) v = 0.75;
+    if (r >= 19 && r <= 23 && c >= 7 && c <= 11) v = 0.1;
+    if (r >= 21 && r <= 29 && c >= 15 && c <= 18) v = 0.25;
+    if (r >= 6 && r < 16 && Math.abs(c - 12.5) <= (r - 6) * 0.95 + 0.6 && Math.abs(c - 12.5) >= (r - 6) * 0.95 - 1.2) v = 1;
+    var d = Math.hypot(r - 6, c - 26); if (d <= 3.6) v = 0.9;
+    if (r >= 30) v = 0.45;
+    A[r].push(v);
+  } }
+  /* one-sided Jacobi SVD: rotate column pairs of U = A·V until they are orthogonal */
+  var U = A.map(function (row) { return row.slice(); }), V = [];
+  for (var i = 0; i < N; i++) { V.push([]); for (var j = 0; j < N; j++) V[i].push(i === j ? 1 : 0); }
+  for (var sweep = 0; sweep < 40; sweep++) {
+    var off = 0;
+    for (var p = 0; p < N - 1; p++) for (var q = p + 1; q < N; q++) {
+      var al = 0, be = 0, ga = 0;
+      for (i = 0; i < N; i++) { al += U[i][p] * U[i][p]; be += U[i][q] * U[i][q]; ga += U[i][p] * U[i][q]; }
+      if (Math.abs(ga) <= 1e-12 * Math.sqrt(al * be) || Math.abs(ga) < 1e-15) continue;
+      off = Math.max(off, Math.abs(ga) / Math.sqrt(al * be));
+      var ze = (be - al) / (2 * ga), t = (ze >= 0 ? 1 : -1) / (Math.abs(ze) + Math.sqrt(1 + ze * ze)), cs = 1 / Math.sqrt(1 + t * t), sn = cs * t;
+      for (i = 0; i < N; i++) { var x = U[i][p], y = U[i][q]; U[i][p] = cs * x - sn * y; U[i][q] = sn * x + cs * y; }
+      for (i = 0; i < N; i++) { x = V[i][p]; y = V[i][q]; V[i][p] = cs * x - sn * y; V[i][q] = sn * x + cs * y; }
+    }
+    if (off < 1e-10) break;
+  }
+  var S = [];
+  for (j = 0; j < N; j++) { var s2 = 0; for (i = 0; i < N; i++) s2 += U[i][j] * U[i][j]; S.push({ s: Math.sqrt(s2), j: j }); }
+  S.sort(function (a, b) { return b.s - a.s; });
+  var tot = 0; S.forEach(function (e) { tot += e.s * e.s; });
+  var rankA = S.filter(function (e) { return e.s > 1e-8 * S[0].s; }).length;
+  function recon(k) {
+    var B = []; for (var r = 0; r < N; r++) { B.push([]); for (var c = 0; c < N; c++) B[r].push(0); }
+    for (var t = 0; t < k; t++) { var j = S[t].j; for (r = 0; r < N; r++) { var u = U[r][j]; if (u === 0) continue; for (c = 0; c < N; c++) B[r][c] += u * V[c][j]; } }
+    return B;
+  }
+  var px = 5, top = 34;
+  function img(ctx, M, x0, col) {
+    for (var r = 0; r < N; r++) for (var c = 0; c < N; c++) {
+      var v = Math.max(0, Math.min(1, M[r][c])); if (v < 0.02) continue;
+      ctx.globalAlpha = v; ctx.fillStyle = col; ctx.fillRect(x0 + c * px, top + r * px, px, px);
+    }
+    ctx.globalAlpha = 1;
+  }
+  o.draw = function (c) {
+    var ctx = o.ctx, k = o.v('k'), B = recon(k), x1 = 14, x2 = 14 + N * px + 26;
+    [x1, x2].forEach(function (x) { ctx.strokeStyle = c.border; ctx.lineWidth = 1; ctx.strokeRect(x - 0.5, top - 0.5, N * px + 1, N * px + 1); });
+    img(ctx, A, x1, c.text); img(ctx, B, x2, c.text);
+    FV.label(ctx, o.t.orig + rankA + ')', x1, top - 10, c.muted);
+    FV.label(ctx, o.t.approx.replace('#', k), x2, top - 10, c.accent);
+    var m = FV.map(W, H, [0.5, N + 0.5], [0, Math.ceil(S[0].s)], { l: x2 + N * px + 44, r: 10, t: top, b: H - top - N * px });
+    FV.axes(ctx, m, c, { xt: [1, 8, 16, 24, 32], yt: FV.ticks(m.yr, 4) });
+    FV.label(ctx, o.t.sv, m.p.l, top - 10, c.muted);
+    var bw = (W - m.p.l - m.p.r) / N * 0.7;
+    S.forEach(function (e, t) { ctx.globalAlpha = t < k ? 1 : 0.4; ctx.fillStyle = t < k ? c.accent : c.muted; ctx.fillRect(m.X(t + 1) - bw / 2, m.Y(e.s), bw, m.Y(0) - m.Y(e.s)); });
+    ctx.globalAlpha = 1;
+    var kept = 0; for (var t = 0; t < k; t++) kept += S[t].s * S[t].s;
+    o.out(o.t.en + ' = <b>' + (100 * kept / tot).toFixed(1) + '%</b>　' + o.t.err + ' ‖A − A_k‖ / ‖A‖ = ' + Math.sqrt(Math.max(0, 1 - kept / tot)).toFixed(3) +
+      '<br>' + o.t.store + ' = k·(32 + 32 + 1) = <b>' + (k * 65) + '</b> vs 32·32 = 1024');
+  };
+  o.redraw();
+})();
+</script>
+</div>

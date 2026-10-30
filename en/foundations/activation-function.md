@@ -51,6 +51,8 @@ $$
 
 **Why ReLU mitigates vanishing gradients**: on the positive side its derivative is **always 1**, so the error signal is not shrunk again and again during backpropagation — multiplying by 1 still gives 1. This makes even very deep networks trainable. The price is a zero derivative on the negative side, so a neuron can "die" (output 0 forever). The improved **Leaky ReLU** (a small slope $0.01x$ when $x<0$) alleviates this problem.
 
+{% include fviz/activation.html %}
+
 ## A concrete example
 
 Suppose a neuron's weighted sum is $z = -0.5$. Compare the outputs of the three activations and "how much gradient can flow back" (i.e., the derivative):

@@ -46,6 +46,8 @@ $$
 
 Explication des symboles : $\mathcal{L}$ est la sortie scalaire finale (la perte) ; $\bar v$ indique « de combien varie $\mathcal{L}$ quand $v$ varie un peu » ; $\frac{\partial u_i}{\partial v}$ est la **dérivée locale** d'une seule opération élémentaire (connue). Un seul balayage à rebours suffit à remplir tous les $\bar v$.
 
+{% include fviz/backprop-graph.html %}
+
 ## Un exemple concret
 
 Calculons la dérivée de $f(x) = x^2 \cdot \sin(x)$ en $x=2$. À la main, on obtient $f'(x) = 2x\sin x + x^2\cos x$, soit pour $x=2$ : $4\sin2 + 4\cos2 \approx 4(0.909) + 4(-0.416) \approx 1.97$.

@@ -42,6 +42,8 @@ $$
 
 **Inférence statistique** : on estime la moyenne de la population par la moyenne empirique $\bar x$, et l'on quantifie « à quel point on est sûr » avec des intervalles de confiance et des tests d'hypothèses.
 
+{% include fviz/clt.html %}
+
 ## Un exemple concret
 
 On lance un dé équilibré à six faces ; $X$ est le nombre de points obtenu.

@@ -42,6 +42,8 @@ $$\text{écart de généralisation (generalization gap)} = R(f) - R_{emp}(f)$$
 
 Un piège courant et dangereux : ne chercher qu'à faire baisser l'erreur d'entraînement. Celle-ci peut descendre jusqu'à 0 (pour peu que le modèle soit assez complexe et mémorise assez bien), alors que l'erreur de généralisation diminue souvent avant de remonter — c'est le signal du surapprentissage.
 
+{% include fviz/learning-curve.html %}
+
 ## Formulation mathématique : risque empirique contre risque espéré
 
 Pour formaliser l'intuition ci-dessus, on introduit deux « risques ».

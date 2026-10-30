@@ -41,6 +41,8 @@ Term by term:
 
 Only the first two terms are under our control. The goal is to minimize the sum **bias$^2$ + variance** — not to push either one to its extreme on its own.
 
+{% include fviz/bias-variance.html %}
+
 ## A concrete example
 
 Fit a noisy curve with polynomials to see how complexity affects both terms:

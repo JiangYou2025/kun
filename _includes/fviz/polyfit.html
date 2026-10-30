@@ -1,0 +1,78 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-polyfit" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="deg"></span><input type="range" data-k="deg" min="0" max="13" step="1" value="1"></label>
+  <button data-k="new" data-t="new"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '📉 欠拟合、过拟合与偏差—方差权衡', hint: '用 d 次多项式拟合 15 个带噪声的训练点（实心），在另外 60 个测试点（空心）上检验。拖动次数 d：太低抓不住形状（欠拟合），太高把噪声也背下来（过拟合）。右图是训练误差和测试误差随 d 的变化：测试误差呈 U 形。', deg: '多项式次数 d', new: '换一批数据', train: '训练误差', test: '测试误差', under: '欠拟合：模型太简单，偏差高', good: '接近最佳：测试误差最低处', over: '过拟合：训练误差很低，测试误差却变大（方差高）', truth: '真实函数', fit: '拟合', err: '误差 (MSE)', d: '次数 d' },
+    en: { title: '📉 Underfitting, overfitting and the bias–variance trade-off', hint: 'Fit a degree-d polynomial to 15 noisy training points (filled) and check it on 60 other test points (hollow). Drag the degree d: too low and it misses the shape (underfitting); too high and it memorises the noise (overfitting). The right panel shows training and test error against d: the test error is U-shaped.', deg: 'polynomial degree d', new: 'new data', train: 'training error', test: 'test error', under: 'underfitting: the model is too simple, high bias', good: 'near the best: lowest test error', over: 'overfitting: very low training error but rising test error (high variance)', truth: 'true function', fit: 'fit', err: 'error (MSE)', d: 'degree d' },
+    fr: { title: '📉 Sous-apprentissage, surapprentissage et compromis biais–variance', hint: 'Ajustez un polynôme de degré d à 15 points d’entraînement bruités (pleins) et vérifiez-le sur 60 autres points de test (creux). Faites varier d : trop bas, il rate la forme (sous-apprentissage) ; trop haut, il apprend le bruit par cœur (surapprentissage). Le panneau de droite montre l’erreur d’entraînement et l’erreur de test selon d : l’erreur de test dessine un U.', deg: 'degré du polynôme d', new: 'nouvelles données', train: 'erreur d’entraînement', test: 'erreur de test', under: 'sous-apprentissage : modèle trop simple, biais élevé', good: 'proche de l’optimum : erreur de test minimale', over: 'surapprentissage : erreur d’entraînement très faible mais erreur de test qui remonte (variance élevée)', truth: 'vraie fonction', fit: 'ajustement', err: 'erreur (MSE)', d: 'degré d' }
+  };
+  var W = 560, H = 300, DMAX = 13;
+  var o = FV.init('fv-polyfit', T, W, H); if (!o) return;
+  var truth = function (x) { return Math.sin(2.6 * x) + 0.4 * x; };
+  var tr, te, fits, trE, teE;
+  function cheb(x, d) { var b = [1, x]; for (var k = 2; k <= d; k++) b.push(2 * x * b[k - 1] - b[k - 2]); return b.slice(0, d + 1); }
+  function solve(A, y) {
+    var n = y.length, i, j, k;
+    for (i = 0; i < n; i++) {
+      var p = i; for (k = i + 1; k < n; k++) if (Math.abs(A[k][i]) > Math.abs(A[p][i])) p = k;
+      var t = A[i]; A[i] = A[p]; A[p] = t; t = y[i]; y[i] = y[p]; y[p] = t;
+      for (k = i + 1; k < n; k++) { var f = A[k][i] / A[i][i]; for (j = i; j < n; j++) A[k][j] -= f * A[i][j]; y[k] -= f * y[i]; }
+    }
+    var w = new Array(n);
+    for (i = n - 1; i >= 0; i--) { var s = y[i]; for (j = i + 1; j < n; j++) s -= A[i][j] * w[j]; w[i] = s / A[i][i]; }
+    return w;
+  }
+  function fit(d) {
+    var n = d + 1, A = [], y = [], i, j;
+    for (i = 0; i < n; i++) { A.push(new Array(n).fill(0)); y.push(0); A[i][i] = 1e-9; }
+    tr.forEach(function (p) { var b = cheb(p[0], d); for (i = 0; i < n; i++) { y[i] += b[i] * p[1]; for (j = 0; j < n; j++) A[i][j] += b[i] * b[j]; } });
+    var w = solve(A, y);
+    return function (x) { var b = cheb(x, d), s = 0; for (var k = 0; k < n; k++) s += w[k] * b[k]; return s; };
+  }
+  function mse(f, pts) { return pts.reduce(function (a, p) { var e = f(p[0]) - p[1]; return a + e * e; }, 0) / pts.length; }
+  function data() {
+    tr = []; te = [];
+    for (var i = 0; i < 15; i++) { var x = -1 + 2 * (i + 0.5 + 0.6 * (Math.random() - 0.5)) / 15; tr.push([x, truth(x) + 0.28 * FV.gauss()]); }
+    for (i = 0; i < 60; i++) { x = -1 + 2 * Math.random(); te.push([x, truth(x) + 0.28 * FV.gauss()]); }
+    fits = []; trE = []; teE = [];
+    for (var d = 0; d <= DMAX; d++) { var f = fit(d); fits.push(f); trE.push(mse(f, tr)); teE.push(mse(f, te)); }
+  }
+  o.q('new').addEventListener('click', function () { data(); o.redraw(); });
+  o.draw = function (c) {
+    var ctx = o.ctx, d = o.v('deg');
+    var m = FV.map(W, H, [-1.05, 1.05], [-2.4, 2.4], { l: 34, r: 222, t: 12, b: 26 });
+    FV.axes(ctx, m, c, { xt: [-1, 0, 1] });
+    FV.curve(ctx, m, truth, c.muted, 1.5, [5, 4]);
+    te.forEach(function (p) { FV.dot(ctx, m.X(p[0]), m.Y(p[1]), 2.6, c.accent2, true); });
+    tr.forEach(function (p) { FV.dot(ctx, m.X(p[0]), m.Y(p[1]), 3.6, c.text); });
+    FV.curve(ctx, m, fits[d], c.accent, 2.5, null, -1, 1);
+    FV.legend(ctx, m, [[o.t.truth, c.muted], [o.t.fit + ' d = ' + d, c.accent]], c);
+    var lo = Math.log10, all = trE.concat(teE).map(lo);
+    var yr = [Math.floor(Math.min.apply(null, all) * 2) / 2, Math.min(Math.ceil(Math.max.apply(null, all) * 2) / 2, 2)];
+    var m2 = FV.map(W, H, [0, DMAX], yr, { l: 376, r: 10, t: 12, b: 26 });
+    FV.axes(ctx, m2, c, { xt: [0, 3, 6, 9, 12], yt: FV.ticks(yr, 4).filter(function (v) { return v === Math.round(v); }), yf: function (v) { return '10^' + v; }, xl: o.t.d });
+    [[trE, c.text], [teE, c.warn]].forEach(function (s) {
+      ctx.save(); FV.clip(ctx, m2); ctx.beginPath(); ctx.strokeStyle = s[1]; ctx.lineWidth = 2;
+      s[0].forEach(function (e, k) { var X = m2.X(k), Y = m2.Y(lo(e)); k ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+      ctx.stroke(); ctx.restore();
+    });
+    FV.line(ctx, m2.X(d), m2.p.t, m2.X(d), H - m2.p.b, c.accent, 1.5, [3, 3]);
+    FV.label(ctx, o.t.train, m2.p.l + 6, m2.p.t + 12, c.text);
+    FV.label(ctx, o.t.test, m2.p.l + 6, m2.p.t + 26, c.warn);
+    var best = teE.indexOf(Math.min.apply(null, teE));
+    var verdict = d < best && teE[d] > 1.3 * teE[best] ? o.t.under : teE[d] <= 1.3 * teE[best] ? o.t.good : o.t.over;
+    o.out(o.t.train + ' = ' + FV.fmt(trE[d], 3) + '　' + o.t.test + ' = <b>' + FV.fmt(teE[d], 3) + '</b><br>' + verdict);
+  };
+  data(); o.redraw();
+})();
+</script>
+</div>

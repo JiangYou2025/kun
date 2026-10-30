@@ -32,6 +32,8 @@ Imaginez une tâche de classification binaire — des points rouges et des point
 
 Les mêmes données, cinq « visions du monde ». Voilà l'image la plus intuitive des « familles de modèles ».
 
+{% include fviz/model-families.html %}
+
 ## Visite guidée des familles de modèles
 
 ### Modèles linéaires

@@ -1,0 +1,104 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-svm" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="ang"></span><input type="range" data-k="a" min="0" max="180" step="0.5" value="70"></label>
+  <button data-k="best" data-t="best"></button>
+  <span data-g="cls"><button data-v="0" class="on" data-t="addA"></button><button data-v="1" data-t="addB"></button></span>
+  <button data-k="new" data-t="new"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🛣️ SVM：修一条最宽的街道', hint: '转动分界线的方向，它总是放在两类之间正中间；灰色带就是“街道”，宽度 = 间隔。带圈的点贴着街道边缘，就是支持向量。点“最大间隔”找到最宽的街道。在图上点击可以添加一个当前颜色的点：加在远处，街道纹丝不动；加进街道里，最优解立刻改变。', ang: '方向（角度）', best: '最大间隔', addA: '点击添加：蓝', addB: '点击添加：橙', new: '换一批数据', cur: '当前间隔', opt: '最大间隔', sv: '支持向量', no: '⚠️ 这个方向分不开两类', none: '⚠️ 数据线性不可分：硬间隔无解，需要软间隔（参数 C）', at: '✓ 已是最大间隔' },
+    en: { title: '🛣️ SVM: build the widest possible street', hint: 'Rotate the direction of the separating line; it always sits midway between the two classes. The grey band is the “street”, and its width is the margin. Circled points touch the edge of the street: they are the support vectors. Press “max margin” to find the widest street. Click on the plot to add a point of the selected colour: far away, the street does not move at all; inside the street, the optimum changes at once.', ang: 'direction (angle)', best: 'max margin', addA: 'click adds: blue', addB: 'click adds: orange', new: 'new data', cur: 'current margin', opt: 'maximum margin', sv: 'support vectors', no: '⚠️ this direction cannot separate the two classes', none: '⚠️ the data are not linearly separable: no hard-margin solution, a soft margin (parameter C) is needed', at: '✓ this is the maximum margin' },
+    fr: { title: '🛣️ SVM : tracer la rue la plus large possible', hint: 'Faites tourner la direction de la frontière ; elle reste toujours à mi-chemin entre les deux classes. La bande grise est la « rue », sa largeur est la marge. Les points cerclés touchent le bord de la rue : ce sont les vecteurs de support. « Marge maximale » trouve la rue la plus large. Cliquez sur le graphique pour ajouter un point de la couleur choisie : loin de la rue, rien ne bouge ; dans la rue, l’optimum change aussitôt.', ang: 'direction (angle)', best: 'marge maximale', addA: 'le clic ajoute : bleu', addB: 'le clic ajoute : orange', new: 'nouvelles données', cur: 'marge actuelle', opt: 'marge maximale', sv: 'vecteurs de support', no: '⚠️ cette direction ne sépare pas les deux classes', none: '⚠️ données non linéairement séparables : pas de solution à marge dure, il faut une marge souple (paramètre C)', at: '✓ c’est la marge maximale' }
+  };
+  var W = 560, H = 300;
+  var o = FV.init('fv-svm', T, W, H); if (!o) return;
+  var m = FV.map(W, H, [-5, 5], [-2.5, 2.5], { l: 20, r: 20, t: 20, b: 20 });
+  var P = [], cls = 0, exact = null;
+  FV.group(o, 'cls', function (v) { cls = +v; });
+  /* For a unit normal w at angle th: the street spans from the largest blue projection to the smallest orange one. */
+  function proj(th) {
+    var cx = Math.cos(th), sy = Math.sin(th), lo = -Infinity, hi = Infinity;
+    P.forEach(function (p) { var s = cx * p[0] + sy * p[1]; if (p[2]) hi = Math.min(hi, s); else lo = Math.max(lo, s); });
+    return [lo, hi];
+  }
+  function gap(th) { var g = proj(th); return g[1] - g[0]; }
+  function optimum() {
+    var bt = 0, bg = -Infinity, N = 1440;
+    for (var i = 0; i < N; i++) { var th = 2 * Math.PI * i / N, g = gap(th); if (g > bg) { bg = g; bt = th; } }
+    var a = bt - 2 * Math.PI / N, b = bt + 2 * Math.PI / N;
+    for (var k = 0; k < 60; k++) { var m1 = a + (b - a) / 3, m2 = b - (b - a) / 3; if (gap(m1) < gap(m2)) a = m1; else b = m2; }
+    bt = (a + b) / 2;
+    return [bt, gap(bt)];
+  }
+  function data() {
+    var tries = 0;
+    do {
+      P = []; tries++;
+      for (var i = 0; i < 28; i++) {
+        var c = i % 2, x = (c ? 1.8 : -1.8) + 0.75 * FV.gauss(), y = (c ? 0.5 : -0.5) + 0.65 * FV.gauss();
+        P.push([Math.max(-4.7, Math.min(4.7, x)), Math.max(-2.3, Math.min(2.3, y)), c]);
+      }
+    } while (optimum()[1] < 0.5 && tries < 200);
+    exact = null;
+  }
+  o.root.addEventListener('input', function () { exact = null; }, true);
+  o.q('best').addEventListener('click', function () {
+    var b = optimum();
+    if (b[1] <= 0) { exact = null; o.redraw(); return; }
+    exact = b[0];
+    o.q('a').value = (b[0] * 180 / Math.PI + 360) % 180; o.redraw();
+  });
+  o.q('new').addEventListener('click', function () { data(); o.redraw(); });
+  o.cv.addEventListener('click', function (e) {
+    var r = o.cv.getBoundingClientRect(), X = (e.clientX - r.left) * W / r.width, Y = (e.clientY - r.top) * H / r.height;
+    var x = m.xr[0] + (X - m.p.l) / (W - m.p.l - m.p.r) * (m.xr[1] - m.xr[0]), y = m.yr[0] + (H - m.p.b - Y) / (H - m.p.t - m.p.b) * (m.yr[1] - m.yr[0]);
+    if (Math.abs(x) > 5 || Math.abs(y) > 2.5) return;
+    P.push([x, y, cls]); o.redraw();
+  });
+  o.draw = function (c) {
+    var ctx = o.ctx, th = o.v('a') * Math.PI / 180;
+    /* the slider covers 0–180°; the other half-turn is the same line with the classes swapped */
+    if (gap(th + Math.PI) > gap(th)) th += Math.PI;
+    if (exact !== null) th = gap(exact) >= gap(exact + Math.PI) ? exact : exact + Math.PI;
+    var cx = Math.cos(th), sy = Math.sin(th), pr = proj(th), g = pr[1] - pr[0], mid = (pr[0] + pr[1]) / 2, cols = [c.blue, c.warn];
+    var best = optimum();
+    function lineAt(s, col, w, dash) {
+      /* points with cx*x + sy*y = s: base point s*w plus t times the direction (-sy, cx) */
+      FV.line(ctx, m.X(s * cx - 12 * sy), m.Y(s * sy + 12 * cx), m.X(s * cx + 12 * sy), m.Y(s * sy - 12 * cx), col, w, dash);
+    }
+    ctx.save(); FV.clip(ctx, m);
+    if (g > 0) {
+      ctx.beginPath();
+      [[pr[0], -12], [pr[0], 12], [pr[1], 12], [pr[1], -12]].forEach(function (q, i) {
+        var X = m.X(q[0] * cx - q[1] * sy), Y = m.Y(q[0] * sy + q[1] * cx); i ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y);
+      });
+      ctx.fillStyle = c.muted; ctx.globalAlpha = 0.18; ctx.fill(); ctx.globalAlpha = 1;
+      lineAt(pr[0], c.muted, 1.2, [5, 4]); lineAt(pr[1], c.muted, 1.2, [5, 4]);
+    }
+    lineAt(mid, g > 0 ? c.accent : c.bad, 2.5);
+    ctx.restore();
+    var nsv = 0, tol = 1e-3 + 1e-3 * Math.abs(g);
+    P.forEach(function (p) {
+      var s = cx * p[0] + sy * p[1];
+      FV.dot(ctx, m.X(p[0]), m.Y(p[1]), 4.2, cols[p[2]]);
+      if (g > 0 && Math.abs(s - (p[2] ? pr[1] : pr[0])) < tol) { nsv++; FV.dot(ctx, m.X(p[0]), m.Y(p[1]), 8, c.text, true); }
+    });
+    var s;
+    if (best[1] <= 0) s = o.t.none;
+    else {
+      s = o.t.cur + ' = ' + (g > 0 ? '<b>' + g.toFixed(3) + '</b>' : '—') + '　' + o.t.opt + ' = ' + best[1].toFixed(3) + (g > 0 ? '　' + o.t.sv + ' = ' + nsv : '');
+      if (g <= 0) s += '<br>' + o.t.no; else if (g >= best[1] - 1e-6) s += '<br>' + o.t.at;
+    }
+    o.out(s);
+  };
+  data(); o.redraw();
+})();
+</script>
+</div>

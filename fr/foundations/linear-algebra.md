@@ -18,6 +18,8 @@ Imaginez les données comme des **points dans un espace (des vecteurs)** : une 
 
 Géométriquement, « entraîner un modèle » revient donc souvent à **chercher un ensemble de transformations linéaires (de matrices) adaptées** qui déplacent des données désordonnées vers un nouvel espace où elles sont plus faciles à distinguer et à prédire. L'algèbre linéaire est le langage qui décrit ces points et ces opérations.
 
+{% include fviz/matrix-transform.html %}
+
 ## Formulation mathématique
 
 Un **vecteur** $\mathbf{x}\in\mathbb{R}^n$ est une liste ordonnée de $n$ nombres, que l'on peut voir comme une flèche dans l'espace.

@@ -56,6 +56,8 @@ print(X_norm.std(axis=0).round(6))     # each column's std is about 1
 
 A `(1000, 5)` matrix and a `(5,)` vector can be combined directly — that is **broadcasting**: the vector is automatically "copied" to every row — though it is not actually copied, saving both memory and time.
 
+{% include fviz/broadcast.html %}
+
 ## Relevance to time series forecasting
 
 NumPy is the low-level engine of time series data processing:

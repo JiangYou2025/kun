@@ -47,6 +47,8 @@ $$
 
 多个随机变量之间用**联合分布**、**协方差** $\operatorname{Cov}(X,Y)$ 描述相关性。
 
+{% include fviz/distributions.html %}
+
 ## 一个具体例子
 
 伯努利随机变量：一次抛掷，正面概率 $p=0.3$，令正面 $X=1$、反面 $X=0$。

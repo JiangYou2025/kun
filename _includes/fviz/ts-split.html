@@ -1,0 +1,54 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-tssplit" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="mode"><button data-v="random" class="on" data-t="random"></button><button data-v="ts" data-t="ts"></button></span>
+  <label><span data-t="k"></span><input type="range" data-k="k" min="3" max="6" step="1" value="4"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '✂️ 交叉验证：随机切分 vs 按时间切分', hint: '每一行是一折，每个小格是一段时间。蓝色 = 训练，橙色 = 验证。红色小三角标出“训练里用到了验证段之后的数据”的地方。', random: '随机 K 折', ts: '时间序列切分', k: '折数', fold: '折', time: '时间 →', bad: '⚠️ 随机打乱后，模型在训练时看到了“未来”，等于用未来预测过去：验证分数虚高，部署后会失灵（信息泄露）。', good: '✓ 每一折只用过去训练、预测紧接着的未来，和真实部署时一致。训练窗口逐折扩大。', leak: '泄露格数' },
+    en: { title: '✂️ Cross-validation: random vs time-ordered splits', hint: 'Each row is one fold and each cell a stretch of time. Blue = training, orange = validation. Small red triangles mark training cells that come after the validation block.', random: 'random K-fold', ts: 'time-series split', k: 'folds', fold: 'fold', time: 'time →', bad: '⚠️ After shuffling, the model sees the “future” during training, i.e. it predicts the past from the future: validation scores are inflated and the model fails once deployed (information leakage).', good: '✓ Every fold trains only on the past and predicts the future right after it, just as in real deployment. The training window grows fold by fold.', leak: 'leaking cells' },
+    fr: { title: '✂️ Validation croisée : découpage aléatoire vs chronologique', hint: 'Chaque ligne est un pli, chaque case une période. Bleu = entraînement, orange = validation. Les petits triangles rouges marquent les cases d’entraînement situées après le bloc de validation.', random: 'K plis aléatoires', ts: 'découpage chronologique', k: 'plis', fold: 'pli', time: 'temps →', bad: '⚠️ Une fois mélangées, les données laissent le modèle voir le « futur » pendant l’entraînement : il prédit le passé à partir du futur. Les scores de validation sont gonflés et le modèle échoue une fois déployé (fuite d’information).', good: '✓ Chaque pli s’entraîne uniquement sur le passé et prédit le futur immédiat, comme en déploiement réel. La fenêtre d’entraînement grandit de pli en pli.', leak: 'cases en fuite' }
+  };
+  var W = 560, H = 230, N = 36;
+  var o = FV.init('fv-tssplit', T, W, H); if (!o) return;
+  var mode = 'random', perm = [];
+  for (var i = 0; i < N; i++) perm.push(i);
+  for (i = N - 1; i > 0; i--) { var j = (i * 7 + 3) % (i + 1), t = perm[i]; perm[i] = perm[j]; perm[j] = t; }
+  FV.group(o, 'mode', function (v) { mode = v; });
+  o.draw = function (c) {
+    var ctx = o.ctx, K = o.v('k'), x0 = 60, cw = (W - x0 - 12) / N, rh = Math.min(30, (H - 50) / K), leaks = 0;
+    for (var f = 0; f < K; f++) {
+      var y = 14 + f * (rh + 6), lastVal = -1, role = [];
+      for (var i = 0; i < N; i++) {
+        var r;
+        if (mode === 'random') r = (perm.indexOf(i) % K) === f ? 'v' : 't';
+        else { var blk = Math.floor(N / (K + 1)), vs = blk * (f + 1), ve = blk * (f + 2); r = i < vs ? 't' : i < ve ? 'v' : 'u'; }
+        role.push(r); if (r === 'v') lastVal = Math.max(lastVal, i);
+      }
+      var firstVal = role.indexOf('v');
+      FV.label(ctx, o.t.fold + ' ' + (f + 1), x0 - 8, y + rh / 2 + 4, c.muted, 'right');
+      role.forEach(function (r, i) {
+        ctx.globalAlpha = r === 'u' ? 0.35 : 0.85;
+        ctx.fillStyle = r === 't' ? c.blue : r === 'v' ? c.warn : c.border;
+        ctx.fillRect(x0 + i * cw + 0.5, y, cw - 1, rh); ctx.globalAlpha = 1;
+        if (r === 't' && i > firstVal) {
+          leaks++; var cx = x0 + (i + 0.5) * cw;
+          ctx.beginPath(); ctx.fillStyle = c.bad; ctx.moveTo(cx, y + 2); ctx.lineTo(cx - 4, y + 9); ctx.lineTo(cx + 4, y + 9); ctx.fill();
+        }
+      });
+    }
+    var ya = 14 + K * (rh + 6) + 6;
+    FV.arrow(ctx, x0, ya, W - 14, ya, c.muted, 1.5);
+    FV.label(ctx, o.t.time, W - 14, ya + 16, c.muted, 'right');
+    o.out((mode === 'random' ? o.t.bad : o.t.good) + '　' + o.t.leak + ' = <b>' + leaks + '</b>');
+  };
+  o.redraw();
+})();
+</script>
+</div>

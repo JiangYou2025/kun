@@ -1,0 +1,69 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-knn" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="k"></span> k<input type="range" data-k="k" min="1" max="31" step="2" value="5"></label>
+  <button data-k="new" data-t="new"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🧭 从带标签的样本学会分类：k 近邻', hint: '圆点是带标签的训练样本（蓝 / 橙两类），底色是模型对平面上每个位置的预测。在图上点击放一个新样本 ✚：它找出最近的 k 个邻居，按多数投票给出类别。k 小时边界贴着每个样本弯来弯去，k 大时边界更平滑。', k: '邻居数', new: '换一批数据', q: '新样本的预测', A: '蓝类', B: '橙类', votes: '票数', acc: '训练集准确率', test: '新数据准确率', click: '点击图中任意位置放一个新样本', sep: '：', lp: '（', rp: '）' },
+    en: { title: '🧭 Learning to classify from labelled examples: k-nearest neighbours', hint: 'The dots are labelled training samples (blue / orange), and the background shows the model’s prediction at every position of the plane. Click anywhere to place a new sample ✚: it looks up its k nearest neighbours and takes a majority vote. With small k the boundary bends around every single sample; with large k it becomes smoother.', k: 'neighbours', new: 'new data', q: 'prediction for the new sample', A: 'blue', B: 'orange', votes: 'votes', acc: 'training accuracy', test: 'accuracy on fresh data', click: 'click anywhere in the plot to place a new sample', sep: ': ', lp: ' (', rp: ')' },
+    fr: { title: '🧭 Apprendre à classer à partir d’exemples étiquetés : k plus proches voisins', hint: 'Les points sont des échantillons d’entraînement étiquetés (bleu / orange) ; le fond montre la prédiction du modèle en chaque endroit du plan. Cliquez n’importe où pour placer un nouvel échantillon ✚ : il cherche ses k plus proches voisins et fait voter la majorité. Avec un petit k, la frontière contourne chaque échantillon ; avec un grand k, elle devient plus lisse.', k: 'voisins', new: 'nouvelles données', q: 'prédiction pour le nouvel échantillon', A: 'bleu', B: 'orange', votes: 'votes', acc: 'exactitude à l’entraînement', test: 'exactitude sur de nouvelles données', click: 'cliquez dans le graphique pour placer un nouvel échantillon', sep: ' : ', lp: ' (', rp: ')' }
+  };
+  var W = 560, H = 300;
+  var o = FV.init('fv-knn', T, W, H); if (!o) return;
+  var m = FV.map(W, H, [-3.6, 3.6], [-1.93, 1.93], { l: 4, r: 4, t: 4, b: 4 });
+  var P = [], Q = [], q = null;
+  function sample(n) {
+    var out = [];
+    for (var i = 0; i < n; i++) {
+      var y = i % 2, a = Math.PI * Math.random();
+      var x0 = y ? 1 - 2 * Math.cos(a) : -1 + 2 * Math.cos(a), x1 = y ? 0.6 - 1.3 * Math.sin(a) : -0.6 + 1.3 * Math.sin(a);
+      out.push([x0 + 0.3 * FV.gauss(), x1 + 0.3 * FV.gauss(), y]);
+    }
+    return out;
+  }
+  function data() { P = sample(80); Q = sample(400); }
+  function near(x, y, k) {
+    var d = P.map(function (p, i) { return [(p[0] - x) * (p[0] - x) + (p[1] - y) * (p[1] - y), i]; });
+    d.sort(function (a, b) { return a[0] - b[0]; });
+    return d.slice(0, k).map(function (e) { return e[1]; });
+  }
+  function vote(x, y, k) { var s = 0; near(x, y, k).forEach(function (i) { s += P[i][2]; }); return s; }
+  o.q('new').addEventListener('click', function () { data(); o.redraw(); });
+  o.cv.addEventListener('click', function (e) {
+    var r = o.cv.getBoundingClientRect(), X = (e.clientX - r.left) * W / r.width, Y = (e.clientY - r.top) * H / r.height;
+    q = [m.xr[0] + (X - m.p.l) / (W - m.p.l - m.p.r) * (m.xr[1] - m.xr[0]), m.yr[0] + (H - m.p.b - Y) / (H - m.p.t - m.p.b) * (m.yr[1] - m.yr[0])];
+    o.redraw();
+  });
+  o.draw = function (c) {
+    var ctx = o.ctx, k = o.v('k'), S = 7, cols = [c.blue, c.warn];
+    for (var X = 0; X < W; X += S) for (var Y = 0; Y < H; Y += S) {
+      var x = m.xr[0] + (X + S / 2 - m.p.l) / (W - m.p.l - m.p.r) * (m.xr[1] - m.xr[0]);
+      var y = m.yr[0] + (H - m.p.b - Y - S / 2) / (H - m.p.t - m.p.b) * (m.yr[1] - m.yr[0]);
+      ctx.fillStyle = cols[vote(x, y, k) * 2 > k ? 1 : 0]; ctx.globalAlpha = 0.17; ctx.fillRect(X, Y, S, S);
+    }
+    ctx.globalAlpha = 1;
+    P.forEach(function (p) { FV.dot(ctx, m.X(p[0]), m.Y(p[1]), 4, cols[p[2]]); });
+    var acc = 0, te = 0;
+    P.forEach(function (p) { acc += (vote(p[0], p[1], k) * 2 > k ? 1 : 0) === p[2] ? 1 : 0; });
+    Q.forEach(function (p) { te += (vote(p[0], p[1], k) * 2 > k ? 1 : 0) === p[2] ? 1 : 0; });
+    var s = o.t.acc + ' = ' + (100 * acc / P.length).toFixed(0) + '%　' + o.t.test + ' = <b>' + (100 * te / Q.length).toFixed(0) + '%</b><br>';
+    if (q) {
+      var nb = near(q[0], q[1], k), v = 0, Xq = m.X(q[0]), Yq = m.Y(q[1]);
+      nb.forEach(function (i) { v += P[i][2]; FV.line(ctx, Xq, Yq, m.X(P[i][0]), m.Y(P[i][1]), c.text, 1, [3, 3]); FV.dot(ctx, m.X(P[i][0]), m.Y(P[i][1]), 7, c.text, true); });
+      var cl = v * 2 > k ? 1 : 0;
+      FV.line(ctx, Xq - 8, Yq, Xq + 8, Yq, cols[cl], 4); FV.line(ctx, Xq, Yq - 8, Xq, Yq + 8, cols[cl], 4);
+      s += o.t.q + o.t.sep + '<b>' + (cl ? o.t.B : o.t.A) + '</b>' + o.t.lp + o.t.votes + ' ' + o.t.A + ' ' + (k - v) + ' − ' + v + ' ' + o.t.B + o.t.rp;
+    } else s += o.t.click;
+    o.out(s);
+  };
+  data(); o.redraw();
+})();
+</script>
+</div>

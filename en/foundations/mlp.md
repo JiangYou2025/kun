@@ -18,6 +18,8 @@ The **MLP (Multi-Layer Perceptron)** is the most basic [neural network](../neura
 
 This contrasts with the "look only at a local window" approach of the [CNN](../cnn/) and the "pick out what is relevant" approach of [attention](../attention/). The MLP presupposes no structural assumptions; it is the plainest, most general form: given enough neurons, it can in theory approximate any continuous function (the **universal approximation theorem**). The price is a large number of parameters and no use of the data's own structure (such as the order of time steps or the adjacency of pixels).
 
+{% include fviz/relu-approx.html %}
+
 ## The math
 
 An $L$-layer MLP repeatedly nests "linear transformation + activation". With input $\mathbf{x}$ and $\mathbf{h}^{(0)} = \mathbf{x}$, layer $l$ is:
@@ -38,16 +40,16 @@ $$
 
 Let us compute a tiny MLP by hand: 2-dimensional input, a hidden layer of 2 neurons (ReLU), 1-dimensional output.
 
-Let $\mathbf{x} = \begin{bmatrix}1\\2\end{bmatrix}$,
+Let $\mathbf{x} = \begin{bmatrix}1\cr 2\end{bmatrix}$,
 
 $$
 \mathbf{W}^{(1)} = \begin{bmatrix}1 & 0\\-1 & 1\end{bmatrix},\quad
 \mathbf{b}^{(1)} = \begin{bmatrix}0\\0\end{bmatrix}
 $$
 
-Linear part of layer 1: $\mathbf{W}^{(1)}\mathbf{x} = \begin{bmatrix}1\cdot1 + 0\cdot2\\ -1\cdot1 + 1\cdot2\end{bmatrix} = \begin{bmatrix}1\\1\end{bmatrix}$.
+Linear part of layer 1: $\mathbf{W}^{(1)}\mathbf{x} = \begin{bmatrix}1\cdot1 + 0\cdot2\cr  -1\cdot1 + 1\cdot2\end{bmatrix} = \begin{bmatrix}1\cr 1\end{bmatrix}$.
 
-Through ReLU: $\mathbf{h}^{(1)} = \begin{bmatrix}\max(0,1)\\\max(0,1)\end{bmatrix} = \begin{bmatrix}1\\1\end{bmatrix}$.
+Through ReLU: $\mathbf{h}^{(1)} = \begin{bmatrix}\max(0,1)\cr\max(0,1)\end{bmatrix} = \begin{bmatrix}1\cr 1\end{bmatrix}$.
 
 Output layer $\mathbf{W}^{(2)} = \begin{bmatrix}2 & 3\end{bmatrix}$, $b^{(2)}=1$:
 

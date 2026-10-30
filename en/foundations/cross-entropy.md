@@ -46,6 +46,8 @@ $$
 
 that is, the "**negative log-likelihood**" — it only penalizes you for assigning too low a probability to the correct answer.
 
+{% include fviz/cross-entropy.html %}
+
 ## A concrete example
 
 Three classes; the true label is class 1, one-hot $p=[1,0,0]$.

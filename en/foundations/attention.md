@@ -44,6 +44,8 @@ $Q, K, V$ are usually all obtained from the same input $X$ by linear transformat
 
 **Multi-head attention** runs $h$ copies of the formula above in parallel (each focusing on a different aspect) and concatenates them, letting the model capture several kinds of dependencies at once, such as "syntactic relations" and "numerical correlations".
 
+{% include fviz/attention-heat.html %}
+
 ## A concrete example
 
 Suppose the sequence has only 3 positions, and the dot products of a query with the three keys (after dividing by $\sqrt{d_k}$) are $[2.0,\ 0.0,\ 1.0]$. Softmax:

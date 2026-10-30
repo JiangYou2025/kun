@@ -29,6 +29,8 @@ math: true
 - **异常检测（anomaly detection）**：找出与大多数样本明显不同的“离群点”，比如信用卡盗刷、设备故障。
 - **密度估计（density estimation）**：估计数据在空间中的分布，搞清楚“数据通常出现在哪里”。
 
+{% include fviz/kmeans.html %}
+
 ## 原理（数学直觉）
 
 不同任务背后的[优化](../optimization/)目标不同，但都围绕“度量相似/信息”展开：

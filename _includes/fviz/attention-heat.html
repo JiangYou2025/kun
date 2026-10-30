@@ -1,0 +1,77 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-attn" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="q"></span> i<input type="range" data-k="i" min="0" max="15" step="1" value="13"></label>
+  <label><span data-t="tau"></span> τ<input type="range" data-k="tau" min="0.1" max="4" step="0.05" value="1"></label>
+  <span data-g="mask"><button data-v="full" class="on" data-t="full"></button><button data-v="causal" data-t="causal"></button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🎯 自注意力：每个位置该看谁？', hint: '一段 16 步、周期为 4 的序列。每个位置的查询 q 和键 k 都编码了“它在周期中的相位”，权重 = softmax(q·k / √d / τ)。左：完整的注意力矩阵（行 = 查询，列 = 键，越亮权重越大）。右上：序列值，右下：当前查询 i 的权重分布。可以看到查询自动关注“同一相位”的位置，输出 Σ wⱼvⱼ（虚线）就是对它们的加权平均。τ 小 → 权重尖锐；τ 大 → 趋于平均。“因果掩码”让每个位置只能看过去（GPT 式解码器、时序预测都要这样）。', q: '查询位置', tau: '温度', full: '无掩码', causal: '因果掩码', vals: '值 vⱼ', wts: '查询 i 的注意力权重', top: '最大权重', outv: '输出 Σ wⱼvⱼ', ent: '有效关注位置数', kj: '键 j →', qi: '← 查询 i' },
+    en: { title: '🎯 Self-attention: whom should each position look at?', hint: 'A 16-step sequence with period 4. Each position’s query q and key k encode “its phase within the cycle”; the weights are softmax(q·k / √d / τ). Left: the full attention matrix (rows = queries, columns = keys, brighter = larger weight). Top right: the sequence values; bottom right: the weights of the current query i. The query automatically attends to positions with the same phase, and the output Σ wⱼvⱼ (dashed) is their weighted average. Small τ → sharp weights; large τ → close to uniform. The “causal mask” lets each position see only the past (as in GPT-style decoders and forecasting).', q: 'query position', tau: 'temperature', full: 'no mask', causal: 'causal mask', vals: 'values vⱼ', wts: 'attention weights of query i', top: 'largest weight', outv: 'output Σ wⱼvⱼ', ent: 'effective number of attended positions', kj: 'key j →', qi: '← query i' },
+    fr: { title: '🎯 Auto-attention : qui chaque position doit-elle regarder ?', hint: 'Une séquence de 16 pas, de période 4. La requête q et la clé k de chaque position encodent « sa phase dans le cycle » ; les poids valent softmax(q·k / √d / τ). À gauche : la matrice d’attention complète (lignes = requêtes, colonnes = clés, plus clair = poids plus grand). En haut à droite : les valeurs de la série ; en bas à droite : les poids de la requête i. La requête se tourne d’elle-même vers les positions de même phase, et la sortie Σ wⱼvⱼ (pointillés) en est la moyenne pondérée. τ petit → poids très concentrés ; τ grand → presque uniformes. Le « masque causal » ne laisse voir que le passé (décodeurs de type GPT, prévision).', q: 'position de la requête', tau: 'température', full: 'sans masque', causal: 'masque causal', vals: 'valeurs vⱼ', wts: 'poids d’attention de la requête i', top: 'poids maximal', outv: 'sortie Σ wⱼvⱼ', ent: 'nombre effectif de positions regardées', kj: 'clé j →', qi: '← requête i' }
+  };
+  var W = 560, H = 300, N = 16, P = 4, A = 2;
+  var o = FV.init('fv-attn', T, W, H); if (!o) return;
+  var mask = 'full';
+  FV.group(o, 'mask', function (v) { mask = v; });
+  var s = 11, rnd = function () { s = (s * 16807) % 2147483647; return s / 2147483647; };
+  var base = [3, 5.5, 2.5, 1], v = [], emb = [];
+  for (var j = 0; j < N; j++) {
+    v.push(base[j % P] + 0.08 * j + 0.5 * (rnd() - 0.5));
+    emb.push([A * Math.cos(2 * Math.PI * j / P), A * Math.sin(2 * Math.PI * j / P)]);
+  }
+  function weights(i, tau) {
+    var sc = [], mx = -1e9, z = 0, w = [];
+    for (var j = 0; j < N; j++) {
+      var ok = mask === 'full' || j <= i;
+      sc.push(ok ? (emb[i][0] * emb[j][0] + emb[i][1] * emb[j][1]) / Math.SQRT2 / tau : -Infinity);
+      if (ok) mx = Math.max(mx, sc[j]);
+    }
+    sc.forEach(function (x) { var e = isFinite(x) ? Math.exp(x - mx) : 0; w.push(e); z += e; });
+    return w.map(function (x) { return x / z; });
+  }
+  o.draw = function (c) {
+    var ctx = o.ctx, qi = o.v('i'), tau = o.v('tau'), cs = 14, X0 = 34, Y0 = 44;
+    FV.label(ctx, 'softmax(QKᵀ / √d / τ)', X0, 18, c.text);
+    FV.label(ctx, o.t.kj, X0 + N * cs, Y0 - 6, c.muted, 'right', '11px system-ui,sans-serif');
+    ctx.save(); ctx.translate(X0 - 8, Y0 + N * cs); ctx.rotate(-Math.PI / 2); FV.label(ctx, o.t.qi, 0, 0, c.muted, 'left', '11px system-ui,sans-serif'); ctx.restore();
+    for (var i = 0; i < N; i++) {
+      var w = weights(i, tau);
+      for (var j = 0; j < N; j++) {
+        var X = X0 + j * cs, Y = Y0 + i * cs;
+        ctx.fillStyle = c.bg; ctx.fillRect(X, Y, cs - 1, cs - 1);
+        if (mask === 'causal' && j > i) { ctx.fillStyle = c.border; ctx.globalAlpha = 0.6; ctx.fillRect(X, Y, cs - 1, cs - 1); ctx.globalAlpha = 1; continue; }
+        ctx.fillStyle = c.accent; ctx.globalAlpha = Math.sqrt(w[j]); ctx.fillRect(X, Y, cs - 1, cs - 1); ctx.globalAlpha = 1;
+      }
+    }
+    ctx.strokeStyle = c.warn; ctx.lineWidth = 2; ctx.strokeRect(X0 - 1.5, Y0 + qi * cs - 1.5, N * cs + 2, cs + 2);
+    var wq = weights(qi, tau), out = 0, ent = 0, top = 0;
+    wq.forEach(function (x, j) { out += x * v[j]; if (x > 0) ent -= x * Math.log(x); top = Math.max(top, x); });
+    var px = 300, pw = W - px - 10, bw = pw / N;
+    var mv = FV.map(W, 150, [0, 1], [0, 7.5], { l: px, r: 10, t: 22, b: 8 });
+    FV.label(ctx, o.t.vals, px, 18, c.text);
+    for (j = 0; j < N; j++) {
+      ctx.fillStyle = j === qi ? c.warn : c.accent2; ctx.globalAlpha = mask === 'causal' && j > qi ? 0.25 : 0.85;
+      ctx.fillRect(px + j * bw + 2, mv.Y(v[j]), bw - 4, mv.Y(0) - mv.Y(v[j])); ctx.globalAlpha = 1;
+    }
+    FV.line(ctx, px, mv.Y(out), W - 10, mv.Y(out), c.text, 1.5, [5, 4]);
+    FV.line(ctx, px, mv.Y(0), W - 10, mv.Y(0), c.border, 1);
+    var mw = FV.map(W, H, [0, 1], [0, Math.max(0.3, top) * 1.08], { l: px, r: 10, t: 178, b: 22 });
+    FV.label(ctx, o.t.wts, px, 172, c.text);
+    for (j = 0; j < N; j++) {
+      ctx.fillStyle = c.accent; ctx.fillRect(px + j * bw + 2, mw.Y(wq[j]), bw - 4, Math.max(1, mw.Y(0) - mw.Y(wq[j])));
+      FV.label(ctx, String(j), px + j * bw + bw / 2, H - 8, j === qi ? c.warn : c.muted, 'center', '10px system-ui,sans-serif');
+    }
+    FV.line(ctx, px, mw.Y(0), W - 10, mw.Y(0), c.border, 1);
+    o.out('i = ' + qi + '　' + o.t.outv + ' = <b>' + FV.fmt(out, 2) + '</b> (v<sub>' + qi + '</sub> = ' + FV.fmt(v[qi], 2) + ')　' + o.t.top + ' = ' + FV.fmt(top, 2) + '　' + o.t.ent + ' ≈ ' + FV.fmt(Math.exp(ent), 1));
+  };
+  o.redraw();
+})();
+</script>
+</div>

@@ -22,6 +22,8 @@ Imagine standing on a hillside in thick fog. You can't see the whole mountain; y
 
 The size of each step is the **[learning rate](../learning-rate/)**. Steps too small, and the descent is maddeningly slow; steps too large, and you may overshoot the valley floor in one stride, bouncing back and forth between the two sides or even climbing higher and higher.
 
+{% include fviz/optimizer.html %}
+
 ## Mathematical formulation
 
 The update rule:

@@ -18,6 +18,8 @@ Think of data as **points in space (vectors)**: an image is a point in a space o
 
 So, geometrically, "training a model" often means **finding a suitable set of linear transformations (matrices)** that move messy data points into a new space where they are easier to separate and easier to predict. Linear algebra is the language that describes these points and operations.
 
+{% include fviz/matrix-transform.html %}
+
 ## Mathematical formulation
 
 A **vector** $\mathbf{x}\in\mathbb{R}^n$ is an ordered list of $n$ numbers, which can be seen as an arrow in space.

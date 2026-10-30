@@ -79,6 +79,8 @@ $$F_1 = \frac{2\cdot\text{precision}\cdot\text{recall}}{\text{precision}+\text{r
 
 **ROC curve / AUC**: varying the decision threshold traces a curve of "true positive rate vs false positive rate"; the area under the curve, **AUC**, measures the model's overall ranking ability — $0.5$ is random guessing, $1.0$ is perfect.
 
+{% include fviz/roc.html %}
+
 ## Loss functions vs evaluation metrics
 
 These two concepts look alike but play different roles:

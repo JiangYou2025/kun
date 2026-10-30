@@ -19,6 +19,8 @@ There are two ways to understand $C=AB$:
 - **Composition of transformations**: if $B$ is "do one transformation first" and $A$ is "then do another", then $AB$ is the single matrix that "performs both transformations in one go". First $B$, then $A$ — the order cannot be reversed, and this is the root of its **non-commutativity**.
 - **Rows dotted with columns**: the entry in row $i$, column $j$ of the result is the dot product of **row** $i$ of $A$ with **column** $j$ of $B$. "Row meets column" is the mnemonic for computing by hand.
 
+{% include fviz/matmul-compose.html %}
+
 ## The math
 
 Let $A\in\mathbb{R}^{m\times k}$ and $B\in\mathbb{R}^{k\times n}$. Then the product $C=AB\in\mathbb{R}^{m\times n}$ is:

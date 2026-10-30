@@ -79,6 +79,8 @@ $$F_1 = \frac{2\cdot\text{precision}\cdot\text{recall}}{\text{precision}+\text{r
 
 **Courbe ROC / AUC** : en faisant varier le seuil de décision, on trace la courbe « taux de vrais positifs contre taux de faux positifs » ; l'aire sous la courbe, l'**AUC**, mesure la capacité globale du modèle à ordonner les exemples : $0.5$ équivaut au hasard, $1.0$ est parfait.
 
+{% include fviz/roc.html %}
+
 ## Fonction de perte contre métrique d'évaluation
 
 Ces deux notions se ressemblent beaucoup, mais leurs rôles diffèrent :

@@ -1,0 +1,42 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-gradprod" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="r"></span> r<input type="range" data-k="r" min="0.2" max="1.6" step="0.01" value="0.9"></label>
+  <label><span data-t="L"></span> L<input type="range" data-k="L" min="2" max="50" step="1" value="30"></label>
+  <span data-g="pre"><button data-v="0.2">0.2 · Sigmoid</button><button data-v="0.9" class="on">0.9</button><button data-v="1">1.0 · ReLU + He</button><button data-v="1.3">1.3</button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '📉📈 梯度消失与爆炸：一个因子连乘 L 次', hint: '每根柱子是某一层收到的梯度（相对输出层，对数坐标）。误差每往回传一层就乘上一次因子 r（≈ 权重大小 × 激活导数）。r 稍小于 1，越靠近输入的层梯度越接近 0；稍大于 1，就指数爆炸。把 r 固定在 0.9 或 1.1，再拖动层数 L，感受“深度放大问题”。绿色带是梯度大小还算健康的范围。', r: '每层因子', L: '层数', first: '第 1 层收到的梯度', vanish: '→ 梯度消失：浅层几乎学不动', explode: '→ 梯度爆炸：一步更新就可能变成 NaN', ok: '→ 信号完好地传到了第 1 层', layer: '层（左 = 靠近输入）' },
+    en: { title: '📉📈 Vanishing and exploding gradients: one factor multiplied L times', hint: 'Each bar is the gradient one layer receives (relative to the output layer, log scale). Every layer the error travels back multiplies it by a factor r (≈ weight size × activation derivative). With r a bit below 1, the layers near the input get gradients close to 0; a bit above 1 and they blow up exponentially. Fix r at 0.9 or 1.1 and drag the depth L to feel how depth amplifies the problem. The green band is the range where gradient sizes are still healthy.', r: 'per-layer factor', L: 'layers', first: 'gradient reaching layer 1', vanish: '→ vanishing gradient: early layers barely learn', explode: '→ exploding gradient: one update can turn into NaN', ok: '→ the signal reaches layer 1 intact', layer: 'layer (left = near the input)' },
+    fr: { title: '📉📈 Gradients évanescents et explosifs : un facteur multiplié L fois', hint: 'Chaque barre est le gradient reçu par une couche (relatif à la couche de sortie, échelle log). Chaque fois que l’erreur remonte d’une couche, elle est multipliée par un facteur r (≈ taille des poids × dérivée de l’activation). Avec r un peu en dessous de 1, les couches proches de l’entrée reçoivent un gradient presque nul ; un peu au-dessus de 1, il explose exponentiellement. Fixez r à 0,9 ou 1,1 et faites varier la profondeur L : la profondeur amplifie le problème. La bande verte est la zone où le gradient garde une taille raisonnable.', r: 'facteur par couche', L: 'couches', first: 'gradient reçu par la couche 1', vanish: '→ gradient évanescent : les premières couches n’apprennent presque plus', explode: '→ gradient explosif : une seule mise à jour peut donner NaN', ok: '→ le signal arrive intact à la couche 1', layer: 'couche (à gauche = près de l’entrée)' }
+  };
+  var W = 560, H = 280;
+  var o = FV.init('fv-gradprod', T, W, H); if (!o) return;
+  FV.group(o, 'pre', function (v) { o.q('r').value = v; });
+  o.q('r').addEventListener('input', function () { o.root.querySelectorAll('[data-g="pre"] button').forEach(function (b) { b.classList.remove('on'); }); });
+  var m = FV.map(W, H, [0, 1], [-12, 8], { l: 44, r: 12, t: 12, b: 26 });
+  o.draw = function (c) {
+    var ctx = o.ctx, r = o.v('r'), L = o.v('L'), lr = Math.log(r) / Math.LN10;
+    FV.axes(ctx, m, c, { xt: [], yt: [-12, -9, -6, -3, 0, 3, 6], yf: function (v) { return v ? '1e' + v : '1'; } });
+    ctx.save(); ctx.fillStyle = c.good; ctx.globalAlpha = 0.1; ctx.fillRect(m.X(0), m.Y(3), m.X(1) - m.X(0), m.Y(-3) - m.Y(3)); ctx.restore();
+    var bw = (m.X(1) - m.X(0)) / L;
+    for (var l = 1; l <= L; l++) {
+      var e = (L - l) * lr, ec = Math.max(-12, Math.min(8, e)), X = m.X(0) + (l - 1) * bw;
+      var col = Math.abs(e) <= 3 ? c.good : Math.abs(e) <= 6 ? c.warn : c.bad;
+      ctx.fillStyle = col; ctx.fillRect(X + bw * 0.12, Math.min(m.Y(0), m.Y(ec)), bw * 0.76, Math.abs(m.Y(ec) - m.Y(0)) || 1);
+      if (L <= 25 || l % 5 === 0 || l === 1) FV.label(ctx, String(l), X + bw / 2, H - 10, c.muted, 'center', '10px system-ui,sans-serif');
+    }
+    FV.label(ctx, o.t.layer, m.X(1), m.p.t + 12, c.muted, 'right', '11px system-ui,sans-serif');
+    var g1 = Math.pow(r, L - 1), e1 = (L - 1) * lr;
+    o.out(o.t.first + ' = r<sup>L−1</sup> = ' + FV.fmt(r, 2) + '<sup>' + (L - 1) + '</sup> = <b>' + FV.fmt(g1, 3) + '</b>　' + (e1 < -3 ? o.t.vanish : e1 > 3 ? o.t.explode : o.t.ok));
+  };
+  o.redraw();
+})();
+</script>
+</div>

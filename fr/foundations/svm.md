@@ -36,6 +36,8 @@ $$\min_{w,b}\ \frac{1}{2}\|w\|^2 \quad \text{s.t.}\quad y_i\,(w^\top x_i + b) \g
 
 Ici $y_i \in \{-1, +1\}$ est l'étiquette de classe. La contrainte $y_i(w^\top x_i + b)\ge 1$ signifie que « chaque point doit rester du bon côté de la rue, et au-delà de son bord ». Les points qui **tombent exactement sur le bord** (où l'égalité est atteinte) sont les **vecteurs de support**.
 
+{% include fviz/svm-margin.html %}
+
 ## Marge souple et paramètre C
 
 Les données réelles sont souvent bruitées et se chevauchent ; exiger à tout prix que « tous les points soient bien classés » rend la marge très étroite, voire le problème insoluble. On introduit donc une **marge souple (soft margin)** : on autorise quelques points à franchir la limite, mais en leur faisant payer un coût. L'objectif devient

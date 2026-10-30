@@ -1,0 +1,40 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-derivative" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="x0"></span><input type="range" data-k="x" min="-2.6" max="2.6" step="0.01" value="1.3"></label>
+  <label><span>h</span><input type="range" data-k="h" min="0.01" max="2" step="0.01" value="1.6"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '📐 导数：割线如何变成切线', hint: '把 h 拖向 0：割线（橙）越来越贴近切线（紫），它的斜率 Δy/Δx 就趋近导数 f′(x)。这就是“极限”的含义。', x0: '位置 x', sec: '割线斜率 Δy/Δx', der: '导数 f′(x)', gap: '差距' },
+    en: { title: '📐 The derivative: how a secant becomes a tangent', hint: 'Drag h towards 0: the secant (orange) hugs the tangent (purple) ever more closely, and its slope Δy/Δx approaches the derivative f′(x). That is what a “limit” means.', x0: 'position x', sec: 'secant slope Δy/Δx', der: 'derivative f′(x)', gap: 'gap' },
+    fr: { title: '📐 La dérivée : comment une sécante devient tangente', hint: 'Faites tendre h vers 0 : la sécante (orange) se rapproche de la tangente (violet), et sa pente Δy/Δx tend vers la dérivée f′(x). C’est le sens du mot « limite ».', x0: 'position x', sec: 'pente de la sécante Δy/Δx', der: 'dérivée f′(x)', gap: 'écart' }
+  };
+  var o = FV.init('fv-derivative', T, 560, 300); if (!o) return;
+  var f = function (x) { return 0.2 * x * x * x - x; }, df = function (x) { return 0.6 * x * x - 1; };
+  var m = FV.map(560, 300, [-3.2, 3.2], [-3, 3]);
+  o.draw = function (c) {
+    var ctx = o.ctx, x = o.v('x'), h = o.v('h'), x2 = x + h;
+    var s = (f(x2) - f(x)) / h, d = df(x);
+    FV.axes(ctx, m, c);
+    FV.curve(ctx, m, f, c.accent, 2.5);
+    FV.curve(ctx, m, function (t) { return f(x) + d * (t - x); }, c.accent2, 2, [6, 4]);
+    FV.curve(ctx, m, function (t) { return f(x) + s * (t - x); }, c.warn, 2);
+    FV.line(ctx, m.X(x), m.Y(f(x)), m.X(x2), m.Y(f(x)), c.muted, 1, [3, 3]);
+    FV.line(ctx, m.X(x2), m.Y(f(x)), m.X(x2), m.Y(f(x2)), c.muted, 1, [3, 3]);
+    FV.label(ctx, 'Δx', (m.X(x) + m.X(x2)) / 2, m.Y(f(x)) + 15, c.muted, 'center');
+    FV.label(ctx, 'Δy', m.X(x2) + 6, (m.Y(f(x)) + m.Y(f(x2))) / 2, c.muted);
+    FV.dot(ctx, m.X(x), m.Y(f(x)), 5, c.text);
+    FV.dot(ctx, m.X(x2), m.Y(f(x2)), 5, c.warn);
+    FV.label(ctx, 'f(x) = 0.2x³ − x', m.X(-3.1), m.Y(2.6), c.accent);
+    o.out(o.t.sec + ' = <b>' + s.toFixed(3) + '</b>　' + o.t.der + ' = <b>' + d.toFixed(3) + '</b>　' + o.t.gap + ' = ' + Math.abs(s - d).toFixed(3));
+  };
+  o.redraw();
+})();
+</script>
+</div>

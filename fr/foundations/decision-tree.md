@@ -68,6 +68,8 @@ On choisit la coupure qui minimise la somme pondérée des MSE des deux nœuds e
 
 **Prédiction des feuilles** : en classification, la feuille renvoie la **classe majoritaire** parmi ses échantillons ; en régression, elle renvoie la **moyenne** des $y$ qu'elle contient.
 
+{% include fviz/tree-split.html %}
+
 ## Surapprentissage et contrôle
 
 L'arbre de décision a un talent dangereux : si on le laisse pousser indéfiniment, il peut apprendre l'ensemble d'entraînement **par cœur, mot pour mot** — chaque échantillon occupe sa propre feuille, l'erreur d'entraînement tombe à 0, mais c'est un cas typique de [surapprentissage](../overfitting/), et le modèle s'effondre sur de nouvelles données. Un arbre trop profond mémorise le bruit, pas les régularités.

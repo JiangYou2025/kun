@@ -62,6 +62,8 @@ g = torch.Generator(); g.manual_seed(42)
 
 只要种子和环境一致，`np.random.rand(3)` 每次都吐出**完全相同**的数——这就是可复现的起点。配合 `pip freeze > requirements.txt` 锁住依赖版本，别人就能在自己机器上复现你的曲线。
 
+{% include fviz/seed-runs.html %}
+
 ## 在时间序列预测中的意义
 
 研究 **KUN / Kernel U-Net** 时，可复现性直接决定结论是否站得住：

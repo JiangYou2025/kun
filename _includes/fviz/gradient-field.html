@@ -1,0 +1,80 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-gradfield" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="dir"></span> φ<input type="range" data-k="phi" min="0" max="360" step="1" value="200"></label>
+  <span data-g="snap"><button data-v="up" data-t="up"></button><button data-v="along" data-t="along"></button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🧭 梯度：指向“上坡最陡”的箭头', hint: '底色越深 = 函数值越高（两座小山）。拖动画布上的点：紫色箭头是该点的梯度 ∇f，它总是垂直于等高线、指向上坡最陡的方向，越陡越长；灰色小箭头是各处的梯度场。转动方向 φ（橙色单位向量 u）：沿 u 的变化率 = ∇f · u，与梯度同向时最大，沿等高线时为 0，反向时最负——梯度下降就是朝 −∇f 走。', dir: '方向', up: '对准梯度', along: '沿等高线', g: '梯度 ∇f', n: '|∇f|', d: '沿 u 的变化率 ∇f·u', ang: 'u 与 ∇f 的夹角' },
+    en: { title: '🧭 The gradient: an arrow pointing “steepest uphill”', hint: 'Darker shading = higher function value (two small hills). Drag the point on the canvas: the purple arrow is the gradient ∇f there. It is always perpendicular to the contour lines, points in the steepest uphill direction, and gets longer where the slope is steeper; the small grey arrows show the gradient field everywhere. Turn the direction φ (orange unit vector u): the rate of change along u is ∇f · u, largest when u lines up with the gradient, zero along a contour line, most negative in the opposite direction. Gradient descent simply walks along −∇f.', dir: 'direction', up: 'align with gradient', along: 'along the contour', g: 'gradient ∇f', n: '|∇f|', d: 'rate of change along u, ∇f·u', ang: 'angle between u and ∇f' },
+    fr: { title: '🧭 Le gradient : une flèche qui pointe vers « la plus forte montée »', hint: 'Plus la teinte est foncée, plus la fonction est élevée (deux petites collines). Faites glisser le point sur le canevas : la flèche violette est le gradient ∇f en ce point. Elle est toujours perpendiculaire aux lignes de niveau, pointe vers la montée la plus raide et s’allonge là où la pente est forte ; les petites flèches grises montrent le champ de gradient partout. Tournez la direction φ (vecteur unitaire orange u) : le taux de variation selon u vaut ∇f · u, maximal quand u est aligné sur le gradient, nul le long d’une ligne de niveau, le plus négatif dans le sens opposé. La descente de gradient avance simplement selon −∇f.', dir: 'direction', up: 'aligner sur le gradient', along: 'le long de la ligne de niveau', g: 'gradient ∇f', n: '|∇f|', d: 'taux de variation selon u, ∇f·u', ang: 'angle entre u et ∇f' }
+  };
+  var W = 560, H = 300;
+  var o = FV.init('fv-gradfield', T, W, H); if (!o) return;
+  var m = FV.map(W, H, [-3, 3], [-1.5556, 1.5556], { l: 10, r: 10, t: 10, b: 10 });
+  var hills = [[1.2, 0.3, 0.9, 1.6], [-1.3, -0.4, 0.6, 1.0]];
+  function f(x, y) { var s = 0; hills.forEach(function (h) { s += h[3] * Math.exp(-((x - h[0]) * (x - h[0]) + (y - h[1]) * (y - h[1])) / h[2]); }); return s; }
+  function g(x, y) {
+    var gx = 0, gy = 0;
+    hills.forEach(function (h) { var e = h[3] * Math.exp(-((x - h[0]) * (x - h[0]) + (y - h[1]) * (y - h[1])) / h[2]); gx += e * -2 * (x - h[0]) / h[2]; gy += e * -2 * (y - h[1]) / h[2]; });
+    return [gx, gy];
+  }
+  var P = [0.1, 0.55];
+  var phiIn = o.q('phi');
+  FV.group(o, 'snap', function (v) {
+    var gr = g(P[0], P[1]), a = Math.atan2(gr[1], gr[0]) * 180 / Math.PI;
+    if (v === 'along') a += 90;
+    phiIn.value = Math.round(((a % 360) + 360) % 360);
+  });
+  var cv = o.cv, drag = false;
+  cv.style.touchAction = 'none'; cv.style.cursor = 'grab';
+  function pos(e) { var r = cv.getBoundingClientRect(), X = (e.clientX - r.left) * W / r.width, Y = (e.clientY - r.top) * H / r.height;
+    var x = m.xr[0] + (X - m.p.l) / (W - m.p.l - m.p.r) * (m.xr[1] - m.xr[0]), y = m.yr[0] + (H - m.p.b - Y) / (H - m.p.t - m.p.b) * (m.yr[1] - m.yr[0]);
+    return [Math.max(-2.9, Math.min(2.9, x)), Math.max(-1.45, Math.min(1.45, y))]; }
+  cv.addEventListener('pointerdown', function (e) { drag = true; P = pos(e); cv.setPointerCapture(e.pointerId); o.redraw(); });
+  cv.addEventListener('pointermove', function (e) { if (drag) { P = pos(e); o.redraw(); } });
+  cv.addEventListener('pointerup', function () { drag = false; });
+  o.draw = function (c) {
+    var ctx = o.ctx, s = 5, levels = 10, fmax = 1.62;
+    for (var X = m.p.l; X < W - m.p.r; X += s) for (var Y = m.p.t; Y < H - m.p.b; Y += s) {
+      var x = m.xr[0] + (X + s / 2 - m.p.l) / (W - m.p.l - m.p.r) * 6, y = m.yr[1] - (Y + s / 2 - m.p.t) / (H - m.p.t - m.p.b) * (m.yr[1] - m.yr[0]);
+      var b = Math.floor(f(x, y) / fmax * levels);
+      if (b <= 0) continue;
+      ctx.globalAlpha = 0.07 * b; ctx.fillStyle = c.accent; ctx.fillRect(X, Y, s, s);
+    }
+    ctx.globalAlpha = 1;
+    for (var i = 0; i <= 14; i++) for (var j = 0; j <= 7; j++) {
+      var x = -2.8 + i * 0.4, y = -1.4 + j * 0.4, gr = g(x, y), n = Math.hypot(gr[0], gr[1]);
+      if (n < 0.04) continue;
+      var L = Math.min(22, 14 * n + 7), ux = gr[0] / n, uy = gr[1] / n;
+      var X0 = m.X(x) - L * ux / 2, Y0 = m.Y(y) + L * uy / 2, X1 = X0 + L * ux, Y1 = Y0 - L * uy, an = Math.atan2(Y1 - Y0, X1 - X0);
+      ctx.save(); ctx.globalAlpha = 0.6; ctx.strokeStyle = ctx.fillStyle = c.muted; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(X0, Y0); ctx.lineTo(X1, Y1); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(X1, Y1); ctx.lineTo(X1 - 5 * Math.cos(an - 0.5), Y1 - 5 * Math.sin(an - 0.5)); ctx.lineTo(X1 - 5 * Math.cos(an + 0.5), Y1 - 5 * Math.sin(an + 0.5)); ctx.fill();
+      ctx.restore();
+    }
+    var gr = g(P[0], P[1]), n = Math.hypot(gr[0], gr[1]), phi = o.v('phi') * Math.PI / 180, u = [Math.cos(phi), Math.sin(phi)];
+    var X0 = m.X(P[0]), Y0 = m.Y(P[1]), sc = 55;
+    var gl = Math.min(110, sc * n);
+    if (n > 1e-6) {
+      var tx = -gr[1] / n, ty = gr[0] / n;
+      FV.line(ctx, X0 - 40 * tx, Y0 + 40 * ty, X0 + 40 * tx, Y0 - 40 * ty, c.text, 1.2, [4, 3]);
+      FV.arrow(ctx, X0, Y0, X0 + gl * gr[0] / n, Y0 - gl * gr[1] / n, c.accent2, 3);
+    }
+    FV.arrow(ctx, X0, Y0, X0 + 45 * u[0], Y0 - 45 * u[1], c.warn, 2.5);
+    FV.dot(ctx, X0, Y0, 6, c.text);
+    var d = gr[0] * u[0] + gr[1] * u[1];
+    var ang = n > 1e-6 ? Math.acos(Math.max(-1, Math.min(1, d / n))) * 180 / Math.PI : 0;
+    o.out(o.t.g + ' = (' + gr[0].toFixed(2) + ', ' + gr[1].toFixed(2) + ')　' + o.t.n + ' = <b>' + n.toFixed(2) + '</b><br>' +
+      o.t.d + ' = <b>' + d.toFixed(2) + '</b>　' + o.t.ang + ' = ' + ang.toFixed(0) + '°');
+  };
+  o.redraw();
+})();
+</script>
+</div>

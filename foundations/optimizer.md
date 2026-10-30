@@ -45,6 +45,8 @@ $$
 
 **自适应步长（如 Adam）**：再给每个参数单独缩放步长——梯度一直很大的参数用小步，稀疏更新的参数用大步。这就是 [Adam](../adam/) 做的事，它结合了动量 + 逐参数自适应。
 
+{% include fviz/optimizer.html %}
+
 ## 一个具体例子
 
 最小化 $\mathcal{L}(\theta) = \theta^2$（最优解 $\theta=0$，梯度 $g=2\theta$）。从 $\theta_0 = 1$、$\eta=0.1$ 出发用 SGD：

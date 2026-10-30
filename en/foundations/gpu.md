@@ -54,6 +54,8 @@ if torch.cuda.is_available():
 
 A typical result is that the GPU is dozens of times faster than the CPU. Note two details: `.cuda()` moves the tensors into GPU memory; `synchronize()` is needed because GPU calls are **asynchronous**, and without synchronizing the timing will be wrong.
 
+{% include fviz/gpu-crossover.html %}
+
 ## Why it matters for time series forecasting
 
 Training models like **KUN / Kernel U-Net** is almost impossible without a GPU:

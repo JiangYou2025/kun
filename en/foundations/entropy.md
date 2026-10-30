@@ -22,6 +22,8 @@ Think of entropy as "**the average number of yes/no questions you need to ask to
 
 The pattern: **the more uniform and the more possibilities → the more uncertain → the higher the entropy**; the more skewed toward one outcome → the more certain → the lower the entropy. Entropy reaches its maximum for the uniform distribution.
 
+{% include fviz/entropy-bars.html %}
+
 ## Mathematical formulation
 
 The Shannon entropy of a discrete random variable $X$:

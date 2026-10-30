@@ -32,6 +32,8 @@ math: true
 
 同一份数据，五种「世界观」。这就是「模型族」最直观的样子。
 
+{% include fviz/model-families.html %}
+
 ## 各模型族导览
 
 ### 线性模型

@@ -21,6 +21,8 @@ Représentons un chemin de montagne par une fonction $y=f(x)$, où $x$ est la po
 
 Les deux piliers du calcul — dérivée et intégrale — sont en fait des opérations **réciproques** l'une de l'autre : c'est le théorème fondamental de l'analyse.
 
+{% include fviz/derivative.html %}
+
 ## Formulation mathématique
 
 La **limite** est le point de départ de tout ; elle exprime l'idée d'« approcher indéfiniment » :

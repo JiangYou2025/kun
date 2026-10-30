@@ -91,5 +91,5 @@ For anomaly prediction, please use:
 Related work:
 
 - J. You, A. Cela, R. Natowicz, J. Ouanounou, P. Siarry. **Robust Time Series Forecasting with Non-Heavy-Tailed Gaussian Loss-Weighted Sampler.** arXiv preprint [arXiv:2406.13871](https://arxiv.org/abs/2406.13871), 2024.
-- C. Li, J. You, H. Moungla, V. Gauthier, M. Nunez-del-Prado, H. Alatrista-Salas. **Enhancing Spatio-Temporal Forecasting with Spatial Neighbourhood Fusion: A Case Study on COVID-19 Mobility in Peru.** arXiv preprint [arXiv:2507.00031](https://arxiv.org/abs/2507.00031), 2025.
+- C. Li, J. You, H. Moungla, V. Gauthier, M. Nunez-del-Prado, H. Alatrista-Salas. **Enhancing Spatio-Temporal Forecasting with Spatial Neighbourhood Fusion: A Case Study on Mobility in Peru.** In *ICASSP 2026 – 2026 IEEE International Conference on Acoustics, Speech and Signal Processing*, 2026. [arXiv:2507.00031](https://arxiv.org/abs/2507.00031)
 - J. You, X. Wang, A. Cela. **Dynamic Perturbed Adaptive Method for Infinite Task-Conflicting Time Series.** arXiv preprint [arXiv:2505.11902](https://arxiv.org/abs/2505.11902), 2025.

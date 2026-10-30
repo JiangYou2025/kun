@@ -1,0 +1,56 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-act" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl"><span data-g="f">
+  <button data-v="relu" class="on">ReLU</button><button data-v="leaky">Leaky ReLU</button><button data-v="sigmoid">Sigmoid</button><button data-v="tanh">Tanh</button><button data-v="gelu">GELU</button>
+</span></div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '⚡ 激活函数与它们的导数', hint: '实线是激活函数 σ(x)，虚线是导数 σ′(x)。反向传播时梯度每过一层就要乘一次 σ′：导数越接近 0，梯度消失得越快。', f: '函数', d: '导数', deep: '叠 10 层后，梯度最多被乘上 (max σ′)¹⁰ ≈',
+      relu: 'ReLU = max(0, x)：正半轴导数恒为 1，梯度不衰减，计算极便宜，是默认首选；负半轴导数为 0，神经元可能“死掉”。',
+      leaky: 'Leaky ReLU：负半轴留一个小斜率（这里 0.1），避免神经元死亡。',
+      sigmoid: 'Sigmoid：把输入压到 (0, 1)，适合输出概率；但导数最大只有 0.25，深层网络里梯度会迅速消失。',
+      tanh: 'Tanh：输出在 (−1, 1)、以 0 为中心，导数最大为 1；两端饱和时同样会梯度消失。LSTM 内部常用。',
+      gelu: 'GELU = x·Φ(x)：ReLU 的平滑版本，Transformer 中的标准选择。' },
+    en: { title: '⚡ Activation functions and their derivatives', hint: 'The solid line is the activation σ(x), the dashed line its derivative σ′(x). During backpropagation the gradient is multiplied by σ′ at every layer: the closer the derivative is to 0, the faster the gradient vanishes.', f: 'function', d: 'derivative', deep: 'After 10 layers the gradient is multiplied by at most (max σ′)¹⁰ ≈',
+      relu: 'ReLU = max(0, x): the derivative is 1 on the positive side, so the gradient does not shrink, and it is very cheap; it is the default choice. On the negative side the derivative is 0, so a neuron can “die”.',
+      leaky: 'Leaky ReLU keeps a small slope on the negative side (0.1 here) so neurons do not die.',
+      sigmoid: 'Sigmoid squashes its input into (0, 1), which suits probabilities; but its derivative is at most 0.25, so gradients vanish quickly in deep networks.',
+      tanh: 'Tanh outputs values in (−1, 1), centred on 0, with a maximum derivative of 1; it still saturates at both ends, so gradients vanish there too. Common inside LSTMs.',
+      gelu: 'GELU = x·Φ(x): a smooth version of ReLU and the standard choice in Transformers.' },
+    fr: { title: '⚡ Fonctions d’activation et leurs dérivées', hint: 'Le trait plein est l’activation σ(x), les pointillés sa dérivée σ′(x). Pendant la rétropropagation, le gradient est multiplié par σ′ à chaque couche : plus la dérivée est proche de 0, plus vite le gradient disparaît.', f: 'fonction', d: 'dérivée', deep: 'Après 10 couches, le gradient est multiplié au plus par (max σ′)¹⁰ ≈',
+      relu: 'ReLU = max(0, x) : la dérivée vaut 1 du côté positif, le gradient ne s’atténue donc pas, et le calcul est très bon marché ; c’est le choix par défaut. Du côté négatif la dérivée est nulle : un neurone peut « mourir ».',
+      leaky: 'Leaky ReLU garde une petite pente du côté négatif (ici 0,1) pour que les neurones ne meurent pas.',
+      sigmoid: 'Sigmoïde : comprime l’entrée dans (0, 1), pratique pour des probabilités ; mais sa dérivée vaut au plus 0,25, si bien que le gradient disparaît vite dans un réseau profond.',
+      tanh: 'Tanh : sorties dans (−1, 1), centrées sur 0, dérivée maximale de 1 ; elle sature aussi aux deux extrémités, où le gradient disparaît. Très utilisée dans les LSTM.',
+      gelu: 'GELU = x·Φ(x) : une version lisse de ReLU, le choix standard dans les Transformers.' }
+  };
+  var o = FV.init('fv-act', T, 560, 290); if (!o) return;
+  var cur = 'relu';
+  FV.group(o, 'f', function (v) { cur = v; });
+  var sig = function (x) { return 1 / (1 + Math.exp(-x)); };
+  var erf = function (x) { var s = x < 0 ? -1 : 1; x = Math.abs(x); var t = 1 / (1 + 0.3275911 * x); return s * (1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x)); };
+  var F = {
+    relu: [function (x) { return Math.max(0, x); }, function (x) { return x > 0 ? 1 : 0; }, 1],
+    leaky: [function (x) { return x > 0 ? x : 0.1 * x; }, function (x) { return x > 0 ? 1 : 0.1; }, 1],
+    sigmoid: [sig, function (x) { return sig(x) * (1 - sig(x)); }, 0.25],
+    tanh: [Math.tanh, function (x) { var t = Math.tanh(x); return 1 - t * t; }, 1],
+    gelu: [function (x) { return 0.5 * x * (1 + erf(x / Math.SQRT2)); }, function (x) { return 0.5 * (1 + erf(x / Math.SQRT2)) + x * Math.exp(-x * x / 2) / Math.sqrt(2 * Math.PI); }, 1.13]
+  };
+  var m = FV.map(560, 290, [-5, 5], [-1.5, 3]);
+  o.draw = function (c) {
+    var ctx = o.ctx, f = F[cur];
+    FV.axes(ctx, m, c);
+    FV.curve(ctx, m, f[1], c.warn, 2, [6, 4]);
+    FV.curve(ctx, m, f[0], c.accent, 2.8);
+    FV.legend(ctx, m, [[o.t.f + ' σ(x)', c.accent], [o.t.d + ' σ′(x)', c.warn]], c);
+    o.out(o.t[cur] + '<br>' + o.t.deep + ' <b>' + FV.fmt(Math.pow(f[2], 10), 3) + '</b>');
+  };
+  o.redraw();
+})();
+</script>
+</div>

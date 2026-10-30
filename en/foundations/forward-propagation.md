@@ -45,6 +45,8 @@ $$
 \hat{y} = \sigma^{(L)}\Big(W^{(L)} \, \sigma^{(L-1)}\big(\cdots \sigma^{(1)}(W^{(1)} x + b^{(1)}) \cdots\big) + b^{(L)}\Big)
 $$
 
+{% include fviz/backprop-graph.html %}
+
 ## A concrete example
 
 Take a minimal network: 2-dimensional input, a hidden layer of 2 neurons with ReLU, and an output layer of 1 neuron (linear). Given

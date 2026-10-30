@@ -51,6 +51,8 @@ $$
 
 **Pourquoi ReLU atténue la disparition du gradient** : sur la partie positive, la dérivée **vaut constamment 1**, si bien que le signal d'erreur n'est pas réduit couche après couche lors de la rétropropagation — un produit de 1 reste 1. Cela permet d'entraîner des réseaux très profonds. Le prix à payer : la dérivée est nulle sur la partie négative, et un neurone peut « mourir » (sortir 0 pour toujours). La variante **Leaky ReLU** (une petite pente $0.01x$ lorsque $x<0$) atténue ce problème.
 
+{% include fviz/activation.html %}
+
 ## Un exemple concret
 
 Supposons qu'un neurone ait une somme pondérée $z = -0.5$. Comparons la sortie des trois activations et « la part du gradient qui peut revenir » (c'est-à-dire la dérivée) :

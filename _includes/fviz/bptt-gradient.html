@@ -1,0 +1,47 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-bptt" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="w"></span> w<input type="range" data-k="w" min="0.2" max="2.5" step="0.05" value="1"></label>
+  <label><span data-t="bf"></span> b_f<input type="range" data-k="bf" min="-1" max="6" step="0.1" value="3"></label>
+  <button data-k="again" data-t="again"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '⏳ 梯度能沿时间传回多远：RNN 对比 LSTM', hint: '同一段随机输入序列（60 步）。纵轴是从最后一步往回传 k 步后的梯度大小（对数坐标）。RNN：每退一步乘一次 w·tanh′(·)，即 w·(1 − hₜ²)；LSTM 沿细胞状态：每退一步乘一次遗忘门 fₜ = σ(b_f + …)。把 b_f 调大让遗忘门接近 1，LSTM 的梯度就能传很远；而 tanh RNN 即使把 w 调大，隐藏状态也会饱和、tanh′ 变小，梯度照样很快消失。', w: 'RNN 循环权重', bf: '遗忘门偏置', again: '换一段输入', rnn: 'RNN：∏ w·(1 − hₜ²)', lstm: 'LSTM：∏ fₜ', back: '往回 k 步', after: '传回 60 步后', reach: '梯度仍 > 10⁻³ 的步数', mf: '平均遗忘门' },
+    en: { title: '⏳ How far can a gradient travel back in time: RNN vs LSTM', hint: 'The same random input sequence (60 steps) for both. The vertical axis is the size of the gradient after going k steps back from the last step (log scale). RNN: every step back multiplies by w·tanh′(·), i.e. w·(1 − hₜ²); LSTM along the cell state: every step back multiplies by the forget gate fₜ = σ(b_f + …). Raise b_f so the forget gate is close to 1 and the LSTM gradient travels far; for the tanh RNN, even a large w makes the hidden state saturate, tanh′ shrinks, and the gradient still vanishes quickly.', w: 'RNN recurrent weight', bf: 'forget-gate bias', again: 'new input', rnn: 'RNN: ∏ w·(1 − hₜ²)', lstm: 'LSTM: ∏ fₜ', back: 'k steps back', after: 'after 60 steps back', reach: 'steps with gradient > 10⁻³', mf: 'mean forget gate' },
+    fr: { title: '⏳ Jusqu’où un gradient remonte-t-il le temps : RNN contre LSTM', hint: 'La même séquence d’entrées aléatoires (60 pas) pour les deux. L’axe vertical donne la taille du gradient après k pas en arrière depuis le dernier pas (échelle log). RNN : chaque pas en arrière multiplie par w·tanh′(·), soit w·(1 − hₜ²) ; LSTM le long de l’état de cellule : chaque pas multiplie par la porte d’oubli fₜ = σ(b_f + …). Augmentez b_f pour que la porte d’oubli soit proche de 1 : le gradient du LSTM remonte loin. Pour le RNN tanh, même un grand w fait saturer l’état caché, tanh′ diminue et le gradient s’évanouit quand même très vite.', w: 'poids récurrent du RNN', bf: 'biais de la porte d’oubli', again: 'nouvelle entrée', rnn: 'RNN : ∏ w·(1 − hₜ²)', lstm: 'LSTM : ∏ fₜ', back: 'k pas en arrière', after: 'après 60 pas en arrière', reach: 'pas où le gradient > 10⁻³', mf: 'porte d’oubli moyenne' }
+  };
+  var W = 560, H = 290, N = 60, x = [];
+  var o = FV.init('fv-bptt', T, W, H); if (!o) return;
+  function sample() { x = []; for (var i = 0; i < N; i++) x.push(0.5 * FV.gauss()); }
+  o.q('again').addEventListener('click', function () { sample(); o.redraw(); });
+  var sig = function (z) { return 1 / (1 + Math.exp(-z)); }, L10 = function (v) { return Math.log(v) / Math.LN10; };
+  var m = FV.map(W, H, [0, N], [-12, 1], { l: 44, r: 12, t: 12, b: 26 });
+  o.draw = function (c) {
+    var ctx = o.ctx, w = o.v('w'), bf = o.v('bf'), h = 0, fr = [], ff = [], i;
+    for (i = 0; i < N; i++) { h = Math.tanh(w * h + x[i]); fr.push(w * (1 - h * h)); ff.push(sig(bf + x[i])); }
+    var gr = [1], gl = [1];
+    for (var k = 1; k <= N; k++) { gr.push(gr[k - 1] * Math.abs(fr[N - k])); gl.push(gl[k - 1] * ff[N - k]); }
+    FV.axes(ctx, m, c, { xt: [0, 10, 20, 30, 40, 50, 60], yt: [-12, -9, -6, -3, 0], yf: function (v) { return v ? '1e' + v : '1'; }, xl: o.t.back });
+    ctx.save(); ctx.fillStyle = c.bad; ctx.globalAlpha = 0.07; ctx.fillRect(m.X(0), m.Y(-3), m.X(N) - m.X(0), m.Y(-12) - m.Y(-3)); ctx.restore();
+    var draw = function (g, col) {
+      ctx.save(); FV.clip(ctx, m); ctx.beginPath(); ctx.strokeStyle = col; ctx.lineWidth = 2.5;
+      g.forEach(function (v, k) { var Y = m.Y(Math.max(-13, L10(v))); k ? ctx.lineTo(m.X(k), Y) : ctx.moveTo(m.X(k), Y); }); ctx.stroke();
+      g.forEach(function (v, k) { if (k % 5 === 0) FV.dot(ctx, m.X(k), m.Y(Math.max(-13, L10(v))), 3, col); }); ctx.restore();
+    };
+    draw(gr, c.warn); draw(gl, c.good);
+    var lg = { p: { l: W - 230, t: m.Y(-5) } };
+    FV.legend(ctx, lg, [[o.t.rnn, c.warn], [o.t.lstm, c.good]], c);
+    var reach = function (g) { for (var k = 0; k <= N; k++) if (g[k] < 1e-3) return k - 1; return N + '+'; };
+    var mf = ff.reduce(function (a, b) { return a + b; }, 0) / N;
+    o.out(o.t.after + '　RNN = <b>' + FV.fmt(gr[N], 2) + '</b>　LSTM = <b>' + FV.fmt(gl[N], 2) + '</b>　(' + o.t.mf + ' ≈ ' + FV.fmt(mf, 3) + ')<br>' + o.t.reach + '　RNN = <b>' + reach(gr) + '</b>　LSTM = <b>' + reach(gl) + '</b>');
+  };
+  sample(); o.redraw();
+})();
+</script>
+</div>

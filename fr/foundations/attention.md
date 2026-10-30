@@ -44,6 +44,8 @@ $Q, K, V$ sont généralement obtenues par transformation linéaire d'une même 
 
 L'**attention multi-têtes** effectue en parallèle $h$ exemplaires du calcul ci-dessus (chacun s'intéressant à un aspect différent), puis les concatène : le modèle capte ainsi simultanément plusieurs types de dépendances, comme les « relations syntaxiques » ou les « corrélations numériques ».
 
+{% include fviz/attention-heat.html %}
+
 ## Un exemple concret
 
 Supposons une séquence de seulement 3 positions, et que les produits scalaires d'une requête avec les trois clés (après division par $\sqrt{d_k}$) valent $[2.0,\ 0.0,\ 1.0]$. La softmax donne :

@@ -1,0 +1,65 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-opt" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="opt"><button data-v="sgd" class="on">SGD</button><button data-v="mom">Momentum</button><button data-v="adam">Adam</button></span>
+  <label><span data-t="lr"></span> η<input type="range" data-k="lr" min="0.01" max="0.3" step="0.005" value="0.17"></label>
+  <label><span data-t="steps"></span><input type="range" data-k="n" min="1" max="80" step="1" value="40"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🏔️ 学习率与优化器：在损失地形上下山', hint: '等高线是一个“狭长山谷”形的损失 L = ½(θ₁² + 10·θ₂²)，最低点在中心。SGD 学习率稍大就在陡峭方向来回震荡，超过 0.2 直接发散；Momentum 用惯性抚平震荡；Adam 给每个方向单独调步长。', lr: '学习率', steps: '步数', loss: '最终损失', div: '⚠️ 发散：学习率太大，每一步都冲过了谷底', slow: '还没走到谷底：学习率太小或步数太少', ok: '✓ 到达谷底附近' },
+    en: { title: '🏔️ Learning rate and optimizers: walking down a loss landscape', hint: 'The contours show a long, narrow valley L = ½(θ₁² + 10·θ₂²) with its minimum at the centre. With a slightly larger learning rate SGD bounces back and forth across the steep direction, and above 0.2 it diverges; Momentum uses inertia to smooth out the oscillation; Adam adapts the step size separately in each direction.', lr: 'learning rate', steps: 'steps', loss: 'final loss', div: '⚠️ diverged: the learning rate is too large, every step overshoots the valley floor', slow: 'not at the bottom yet: learning rate too small or too few steps', ok: '✓ reached the bottom of the valley' },
+    fr: { title: '🏔️ Taux d’apprentissage et optimiseurs : descendre un paysage de perte', hint: 'Les lignes de niveau montrent une vallée longue et étroite L = ½(θ₁² + 10·θ₂²), dont le minimum est au centre. Avec un taux un peu trop grand, SGD rebondit d’un bord à l’autre dans la direction raide, et au-delà de 0,2 il diverge ; Momentum lisse ces oscillations grâce à l’inertie ; Adam adapte le pas séparément dans chaque direction.', lr: 'taux d’apprentissage', steps: 'pas', loss: 'perte finale', div: '⚠️ divergence : le taux est trop grand, chaque pas dépasse le fond de la vallée', slow: 'pas encore au fond : taux trop petit ou trop peu de pas', ok: '✓ fond de la vallée atteint' }
+  };
+  var W = 560, H = 300;
+  var o = FV.init('fv-opt', T, W, H); if (!o) return;
+  var opt = 'sgd';
+  FV.group(o, 'opt', function (v) { opt = v; });
+  var L = function (x, y) { return 0.5 * (x * x + 10 * y * y); };
+  var m = FV.map(W, H, [-5.2, 5.2], [-2.6, 2.6], { l: 30, r: 10, t: 10, b: 24 });
+  function path(lr, n) {
+    var x = -4.6, y = 2, vx = 0, vy = 0, mx = 0, my = 0, sx = 0, sy = 0, P = [[x, y]];
+    for (var t = 1; t <= n; t++) {
+      var gx = x, gy = 10 * y;
+      if (opt === 'sgd') { x -= lr * gx; y -= lr * gy; }
+      else if (opt === 'mom') { vx = 0.9 * vx + gx; vy = 0.9 * vy + gy; x -= lr * vx; y -= lr * vy; }
+      else {
+        mx = 0.9 * mx + 0.1 * gx; my = 0.9 * my + 0.1 * gy; sx = 0.999 * sx + 0.001 * gx * gx; sy = 0.999 * sy + 0.001 * gy * gy;
+        var c1 = 1 - Math.pow(0.9, t), c2 = 1 - Math.pow(0.999, t);
+        x -= lr * 3 * (mx / c1) / (Math.sqrt(sx / c2) + 1e-8); y -= lr * 3 * (my / c1) / (Math.sqrt(sy / c2) + 1e-8);
+      }
+      P.push([x, y]);
+      if (!isFinite(x) || Math.abs(x) + Math.abs(y) > 1e6) break;
+    }
+    return P;
+  }
+  o.draw = function (c) {
+    var ctx = o.ctx, lr = o.v('lr'), n = o.v('n');
+    FV.axes(ctx, m, c, { xt: [], yt: [] });
+    ctx.save(); FV.clip(ctx, m); ctx.strokeStyle = c.muted; ctx.globalAlpha = 0.45; ctx.lineWidth = 1;
+    [0.25, 1, 2.5, 5, 9, 14, 20].forEach(function (lv) {
+      ctx.beginPath();
+      for (var k = 0; k <= 80; k++) { var a = k / 80 * 2 * Math.PI, x = Math.sqrt(2 * lv) * Math.cos(a), y = Math.sqrt(2 * lv / 10) * Math.sin(a); k ? ctx.lineTo(m.X(x), m.Y(y)) : ctx.moveTo(m.X(x), m.Y(y)); }
+      ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
+    var P = path(lr, n);
+    ctx.beginPath(); ctx.strokeStyle = c.accent; ctx.lineWidth = 2;
+    P.forEach(function (p, k) { var X = Math.max(-1e4, Math.min(1e4, m.X(p[0]))), Y = Math.max(-1e4, Math.min(1e4, m.Y(p[1]))); k ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+    ctx.stroke();
+    P.forEach(function (p, k) { FV.dot(ctx, m.X(p[0]), m.Y(p[1]), k ? 2.6 : 5, k ? c.accent : c.warn); });
+    ctx.restore();
+    FV.label(ctx, '★', m.X(0), m.Y(0) + 5, c.good, 'center', '16px system-ui,sans-serif');
+    var e = P[P.length - 1], loss = L(e[0], e[1]);
+    var st = !isFinite(loss) || loss > L(-4.6, 2) ? o.t.div : loss > 0.05 ? o.t.slow : o.t.ok;
+    o.out(o.t.loss + ' = <b>' + FV.fmt(loss, 4) + '</b>　' + st);
+  };
+  o.redraw();
+})();
+</script>
+</div>

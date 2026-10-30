@@ -57,6 +57,8 @@ Supervised learning splits into two big families according to "the type of the o
 
 One sentence to tell them apart: **asking "how much" is regression; asking "which class" is classification.**
 
+{% include fviz/knn.html %}
+
 ## A concrete example
 
 Train the simplest possible regression model with [Python](../python/)'s `scikit-learn` — predicting house prices from floor area:

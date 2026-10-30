@@ -103,6 +103,8 @@ You will observe:
 - **Ridge**: as `alpha` grows, all the coefficients **shrink together**, but they rarely become exactly 0.
 - **Lasso**: as `alpha` grows, the **coefficients of the useless features turn to 0 one after another**, until only the two truly important features remain — this is automatic feature selection.
 
+{% include fviz/reg-path.html %}
+
 ## Why it matters: linking overfitting and bias–variance
 
 Regularization is the most direct and most widely used weapon against [overfitting](../overfitting/). In the language of the [bias–variance tradeoff](../bias-variance/):

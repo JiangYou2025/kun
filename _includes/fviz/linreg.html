@@ -1,0 +1,73 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-linreg" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="w"></span> w<input type="range" data-k="w" min="0" max="5" step="0.01" value="1.2"></label>
+  <label><span data-t="b"></span> b<input type="range" data-k="b" min="-100" max="250" step="0.5" value="150"></label>
+  <button data-k="ls" data-t="ls"></button>
+  <button data-k="new" data-t="new"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '📏 线性回归：让残差的平方和最小', hint: '拖动斜率 w 和截距 b 来摆放直线。每条竖线是一个残差 yᵢ − ŷᵢ，旁边的方块面积就是它的平方。MSE 是这些方块的平均面积；点“最小二乘”一步跳到闭式解。在图上点击可以添加新样本，看看一个离群点能把直线拉偏多少。', w: '斜率', b: '截距', ls: '最小二乘', new: '换一批数据', area: '面积 (m²)', price: '房价 (万元)', mse: '当前 MSE', best: '最小二乘的 MSE', opt: '✓ 已经是最小二乘解', n: '样本数' },
+    en: { title: '📏 Linear regression: minimise the sum of squared residuals', hint: 'Drag the slope w and intercept b to place the line. Each vertical segment is a residual yᵢ − ŷᵢ, and the square next to it has its squared size as area. The MSE is the average area of these squares; press “least squares” to jump to the closed-form solution. Click on the plot to add a sample and see how far a single outlier can pull the line.', w: 'slope', b: 'intercept', ls: 'least squares', new: 'new data', area: 'area (m²)', price: 'price (k€)', mse: 'current MSE', best: 'least-squares MSE', opt: '✓ this is the least-squares solution', n: 'samples' },
+    fr: { title: '📏 Régression linéaire : minimiser la somme des carrés des résidus', hint: 'Réglez la pente w et l’ordonnée à l’origine b pour placer la droite. Chaque segment vertical est un résidu yᵢ − ŷᵢ, et le carré à côté a pour aire son carré. La MSE est l’aire moyenne de ces carrés ; « moindres carrés » saute directement à la solution exacte. Cliquez sur le graphique pour ajouter un échantillon et voyez à quel point un seul point aberrant peut tirer la droite.', w: 'pente', b: 'ordonnée à l’origine', ls: 'moindres carrés', new: 'nouvelles données', area: 'surface (m²)', price: 'prix (k€)', mse: 'MSE actuelle', best: 'MSE des moindres carrés', opt: '✓ c’est la solution des moindres carrés', n: 'échantillons' }
+  };
+  var W = 560, H = 300;
+  var o = FV.init('fv-linreg', T, W, H); if (!o) return;
+  var m = FV.map(W, H, [30, 170], [0, 600], { l: 44, r: 12, t: 12, b: 26 });
+  var P = [];
+  function data() {
+    P = [];
+    for (var i = 0; i < 12; i++) { var x = 40 + 120 * (i + Math.random()) / 12; P.push([x, 2.6 * x + 40 + 35 * FV.gauss()]); }
+  }
+  function ols() {
+    var n = P.length, sx = 0, sy = 0, sxx = 0, sxy = 0;
+    P.forEach(function (p) { sx += p[0]; sy += p[1]; sxx += p[0] * p[0]; sxy += p[0] * p[1]; });
+    var w = (n * sxy - sx * sy) / (n * sxx - sx * sx);
+    return [w, (sy - w * sx) / n];
+  }
+  function mse(w, b) { return P.reduce(function (a, p) { var e = p[1] - (w * p[0] + b); return a + e * e; }, 0) / P.length; }
+  o.q('ls').addEventListener('click', function () {
+    var s = ols();
+    o.q('w').value = Math.max(0, Math.min(5, s[0])); o.q('b').value = Math.max(-100, Math.min(250, s[1]));
+    o.lsw = s; o.redraw();
+  });
+  o.root.addEventListener('input', function () { o.lsw = null; }, true);
+  o.q('new').addEventListener('click', function () { data(); o.lsw = null; o.redraw(); });
+  o.cv.addEventListener('click', function (e) {
+    var r = o.cv.getBoundingClientRect(), X = (e.clientX - r.left) * W / r.width, Y = (e.clientY - r.top) * H / r.height;
+    var x = m.xr[0] + (X - m.p.l) / (W - m.p.l - m.p.r) * (m.xr[1] - m.xr[0]);
+    var y = m.yr[0] + (H - m.p.b - Y) / (H - m.p.t - m.p.b) * (m.yr[1] - m.yr[0]);
+    if (x < m.xr[0] || x > m.xr[1] || y < m.yr[0] || y > m.yr[1] || P.length >= 40) return;
+    P.push([x, y]); o.lsw = null; o.redraw();
+  });
+  o.draw = function (c) {
+    var ctx = o.ctx, w = o.v('w'), b = o.v('b');
+    if (o.lsw) { w = o.lsw[0]; b = o.lsw[1]; }
+    FV.axes(ctx, m, c, { xl: o.t.area, yl: o.t.price });
+    var s = ols();
+    FV.curve(ctx, m, function (x) { return s[0] * x + s[1]; }, c.muted, 1.2, [5, 4]);
+    ctx.save(); FV.clip(ctx, m);
+    P.forEach(function (p) {
+      var yh = w * p[0] + b, X = m.X(p[0]), Y1 = m.Y(p[1]), Y2 = m.Y(yh), d = Y2 - Y1;
+      ctx.fillStyle = c.warn; ctx.globalAlpha = 0.16;
+      ctx.fillRect(X, Math.min(Y1, Y2), Math.abs(d), Math.abs(d));
+      ctx.globalAlpha = 1;
+      FV.line(ctx, X, Y1, X, Y2, c.warn, 1.5);
+    });
+    ctx.restore();
+    FV.curve(ctx, m, function (x) { return w * x + b; }, c.accent, 2.5);
+    P.forEach(function (p) { FV.dot(ctx, m.X(p[0]), m.Y(p[1]), 4, c.text); });
+    var cur = mse(w, b), best = mse(s[0], s[1]);
+    o.out(o.t.mse + ' = <b>' + cur.toFixed(0) + '</b>　' + o.t.best + ' = ' + best.toFixed(0) + ' (w = ' + s[0].toFixed(2) + ', b = ' + s[1].toFixed(1) + ')　' + o.t.n + ' = ' + P.length +
+      (cur <= best * 1.0005 ? '<br>' + o.t.opt : ''));
+  };
+  data(); o.redraw();
+})();
+</script>
+</div>

@@ -22,6 +22,8 @@ The mathematics of "change", and the basis of optimization and training.
 - **[Chain rule](../chain-rule/)**: differentiating composite functions, the mathematical principle behind **[backpropagation](../backpropagation/)**
 - **Integrals**: computing areas / accumulated quantities, needed to normalize probability densities
 
+{% include fviz/derivative.html %}
+
 ## 2. [Linear algebra](../linear-algebra/)
 
 The "language" of data and models — everything is vectors and matrices.
@@ -33,6 +35,8 @@ The "language" of data and models — everything is vectors and matrices.
 - **Eigenvalues and eigenvectors**: stability, principal directions
 - **Matrix decompositions ([PCA](../pca/) / [SVD](../svd/))**: dimensionality reduction and compression
 
+{% include fviz/matrix-transform.html %}
+
 ## 3. [Probability and statistics](../probability-statistics/)
 
 Tools for reasoning and deciding under **uncertainty**.
@@ -43,6 +47,8 @@ Tools for reasoning and deciding under **uncertainty**.
 - **Law of large numbers and central limit theorem**: why "averages" and "normal distributions" are everywhere
 - **Estimation**: [maximum likelihood](../maximum-likelihood/) (MLE), maximum a posteriori (MAP)
 - **Hypothesis tests and confidence intervals**: deciding whether "a difference is significant"
+
+{% include fviz/clt.html %}
 
 ## 4. [Optimization](../optimization/)
 
@@ -63,6 +69,8 @@ Measures "amount of information" and "difference between distributions"; the ori
 - **[Cross-entropy](../cross-entropy/)**: the most common loss for classification tasks
 - **[KL divergence](../kl-divergence/)**: the "distance" between two distributions
 - **Mutual information**: how much information two variables share
+
+{% include fviz/cross-entropy.html %}
 
 ---
 

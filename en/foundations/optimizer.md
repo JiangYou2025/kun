@@ -45,6 +45,8 @@ $$
 
 **Adaptive step sizes (e.g. Adam)**: additionally scale the step separately for each parameter — parameters whose gradients are consistently large get small steps, sparsely updated parameters get large steps. That is what [Adam](../adam/) does: it combines momentum with per-parameter adaptation.
 
+{% include fviz/optimizer.html %}
+
 ## A concrete example
 
 Minimize $\mathcal{L}(\theta) = \theta^2$ (optimum $\theta=0$, gradient $g=2\theta$). Start from $\theta_0 = 1$ with $\eta=0.1$ and use SGD:

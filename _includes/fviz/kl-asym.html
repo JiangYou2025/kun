@@ -1,0 +1,60 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-klasym" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label>μ<sub>q</sub><input type="range" data-k="mu" min="-4" max="4" step="0.05" value="0"></label>
+  <label>σ<sub>q</sub><input type="range" data-k="sg" min="0.3" max="4" step="0.05" value="1"></label>
+  <span data-g="fit"><button data-v="f" data-t="fwd"></button><button data-v="r" data-t="rev"></button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '↔️ KL 散度不对称：用一个单峰 q 去近似双峰 p', hint: '紫色 p 是“真相”（两个峰），橙色 q 是一个正态分布的近似，可以调它的 μ 和 σ。两个按钮分别找出让 KL(p‖q) 或 KL(q‖p) 最小的 q：最小化 KL(p‖q) 时，q 不敢在 p 有质量的地方给出低概率，于是变宽、把两个峰都盖住（覆盖模式）；最小化 KL(q‖p) 时，q 不敢把概率放在 p 几乎为 0 的地方，于是缩进其中一个峰（寻找模式）。同一个 q，两个方向的数值往往相差很大。', fwd: '最小化 KL(p‖q)', rev: '最小化 KL(q‖p)', bits: '比特' },
+    en: { title: '↔️ KL divergence is asymmetric: approximating a two-peaked p with a one-peaked q', hint: 'The purple p is the “truth” (two peaks); the orange q is a normal approximation whose μ and σ you can adjust. The two buttons find the q that minimises KL(p‖q) or KL(q‖p). Minimising KL(p‖q), q cannot afford low probability anywhere p has mass, so it widens to cover both peaks (mode covering). Minimising KL(q‖p), q cannot afford to put probability where p is nearly 0, so it shrinks into one of the peaks (mode seeking). For the same q, the two directions often give very different numbers.', fwd: 'minimise KL(p‖q)', rev: 'minimise KL(q‖p)', bits: 'bits' },
+    fr: { title: '↔️ La divergence KL n’est pas symétrique : approcher une loi p à deux pics par une loi q à un seul pic', hint: 'La loi violette p est la « vérité » (deux pics) ; la loi orange q est une approximation normale dont vous réglez μ et σ. Les deux boutons trouvent la loi q qui minimise KL(p‖q) ou KL(q‖p). En minimisant KL(p‖q), q ne peut pas se permettre une faible probabilité là où p a de la masse : elle s’élargit pour couvrir les deux pics (couverture des modes). En minimisant KL(q‖p), q ne peut pas se permettre de mettre de la probabilité là où p est presque nulle : elle se resserre sur un seul pic (recherche de mode). Pour une même loi q, les deux sens donnent souvent des valeurs très différentes.', fwd: 'minimiser KL(p‖q)', rev: 'minimiser KL(q‖p)', bits: 'bits' }
+  };
+  var W = 560, H = 280;
+  var o = FV.init('fv-klasym', T, W, H); if (!o) return;
+  var N = function (x, mu, s) { return Math.exp(-(x - mu) * (x - mu) / (2 * s * s)) / (s * Math.sqrt(2 * Math.PI)); };
+  var p = function (x) { return 0.5 * N(x, -2, 0.7) + 0.5 * N(x, 2, 0.7); };
+  function kl(mu, s, rev, n) {
+    n = n || 1200; var a = -9, b = 9, dx = (b - a) / n, t = 0;
+    for (var i = 0; i <= n; i++) {
+      var x = a + i * dx, P = p(x), Q = N(x, mu, s), u = rev ? Q : P, v = rev ? P : Q;
+      if (u > 1e-300) t += u * (Math.log(u) - Math.log(Math.max(v, 1e-300))) * dx;
+    }
+    return t / Math.LN2;
+  }
+  function best(rev) {
+    var bm = 0, bs = 1, bv = Infinity;
+    for (var mu = -4; mu <= 4.0001; mu += 0.1) for (var s = 0.3; s <= 4.0001; s += 0.05) { var v = kl(mu, s, rev, 300); if (v < bv) { bv = v; bm = mu; bs = s; } }
+    for (var k = 0; k < 2; k++) { var r = 0.1 / (k + 1), rs = 0.05 / (k + 1), m0 = bm, s0 = bs;
+      for (mu = m0 - r; mu <= m0 + r + 1e-9; mu += r / 5) for (s = s0 - rs; s <= s0 + rs + 1e-9; s += rs / 5) { if (s < 0.3) continue; v = kl(mu, s, rev, 1200); if (v < bv) { bv = v; bm = mu; bs = s; } } }
+    return [bm, bs];
+  }
+  var cache = {};
+  FV.group(o, 'fit', function (v) {
+    var r = cache[v] || (cache[v] = best(v === 'r'));
+    o.q('mu').value = r[0].toFixed(2); o.q('sg').value = r[1].toFixed(2);
+  });
+  o.root.addEventListener('input', function () { o.root.querySelectorAll('[data-g="fit"] button').forEach(function (b) { b.classList.remove('on'); }); });
+  var m = FV.map(W, H, [-6, 6], [0, 0.75], { l: 40, r: 12, t: 12, b: 26 });
+  o.draw = function (c) {
+    var ctx = o.ctx, mu = o.v('mu'), s = o.v('sg');
+    FV.axes(ctx, m, c, { yt: [0, 0.25, 0.5, 0.75] });
+    ctx.save(); FV.clip(ctx, m); ctx.beginPath(); ctx.moveTo(m.X(-6), m.Y(0));
+    for (var i = 0; i <= 300; i++) { var x = -6 + 12 * i / 300; ctx.lineTo(m.X(x), m.Y(p(x))); }
+    ctx.lineTo(m.X(6), m.Y(0)); ctx.closePath(); ctx.globalAlpha = 0.15; ctx.fillStyle = c.accent2; ctx.fill(); ctx.restore();
+    FV.curve(ctx, m, p, c.accent2, 2.5);
+    FV.curve(ctx, m, function (x) { return N(x, mu, s); }, c.warn, 2.5);
+    FV.legend(ctx, m, [['p', c.accent2], ['q = N(' + mu.toFixed(2) + ', ' + s.toFixed(2) + '²)', c.warn]], c);
+    var f = kl(mu, s, false), r = kl(mu, s, true);
+    o.out('KL(p‖q) = <b>' + FV.fmt(f, 3) + '</b> ' + o.t.bits + '　KL(q‖p) = <b>' + FV.fmt(r, 3) + '</b> ' + o.t.bits);
+  };
+  o.redraw();
+})();
+</script>
+</div>

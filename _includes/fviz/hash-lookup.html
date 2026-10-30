@@ -1,0 +1,79 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-hashlookup" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="n"></span><input type="range" data-k="n" min="4" max="32" step="1" value="20"></label>
+  <button data-k="hitq" data-t="hitq"></button>
+  <button data-k="missq" data-t="missq"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🗂️ 按值查找：list 逐个比 vs 哈希表直达', hint: '同样一批数字，左边存成 list，右边存进 16 个桶的哈希表（桶号 = 键 mod 16）。点按钮查一个键：list 只能从头逐个比较（橙色），哈希表先算出桶号，只在那一个短桶里比较。查一个不存在的键时，list 要扫完全部元素。', n: '元素个数 n', hitq: '查一个存在的键', missq: '查一个不存在的键', list: 'list：逐个扫描', hash: '哈希表：键 mod 16 → 桶', cmp: '次比较', cmp1: '次比较', lname: 'list：',  look: '查找', found: '找到', none: '不存在', avg: '对所有存在的键平均：list', avg2: '次，哈希表', avg3: '次' },
+    en: { title: '🗂️ Lookup by value: scanning a list vs jumping into a hash table', hint: 'The same numbers are stored on the left in a list and on the right in a hash table with 16 buckets (bucket = key mod 16). Press a button to look up a key: the list must compare elements one by one from the start (orange), while the hash table computes the bucket first and only compares inside that one short bucket. For a key that is absent, the list has to scan every element.', n: 'number of elements n', hitq: 'look up a present key', missq: 'look up an absent key', list: 'list: linear scan', hash: 'hash table: key mod 16 → bucket', cmp: 'comparisons', cmp1: 'comparison', lname: 'list: ', look: 'looking up', found: 'found', none: 'absent', avg: 'averaged over all present keys: list', avg2: 'comparisons, hash table', avg3: '' },
+    fr: { title: '🗂️ Recherche par valeur : parcourir une liste vs aller droit dans une table de hachage', hint: 'Les mêmes nombres sont rangés à gauche dans une liste, à droite dans une table de hachage à 16 compartiments (compartiment = clé mod 16). Cliquez pour chercher une clé : la liste doit comparer les éléments un à un depuis le début (orange), alors que la table calcule d’abord le compartiment et ne compare que dans ce seul petit compartiment. Pour une clé absente, la liste doit tout parcourir.', n: 'nombre d’éléments n', hitq: 'chercher une clé présente', missq: 'chercher une clé absente', list: 'liste : parcours linéaire', hash: 'table de hachage (clé mod 16)', cmp: 'comparaisons', cmp1: 'comparaison', lname: 'liste : ', look: 'recherche de', found: 'trouvée', none: 'absente', avg: 'en moyenne sur toutes les clés présentes : liste', avg2: 'comparaisons, table de hachage', avg3: '' }
+  };
+  var W = 560, H = 300, NB = 16;
+  var o = FV.init('fv-hashlookup', T, W, H); if (!o) return;
+  var keys = [], n = 0, q = null;
+  function gen(m) {
+    var used = {}; keys = [];
+    while (keys.length < m) { var k = 10 + Math.floor(Math.random() * 990); if (!used[k]) { used[k] = 1; keys.push(k); } }
+    n = m; q = keys[Math.floor(Math.random() * m)];
+  }
+  function buckets() { var B = []; for (var i = 0; i < NB; i++) B.push([]); keys.forEach(function (k) { B[k % NB].push(k); }); return B; }
+  o.q('hitq').addEventListener('click', function () { q = keys[Math.floor(Math.random() * n)]; o.redraw(); });
+  o.q('missq').addEventListener('click', function () {
+    var k; do { k = 10 + Math.floor(Math.random() * 990); } while (keys.indexOf(k) >= 0);
+    q = k; o.redraw();
+  });
+  function cw1(k) { return k === 1 || (k === 0 && FV.lang() === 'fr') ? o.t.cmp1 : o.t.cmp; }
+  function cell(ctx, x, y, w, h, txt, fill, stroke, tcol, a) {
+    ctx.globalAlpha = a == null ? 1 : a; ctx.fillStyle = fill; ctx.fillRect(x, y, w, h); ctx.globalAlpha = 1;
+    ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+    FV.label(ctx, txt, x + w / 2, y + h / 2 + 4, tcol, 'center', '11px system-ui,sans-serif');
+  }
+  o.draw = function (c) {
+    var ctx = o.ctx, m = o.v('n');
+    if (m !== n) gen(m);
+    var B = buckets(), qi = keys.indexOf(q), present = qi >= 0;
+    var listCmp = present ? qi + 1 : n, b = q % NB, chain = B[b], ci = chain.indexOf(q), hashCmp = present ? ci + 1 : chain.length;
+    // left: list
+    var lx = 12, ly = 44, cw = 31, ch = 26;
+    FV.label(ctx, o.t.list, lx, 22, c.text, 'left', 'bold 12px system-ui,sans-serif');
+    keys.forEach(function (k, i) {
+      var x = lx + (i % 8) * cw, y = ly + Math.floor(i / 8) * (ch + 6), fill = c.surface, a = 1, tc = c.text;
+      if (i < listCmp) { fill = (present && i === qi) ? c.good : c.warn; a = (present && i === qi) ? 0.9 : 0.55; }
+      cell(ctx, x, y, cw - 3, ch, String(k), fill, c.border, tc, a);
+    });
+    // right: hash table
+    var hx = 300, hy = 34, rh = (H - hy - 6) / NB;
+    FV.label(ctx, o.t.hash, hx, 22, c.text, 'left', 'bold 12px system-ui,sans-serif');
+    for (var i = 0; i < NB; i++) {
+      var y = hy + i * rh, on = i === b;
+      cell(ctx, hx, y + 1, 24, rh - 2, String(i), on ? c.accent : c.surface, c.border, on ? c.bg : c.muted, on ? 0.9 : 1);
+      B[i].forEach(function (k, j) {
+        var x = hx + 34 + j * 34; if (x > W - 36) return;
+        var fill = c.surface, a = 1;
+        if (on && j < hashCmp) { fill = (present && j === ci) ? c.good : c.warn; a = (present && j === ci) ? 0.9 : 0.55; }
+        if (j === 0) FV.line(ctx, hx + 24, y + rh / 2, x, y + rh / 2, c.border, 1);
+        else FV.line(ctx, x - 4, y + rh / 2, x, y + rh / 2, c.border, 1);
+        cell(ctx, x, y + 1, 30, rh - 2, String(k), fill, c.border, c.text, a);
+      });
+    }
+    // query box under the list
+    var qy = ly + 4 * (ch + 6) + 16;
+    FV.label(ctx, o.t.look + ' ' + q + (present ? '' : '  (' + o.t.none + ')'), lx, qy, c.text, 'left', 'bold 13px system-ui,sans-serif');
+    FV.label(ctx, o.t.lname + listCmp + ' ' + cw1(listCmp), lx, qy + 24, c.warn, 'left', '13px system-ui,sans-serif');
+    FV.label(ctx, q + ' mod 16 = ' + b + ' → ' + hashCmp + ' ' + cw1(hashCmp), lx, qy + 46, c.accent, 'left', '13px system-ui,sans-serif');
+    var avgH = 0; B.forEach(function (bk) { avgH += bk.length * (bk.length + 1) / 2; });
+    avgH /= n;
+    o.out(o.t.avg + ' <b>' + FV.fmt((n + 1) / 2, 1) + '</b> ' + o.t.avg2 + ' <b>' + FV.fmt(avgH, 2) + '</b> ' + o.t.avg3 + '　(n = ' + n + ')');
+  };
+  o.redraw();
+})();
+</script>
+</div>

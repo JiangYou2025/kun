@@ -29,6 +29,10 @@ La langue commune de la science des données.
 - **Algorithmes courants** : tri, recherche, récursivité, [programmation dynamique](../dynamic-programming/)
 - **Stabilité numérique** : erreurs en virgule flottante, dépassement de capacité et soupassement
 
+{% include fviz/big-o.html %}
+
+{% include fviz/binary-search.html %}
+
 ## 3. Pile de calcul scientifique
 
 Les outils quotidiens des séries temporelles et de l'apprentissage automatique.

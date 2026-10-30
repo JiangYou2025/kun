@@ -79,6 +79,8 @@ $$F_1 = \frac{2\cdot\text{precision}\cdot\text{recall}}{\text{precision}+\text{r
 
 **ROC 曲线 / AUC**：调整判定阈值，画出"真正例率 vs 假正例率"曲线，曲线下面积 **AUC** 衡量模型整体的排序能力，$0.5$ 等于瞎猜，$1.0$ 完美。
 
+{% include fviz/roc.html %}
+
 ## 损失函数 vs 评估指标
 
 这两个概念很像，但角色不同：

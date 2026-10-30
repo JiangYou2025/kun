@@ -49,6 +49,8 @@ $$
 
 Dans les deux cas, l'objectif est de garantir que **la sortie attendue soit la même à l'entraînement et à l'inférence**. Les frameworks modernes (comme `nn.Dropout` de PyTorch) utilisent par défaut l'Inverted Dropout, qui n'agit qu'en mode `model.train()` et se désactive automatiquement en mode `model.eval()` — à retenir absolument.
 
+{% include fviz/dropout.html %}
+
 ## Un exemple concret
 
 Prenons un taux de dropout $1-p = 0.5$ (soit $p=0.5$) et une sortie de couche $x = [2, 4, 6, 8]$. Lors d'une itération d'entraînement, on tire le masque $m = [1, 0, 1, 0]$ ; avec l'Inverted Dropout :

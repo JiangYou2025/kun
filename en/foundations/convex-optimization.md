@@ -21,6 +21,8 @@ Think of the objective function as a landscape:
 
 Convex optimization is loved precisely because "there are no traps" — you never have to worry about getting stuck in a suboptimal solution.
 
+{% include fviz/convex-landscape.html %}
+
 ## Mathematical formulation
 
 **Convex set**: the segment between any two points of the set stays inside the set.

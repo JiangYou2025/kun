@@ -13,16 +13,17 @@ math: true
 
 ## 一句话定位
 
-**KUN（Kernel U-Net）= U-Net 的层次化形状 + 可插拔的核。** 它把图像分割里 [U-Net](../../foundations/u-net/) 的“编码器下采样、解码器上采样、跳跃连接”搬到时间序列上，并把每个节点上固定的卷积，换成一个可以自由选择的小函数——线性、[MLP](../../foundations/mlp/) 或[注意力](../../foundations/attention/)。
+**KUN（Kernel U-Net）= 固定的 U 形骨架 + 可替换的核。** 骨架借自图像分割里的 [U-Net](../../foundations/u-net/)：编码器下采样、解码器上采样、跳跃连接，搬到时间序列上；每个节点上的运算不再是写死的卷积，而是一个可以整块替换的核——线性、[MLP](../../foundations/mlp/)、[注意力](../../foundations/attention/)，或者你自己写的模块。**换一个核，就得到一个新模型。**
 
 ## KUN 要解决什么问题
 
-回顾 [2026 时间序列前沿问题](../kun/)，长时域预测有两个绕不开的矛盾：
+回顾 [2026 时间序列前沿问题](../kun/)，长时域预测有两个绕不开的矛盾，研究中还有一个很现实的麻烦：
 
 1. **多尺度**——一条真实序列同时叠着长期趋势、中期周期、短期高频细节，像多种波形的复合。只盯单一尺度的模型都不完整。
 2. **效率 vs. 表达力**——[Transformer](../../foundations/transformer/) 用自注意力捕捉长程依赖，但复杂度是 $O(L^2)$，序列一长就吃不消；而极简的线性模型（DLinear）又快又强，却难以表达复杂结构。
+3. **试一个新想法的成本**——每提出一种新的序列模型，往往要从切片、编码、解码到输出整个重写一遍，而真正新的部分，可能只是中间那一个算子。
 
-KUN 的回答是：**用层次结构天然地分离尺度，用可插拔核在“快”和“强”之间自由滑动。**
+KUN 的回答是：**用层次结构天然地分离尺度，用可替换的核在“快”和“强”之间自由滑动；骨架只写一次，试一个新想法只需要写一个新核。**
 
 ## 先看清：一条序列是“多尺度”的
 
@@ -272,3 +273,20 @@ print("测试集 MAE:", mae.item())
 <div class="note">
   <strong>引用 KUN。</strong> 如果 KUN 对你的研究或产品有帮助，请引用 Jiang You 的 Kernel U-Net 工作，并附上本仓库的链接。
 </div>
+
+```bibtex
+@inproceedings{you_2024_kernel_u_net,
+  author={You, Jiang and Cela, Arben and Natowicz, René and Ouanounou, Jacob and Siarry, Patrick},
+  booktitle={2024 International Conference on INnovations in Intelligent SysTems and Applications (INISTA)},
+  title={Kernel-U-Net: Multivariate Time Series Forecasting using Custom Kernels},
+  year={2024},
+  pages={1-8},
+  doi={10.1109/INISTA62901.2024.10683862}}
+```
+
+相关工作：
+
+- 异常预测：[Anomaly Prediction: A Novel Approach with Explicit Delay and Horizon (ICCP 2024)](https://arxiv.org/abs/2408.04377)
+- 时空预测：[Enhancing Spatio-Temporal Forecasting with Spatial Neighbourhood Fusion: A Case Study on Mobility in Peru (ICASSP 2026)](https://arxiv.org/abs/2507.00031)
+- 自适应预测：[Dynamic Perturbed Adaptive Method for Infinite Task-Conflicting Time Series (arXiv 2025)](https://arxiv.org/abs/2505.11902)
+- 稳健预测：[Robust Time Series Forecasting with Non-Heavy-Tailed Gaussian Loss-Weighted Sampler (arXiv 2024)](https://arxiv.org/abs/2406.13871)

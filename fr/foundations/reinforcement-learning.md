@@ -60,6 +60,8 @@ Imaginons un robot qui cherche la sortie d'un labyrinthe :
 
 Au début, le robot se cogne au hasard ; mais dès qu'il a atteint une fois la sortie et touché le $+10$, ce « bénéfice » se **propage case par case vers l'arrière** à travers la fonction de valeur, si bien que les cases proches de la sortie acquièrent peu à peu une valeur élevée. Après de nombreux épisodes, le robot a appris un itinéraire presque optimal. C'est ce que font des algorithmes comme le **Q-learning**.
 
+{% include fviz/rl-gridworld.html %}
+
 ## Exploration et exploitation
 
 L'apprentissage par renforcement se heurte à un dilemme incontournable, le **compromis exploration–exploitation** (*exploration vs exploitation*) :

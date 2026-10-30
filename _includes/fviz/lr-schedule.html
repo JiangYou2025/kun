@@ -1,0 +1,53 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-lrsched" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="sch"><button data-v="const" data-t="const"></button><button data-v="step" data-t="step"></button><button data-v="cos" data-t="cos"></button><button data-v="warm" class="on" data-t="warm"></button></span>
+  <label><span data-t="lr"></span> η₀<input type="range" data-k="lr" min="0.05" max="1.2" step="0.05" value="0.5"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '📉 学习率调度：先大步走，再小步磨', hint: '左：100 个 epoch 里学习率 η(t) 的变化。右：用带噪声的随机梯度最小化一个简单的二次损失时，期望损失的精确变化（对数坐标）。固定学习率很快下降，但会停在一个由梯度噪声决定的“地板”上；后期把 η 降下来，地板就跟着降。灰虚线是同一 η₀ 下固定学习率的结果，供对比。', const: '固定', step: '阶梯衰减', cos: '余弦退火', warm: 'Warmup + 余弦', lr: '峰值学习率', sched: '学习率 η(t)', loss: '期望损失', fin: '最终损失', ref: '固定学习率时' },
+    en: { title: '📉 Learning-rate schedules: big steps first, small steps later', hint: 'Left: the learning rate η(t) over 100 epochs. Right: the exact expected loss when a simple quadratic is minimised with noisy stochastic gradients (log scale). A constant learning rate drops fast but stalls on a “floor” set by the gradient noise; lowering η late in training lowers that floor too. The dashed grey curve is the constant schedule with the same η₀, for comparison.', const: 'constant', step: 'step decay', cos: 'cosine annealing', warm: 'warmup + cosine', lr: 'peak learning rate', sched: 'learning rate η(t)', loss: 'expected loss', fin: 'final loss', ref: 'constant schedule' },
+    fr: { title: '📉 Planification du taux d’apprentissage : grands pas d’abord, petits pas ensuite', hint: 'À gauche : le taux d’apprentissage η(t) sur 100 époques. À droite : la perte espérée exacte lorsqu’on minimise une perte quadratique simple avec des gradients stochastiques bruités (échelle log). Un taux constant fait vite baisser la perte, mais elle bute sur un « plancher » fixé par le bruit du gradient ; réduire η en fin d’entraînement abaisse ce plancher. La courbe grise pointillée correspond au taux constant avec le même η₀, pour comparaison.', const: 'constant', step: 'par paliers', cos: 'recuit cosinus', warm: 'warmup + cosinus', lr: 'taux maximal', sched: 'taux η(t)', loss: 'perte espérée', fin: 'perte finale', ref: 'taux constant' }
+  };
+  var W = 560, H = 280, N = 100, WU = 10;
+  var o = FV.init('fv-lrsched', T, W, H); if (!o) return;
+  var sch = 'warm';
+  FV.group(o, 'sch', function (v) { sch = v; });
+  function eta(s, t, e0) {
+    if (s === 'const') return e0;
+    if (s === 'step') return e0 * (t < 50 ? 1 : t < 75 ? 0.1 : 0.01);
+    if (s === 'cos') return e0 * 0.5 * (1 + Math.cos(Math.PI * t / N));
+    return t < WU ? e0 * (t + 1) / WU : e0 * 0.5 * (1 + Math.cos(Math.PI * (t - WU) / (N - WU)));
+  }
+  /* L = ½θ², noisy gradient g = θ + ε with Var ε = 1: E[θ²] obeys v ← (1−η)²·v + η² exactly. */
+  function run(s, e0) { var v = 25, out = [0.5 * v]; for (var t = 0; t < N; t++) { var e = eta(s, t, e0); v = (1 - e) * (1 - e) * v + e * e; out.push(0.5 * v); } return out; }
+  var pl = { l: 38, r: 10, t: 20, b: 26 }, pr = { l: 38, r: 10, t: 26, b: 26 };
+  o.draw = function (c) {
+    var ctx = o.ctx, e0 = o.v('lr'), half = W / 2;
+    var m1 = FV.map(half, H, [0, N], [0, 1.25], pl);
+    FV.axes(ctx, m1, c, { xt: [0, 25, 50, 75, 100], yt: [0, 0.5, 1], yf: function (v) { return v === 1 ? 'η₀' : v ? '½η₀' : '0'; }, xl: 'epoch' });
+    FV.label(ctx, o.t.sched, pl.l, 13, c.text);
+    if (sch !== 'const') FV.curve(ctx, m1, function (t) { return 1; }, c.muted, 1.5, [5, 4]);
+    FV.curve(ctx, m1, function (t) { return eta(sch, Math.min(N - 1, Math.floor(t)), e0) / e0; }, c.accent, 2.5);
+    ctx.save(); ctx.translate(half, 0);
+    var A = run(sch, e0), R = run('const', e0), lo = 6, hi = 12;
+    var m2 = FV.map(half, H, [0, N], [lo, hi], pr), L10 = function (v) { return Math.log(v) / Math.LN10 + 10; };
+    FV.axes(ctx, m2, c, { xt: [0, 25, 50, 75, 100], yt: [6, 7, 8, 9, 10, 11, 12], yf: function (v) { return v === 10 ? '1' : '1e' + (v - 10); }, xl: 'epoch' });
+    FV.label(ctx, o.t.loss + ' (log)', pr.l, 13, c.text);
+    var poly = function (P, col, w, dash) { FV.curve(ctx, m2, function (t) { var i = Math.min(N, Math.round(t)); return Math.max(lo - 1, L10(P[i])); }, col, w, dash); };
+    if (sch !== 'const') poly(R, c.muted, 1.5, [5, 4]);
+    poly(A, c.accent, 2.5);
+    ctx.restore();
+    var fa = A[N], fr = R[N], bad = !isFinite(fa) || fa > A[0];
+    o.out(o.t.fin + ' = <b>' + FV.fmt(fa, 4) + '</b>' + (sch !== 'const' ? '　' + o.t.ref + ' ' + FV.fmt(fr, 4) : '') + (bad ? '　⚠️' : ''));
+  };
+  o.redraw();
+})();
+</script>
+</div>

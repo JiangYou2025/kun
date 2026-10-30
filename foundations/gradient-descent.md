@@ -22,6 +22,8 @@ math: true
 
 步子的大小就是**[学习率](../learning-rate/)**。步子太小，下山慢得让人崩溃；步子太大，可能一步迈过谷底、在两侧来回横跳甚至越走越高。
 
+{% include fviz/optimizer.html %}
+
 ## 数学表达
 
 更新规则：

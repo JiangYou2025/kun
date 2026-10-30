@@ -1,0 +1,91 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-grid" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <button data-k="step" data-t="step"></button>
+  <button data-k="run" data-t="run"></button>
+  <button data-k="reset" data-t="reset"></button>
+  <label><span data-t="gamma"></span> γ<input type="range" data-k="g" min="0.5" max="1" step="0.01" value="0.9"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🤖 走迷宫：价值一格一格往回传', hint: '迷宫与正文相同：每走一步 −0.1，撞墙 −1（原地不动），到达出口 +10。每点一次“迭代一轮”，就用 V(s) ← maxₐ [ r + γ·V(s′) ] 把所有格子更新一遍。看出口的价值如何一轮轮向起点传播，箭头（当前最优动作）也随之从出口附近长出来；橙线是机器人按箭头从 S 出发走的路线。折扣因子 γ 越小，远处的奖励越不值钱。', step: '迭代一轮', run: '迭代到收敛', reset: '清零', gamma: '折扣因子', it: '迭代轮数', d: '本轮最大变化', vs: '起点价值 V(S)', conv: '✓ 已收敛：箭头就是最优策略', reach: '路线已能到达出口' },
+    en: { title: '🤖 Solving a maze: value flows back one cell at a time', hint: 'Same maze as in the text: each step costs −0.1, bumping into a wall costs −1 (and you stay put), reaching the exit gives +10. Each click on “one sweep” updates every cell with V(s) ← maxₐ [ r + γ·V(s′) ]. Watch the exit’s value spread back towards the start, sweep after sweep, with arrows (the current best action) growing out from the exit; the orange line is the route the robot takes from S by following the arrows. The smaller the discount factor γ, the less a distant reward is worth.', step: 'one sweep', run: 'run to convergence', reset: 'reset', gamma: 'discount factor', it: 'sweeps', d: 'largest change in this sweep', vs: 'value of the start V(S)', conv: '✓ converged: the arrows are the optimal policy', reach: 'the route now reaches the exit' },
+    fr: { title: '🤖 Sortir d’un labyrinthe : la valeur remonte case par case', hint: 'Même labyrinthe que dans le texte : chaque pas coûte −0,1, heurter un mur coûte −1 (on reste sur place), atteindre la sortie rapporte +10. Chaque clic sur « une itération » met à jour toutes les cases avec V(s) ← maxₐ [ r + γ·V(s′) ]. Regardez la valeur de la sortie se propager vers le départ, itération après itération, et les flèches (meilleure action actuelle) pousser à partir de la sortie ; la ligne orange est le trajet du robot depuis S en suivant les flèches. Plus le facteur d’actualisation γ est petit, moins une récompense lointaine compte.', step: 'une itération', run: 'itérer jusqu’à convergence', reset: 'remettre à zéro', gamma: 'facteur d’actualisation', it: 'itérations', d: 'plus grande variation à cette itération', vs: 'valeur du départ V(S)', conv: '✓ convergé : les flèches forment la politique optimale', reach: 'le trajet atteint maintenant la sortie' }
+  };
+  var W = 560, H = 290;
+  var o = FV.init('fv-grid', T, W, H); if (!o) return;
+  var MAP = ['S..#...', '.#.#.#.', '.#...#.', '...#..E'], R = MAP.length, C = MAP[0].length, S = 64;
+  var ox = (W - C * S) / 2, oy = (H - R * S) / 2, k = 0;
+  var A = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+  function wall(r, c) { return r < 0 || c < 0 || r >= R || c >= C || MAP[r][c] === '#'; }
+  function exitCell(r, c) { return MAP[r][c] === 'E'; }
+  function Q(V, r, c, a, g) {
+    var nr = r + A[a][0], nc = c + A[a][1];
+    if (wall(nr, nc)) return -1 + g * V[r][c];
+    if (exitCell(nr, nc)) return 10;
+    return -0.1 + g * V[nr][nc];
+  }
+  function solve(n, g) {
+    var V = MAP.map(function (row) { return row.split('').map(function () { return 0; }); }), d = 0;
+    for (var i = 0; i < n; i++) {
+      var N = V.map(function (row) { return row.slice(); }); d = 0;
+      for (var r = 0; r < R; r++) for (var c = 0; c < C; c++) {
+        if (wall(r, c) || exitCell(r, c)) continue;
+        var b = -Infinity; for (var a = 0; a < 4; a++) b = Math.max(b, Q(V, r, c, a, g));
+        N[r][c] = b; d = Math.max(d, Math.abs(b - V[r][c]));
+      }
+      V = N;
+      if (d < 1e-9 && i > 0) return { V: V, d: d, n: i + 1, done: true };
+    }
+    return { V: V, d: d, n: n, done: n > 0 && d < 1e-9 };
+  }
+  function best(V, r, c, g) {
+    var q = [0, 1, 2, 3].map(function (a) { return Q(V, r, c, a, g); }), i = q.indexOf(Math.max.apply(null, q));
+    var second = Math.max.apply(null, q.filter(function (_, j) { return j !== i; }));
+    return q[i] - second > 1e-9 ? i : -1;
+  }
+  o.q('step').addEventListener('click', function () { k++; o.redraw(); });
+  o.q('run').addEventListener('click', function () { k = solve(500, o.v('g')).n; o.redraw(); });
+  o.q('reset').addEventListener('click', function () { k = 0; o.redraw(); });
+  o.draw = function (c) {
+    var ctx = o.ctx, g = o.v('g'), sol = solve(k, g), V = sol.V;
+    if (sol.n < k) k = sol.n;
+    var vmax = 10;
+    for (var r = 0; r < R; r++) for (var cc = 0; cc < C; cc++) {
+      var X = ox + cc * S, Y = oy + r * S, v = V[r][cc];
+      if (wall(r, cc)) { ctx.fillStyle = c.muted; ctx.globalAlpha = 0.55; ctx.fillRect(X, Y, S, S); ctx.globalAlpha = 1; continue; }
+      if (exitCell(r, cc)) { ctx.fillStyle = c.good; ctx.globalAlpha = 0.6; ctx.fillRect(X, Y, S, S); ctx.globalAlpha = 1; FV.label(ctx, '🏁 +10', X + S / 2, Y + S / 2 + 5, c.text, 'center', '13px system-ui,sans-serif'); continue; }
+      ctx.fillStyle = v >= 0 ? c.good : c.bad; ctx.globalAlpha = Math.min(1, Math.abs(v) / vmax) * 0.5; ctx.fillRect(X, Y, S, S); ctx.globalAlpha = 1;
+      FV.label(ctx, v.toFixed(2), X + S / 2, Y + S - 7, c.text, 'center', '11px system-ui,sans-serif');
+      if (MAP[r][cc] === 'S') FV.label(ctx, 'S', X + 6, Y + 14, c.text, 'left', 'bold 12px system-ui,sans-serif');
+      var a = k > 0 ? best(V, r, cc, g) : -1;
+      if (a >= 0) { var cx = X + S / 2, cy = Y + S / 2 - 6; FV.arrow(ctx, cx - A[a][1] * 11, cy - A[a][0] * 11, cx + A[a][1] * 12, cy + A[a][0] * 12, c.accent, 2); }
+    }
+    ctx.strokeStyle = c.border; ctx.lineWidth = 1;
+    for (r = 0; r <= R; r++) { ctx.beginPath(); ctx.moveTo(ox, oy + r * S); ctx.lineTo(ox + C * S, oy + r * S); ctx.stroke(); }
+    for (cc = 0; cc <= C; cc++) { ctx.beginPath(); ctx.moveTo(ox + cc * S, oy); ctx.lineTo(ox + cc * S, oy + R * S); ctx.stroke(); }
+    var pr = 0, pc = 0, path = [[0, 0]], reached = false;
+    for (var s = 0; s < 30 && k > 0; s++) {
+      var b = best(V, pr, pc, g); if (b < 0) break;
+      var nr = pr + A[b][0], nc = pc + A[b][1]; if (wall(nr, nc)) break;
+      pr = nr; pc = nc; path.push([pr, pc]);
+      if (exitCell(pr, pc)) { reached = true; break; }
+    }
+    if (path.length > 1) {
+      ctx.save(); ctx.beginPath(); ctx.strokeStyle = c.warn; ctx.lineWidth = 3; ctx.globalAlpha = 0.85;
+      path.forEach(function (p, i) { var X = ox + p[1] * S + S / 2, Y = oy + p[0] * S + S / 2 + 10; i ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+      ctx.stroke(); ctx.restore();
+    }
+    FV.label(ctx, '🤖', ox + path[path.length - 1][1] * S + S - 4, oy + path[path.length - 1][0] * S + 19, c.text, 'right', '15px system-ui,sans-serif');
+    var st = sol.done ? o.t.conv : reached ? o.t.reach : '';
+    o.out(o.t.it + ' = <b>' + k + '</b>　' + o.t.d + ' = ' + (k ? FV.fmt(sol.d, 3) : '—') + '　' + o.t.vs + ' = ' + V[0][0].toFixed(2) + (st ? '<br>' + st : ''));
+  };
+  o.redraw();
+})();
+</script>
+</div>

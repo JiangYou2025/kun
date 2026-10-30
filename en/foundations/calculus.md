@@ -21,6 +21,8 @@ Draw a mountain road as a function $y=f(x)$, where $x$ is the horizontal positio
 
 The two pillars of calculus — derivatives and integrals — are in fact a pair of **inverse** operations; this is the fundamental theorem of calculus.
 
+{% include fviz/derivative.html %}
+
 ## Mathematical formulation
 
 The **limit** is where everything starts; it expresses "getting arbitrarily close":

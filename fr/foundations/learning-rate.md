@@ -40,6 +40,8 @@ Un exemple simple montre son effet sur la convergence. Pour minimiser $\mathcal{
 - $\eta=1.0$ : facteur $-1$, **oscillation perpétuelle** entre $+1$ et $-1$.
 - $\eta=1.5$ : facteur $-2$, $|\theta|$ ne cesse de croître : **divergence** !
 
+{% include fviz/optimizer.html %}
+
 ## Planification du taux d'apprentissage (schedule)
 
 Un taux d'apprentissage fixe est rarement optimal. La pratique courante consiste à **commencer grand, puis diminuer** :
@@ -60,6 +62,8 @@ for epoch in range(100):
     sched.step()                 # met à jour le taux d'apprentissage à chaque epoch
     print(sched.get_last_lr())
 ```
+
+{% include fviz/lr-schedule.html %}
 
 ## Comment choisir le taux d'apprentissage
 

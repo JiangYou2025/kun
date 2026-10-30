@@ -18,6 +18,8 @@ math: true
 
 这和 [CNN](../cnn/) 的"只看局部窗口"、[注意力](../attention/)的"按相关性挑重点"形成对比。MLP 不预设任何结构假设，是最朴素、最通用的形式：给它足够多的神经元，它理论上能逼近任意连续函数（**通用逼近定理**）。代价是参数多、不利用数据本身的结构（比如时间的先后、像素的相邻）。
 
+{% include fviz/relu-approx.html %}
+
 ## 数学表达
 
 一个 $L$ 层 MLP 就是把"线性变换 + 激活"反复套娃。设输入为 $\mathbf{x}$，记 $\mathbf{h}^{(0)} = \mathbf{x}$，则第 $l$ 层为：
@@ -38,16 +40,16 @@ $$
 
 手算一个极小的 MLP：输入 2 维，隐藏层 2 个神经元（ReLU），输出 1 维。
 
-设 $\mathbf{x} = \begin{bmatrix}1\\2\end{bmatrix}$，
+设 $\mathbf{x} = \begin{bmatrix}1\cr 2\end{bmatrix}$，
 
 $$
 \mathbf{W}^{(1)} = \begin{bmatrix}1 & 0\\-1 & 1\end{bmatrix},\quad
 \mathbf{b}^{(1)} = \begin{bmatrix}0\\0\end{bmatrix}
 $$
 
-第 1 层线性部分：$\mathbf{W}^{(1)}\mathbf{x} = \begin{bmatrix}1\cdot1 + 0\cdot2\\ -1\cdot1 + 1\cdot2\end{bmatrix} = \begin{bmatrix}1\\1\end{bmatrix}$。
+第 1 层线性部分：$\mathbf{W}^{(1)}\mathbf{x} = \begin{bmatrix}1\cdot1 + 0\cdot2\cr  -1\cdot1 + 1\cdot2\end{bmatrix} = \begin{bmatrix}1\cr 1\end{bmatrix}$。
 
-过 ReLU：$\mathbf{h}^{(1)} = \begin{bmatrix}\max(0,1)\\\max(0,1)\end{bmatrix} = \begin{bmatrix}1\\1\end{bmatrix}$。
+过 ReLU：$\mathbf{h}^{(1)} = \begin{bmatrix}\max(0,1)\cr\max(0,1)\end{bmatrix} = \begin{bmatrix}1\cr 1\end{bmatrix}$。
 
 输出层 $\mathbf{W}^{(2)} = \begin{bmatrix}2 & 3\end{bmatrix}$，$b^{(2)}=1$：
 

@@ -50,6 +50,8 @@ $$
 \hat\theta=\arg\min_\theta\ \Big(-\sum_i\log p(x_i\mid\theta)\Big)
 $$
 
+{% include fviz/mle-normal.html %}
+
 ## A concrete example
 
 Back to 7 heads and 3 tails. The likelihood is $L(p)=p^7(1-p)^3$; taking logs:

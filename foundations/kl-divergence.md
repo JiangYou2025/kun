@@ -47,6 +47,8 @@ $$
 - **非负性**：$D_{\mathrm{KL}}(p\parallel q)\ge 0$，等号当且仅当 $p=q$（吉布斯不等式）。
 - **不对称**：$D_{\mathrm{KL}}(p\parallel q)\ne D_{\mathrm{KL}}(q\parallel p)$。
 
+{% include fviz/kl-asym.html %}
+
 ## 一个具体例子
 
 真实 $p=[0.5,0.5]$，近似 $q=[0.9,0.1]$（以 2 为底）：

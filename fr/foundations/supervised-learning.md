@@ -57,6 +57,8 @@ L'apprentissage supervisé se divise en deux grandes familles selon le « type d
 
 Pour les distinguer en une phrase : **demander « combien », c'est de la régression ; demander « quelle catégorie », c'est de la classification.**
 
+{% include fviz/knn.html %}
+
 ## Un exemple concret
 
 Avec `scikit-learn` en [Python](../python/), entraînons le modèle de régression le plus simple qui soit — prédire le prix d'un logement à partir de sa surface :

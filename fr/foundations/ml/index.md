@@ -30,6 +30,8 @@ Plutôt que d'écrire explicitement des règles, on **apprend à partir des donn
 - **Machines à vecteurs de support ([SVM](../svm/))** : classification à marge maximale
 - **Partitionnement et réduction de dimension** : K-means, [ACP](../pca/)
 
+{% include fviz/kmeans.html %}
+
 ## 3. [Processus d'entraînement](../training-pipeline/)
 
 - **[Fonction de perte](../loss-function/)** : MSE / MAE en régression, [entropie croisée](../cross-entropy/) en classification
@@ -37,6 +39,8 @@ Plutôt que d'écrire explicitement des règles, on **apprend à partir des donn
 - **Découpage des données** : entraînement / validation / test
 - **[Validation croisée](../cross-validation/)** : un choix d'hyperparamètres plus robuste (**pour les séries temporelles, il faut découper dans l'ordre chronologique**, sans mélange aléatoire)
 - **Réglage des hyperparamètres** : recherche par grille / aléatoire / bayésienne
+
+{% include fviz/ts-split.html %}
 
 ## 4. La [généralisation](../generalization/) : le défi central
 
@@ -46,6 +50,8 @@ L'objectif est de bien se comporter sur des données **jamais vues**, et non de 
 - **[Surapprentissage](../overfitting/)** : modèle trop complexe, qui mémorise le bruit, variance élevée
 - **[Compromis biais–variance](../bias-variance/)** : trouver le bon niveau de complexité
 - **[Régularisation](../regularization/)** : $\ell_1$ / $\ell_2$, [arrêt précoce](../early-stopping/), élagage — imposer des contraintes au modèle
+
+{% include fviz/polyfit.html %}
 
 ## 5. [Métriques d'évaluation](../evaluation-metrics/)
 

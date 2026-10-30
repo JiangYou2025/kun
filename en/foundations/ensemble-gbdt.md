@@ -60,6 +60,8 @@ The key hyperparameters in the formula:
 
 Note that $\eta$ and $M$ form a pair that trade off against each other: **small $\eta$ + large $M$** often works best, but trains more slowly.
 
+{% include fviz/gbdt-boost.html %}
+
 ## Implementations and regularization
 
 Hand-written GBDT is slow; in practice almost everyone uses one of three highly optimized libraries:

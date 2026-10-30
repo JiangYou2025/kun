@@ -1,0 +1,54 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-matmul" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="rot"></span> A<input type="range" data-k="a" min="-180" max="180" step="5" value="60"></label>
+  <label><span data-t="shear"></span> B<input type="range" data-k="k" min="-1.5" max="1.5" step="0.1" value="1"></label>
+  <span data-g="ord"><button data-v="AB" class="on">A·B</button><button data-v="BA">B·A</button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🔁 矩阵乘法 = 变换的复合（顺序很重要）', hint: 'A 是旋转，B 是水平剪切。对向量 x，(A·B)x = A(Bx)：先做右边的 B，再做左边的 A。灰色是原始的字母 F，虚线是做完第一步后的样子，实线是最终结果，淡点线是另一种顺序的结果。在 A·B 和 B·A 之间切换：结果通常不同——矩阵乘法不满足交换律。把旋转角设为 0° 或剪切设为 0，两者才重合。', rot: '旋转角', shear: '剪切', first: '第一步', res: '结果', same: '✓ 此时 AB = BA', diff: '✗ AB ≠ BA：顺序改变了结果' },
+    en: { title: '🔁 Matrix multiplication = composing transformations (order matters)', hint: 'A is a rotation, B a horizontal shear. For a vector x, (A·B)x = A(Bx): the right-hand B acts first, then the left-hand A. The grey letter F is the original, the dashed outline is the shape after the first step, the solid one is the final result, and the faint dotted one is what the other order gives. Switch between A·B and B·A: the results usually differ, because matrix multiplication is not commutative. Only with a 0° rotation or zero shear do they coincide.', rot: 'rotation', shear: 'shear', first: 'after step 1', res: 'result', same: '✓ here AB = BA', diff: '✗ AB ≠ BA: the order changes the result' },
+    fr: { title: '🔁 Produit matriciel = composition de transformations (l’ordre compte)', hint: 'A est une rotation, B un cisaillement horizontal. Pour un vecteur x, (A·B)x = A(Bx) : la matrice de droite B agit d’abord, puis celle de gauche A. La lettre F grise est l’original, le contour en pointillés la forme après la première étape, le trait plein le résultat final, et le pointillé pâle ce que donne l’autre ordre. Basculez entre A·B et B·A : les résultats diffèrent en général, car le produit matriciel n’est pas commutatif. Ils ne coïncident qu’avec une rotation de 0° ou un cisaillement nul.', rot: 'rotation', shear: 'cisaillement', first: 'après l’étape 1', res: 'résultat', same: '✓ ici AB = BA', diff: '✗ AB ≠ BA : l’ordre change le résultat' }
+  };
+  var W = 560, H = 320;
+  var o = FV.init('fv-matmul', T, W, H); if (!o) return;
+  var ord = 'AB';
+  FV.group(o, 'ord', function (v) { ord = v; });
+  var m = FV.map(W, H, [-4, 4], [-2.2222, 2.2222], { l: 10, r: 10, t: 10, b: 10 });
+  var F = [[0, 0], [0.35, 0], [0.35, 0.45], [0.8, 0.45], [0.8, 0.7], [0.35, 0.7], [0.35, 0.8], [1, 0.8], [1, 1.05], [0, 1.05]];
+  F = F.map(function (p) { return [(p[0] - 0.5) * 1.5, (p[1] - 0.525) * 1.5]; });
+  function mul(A, B) { return [[A[0][0] * B[0][0] + A[0][1] * B[1][0], A[0][0] * B[0][1] + A[0][1] * B[1][1]], [A[1][0] * B[0][0] + A[1][1] * B[1][0], A[1][0] * B[0][1] + A[1][1] * B[1][1]]]; }
+  function app(M, p) { return [M[0][0] * p[0] + M[0][1] * p[1], M[1][0] * p[0] + M[1][1] * p[1]]; }
+  function poly(ctx, P, col, fill, dash, w) {
+    ctx.save(); ctx.beginPath(); P.forEach(function (p, i) { i ? ctx.lineTo(m.X(p[0]), m.Y(p[1])) : ctx.moveTo(m.X(p[0]), m.Y(p[1])); }); ctx.closePath();
+    if (fill) { ctx.globalAlpha = 0.18; ctx.fillStyle = col; ctx.fill(); ctx.globalAlpha = 1; }
+    ctx.strokeStyle = col; ctx.lineWidth = w || 2; ctx.setLineDash(dash || []); ctx.stroke(); ctx.restore();
+  }
+  function fm(M) { var f = function (v) { return FV.fmt(Math.abs(v) < 0.005 ? 0 : v, 2); }; return '[[' + f(M[0][0]) + ', ' + f(M[0][1]) + '], [' + f(M[1][0]) + ', ' + f(M[1][1]) + ']]'; }
+  o.draw = function (c) {
+    var ctx = o.ctx, a = o.v('a') * Math.PI / 180, k = o.v('k');
+    var A = [[Math.cos(a), -Math.sin(a)], [Math.sin(a), Math.cos(a)]], B = [[1, k], [0, 1]];
+    var first = ord === 'AB' ? B : A, P = ord === 'AB' ? mul(A, B) : mul(B, A), Q = ord === 'AB' ? mul(B, A) : mul(A, B);
+    FV.axes(ctx, m, c, { xt: [-3, -2, -1, 0, 1, 2, 3], yt: [-2, -1, 0, 1, 2], xf: function () { return ''; }, yf: function () { return ''; } });
+    poly(ctx, F.map(function (p) { return app(Q, p); }), c.muted, false, [2, 4], 1.2);
+    poly(ctx, F, c.muted, true);
+    poly(ctx, F.map(function (p) { return app(first, p); }), c.warn, false, [6, 4], 1.8);
+    poly(ctx, F.map(function (p) { return app(P, p); }), c.accent, true, null, 2.5);
+    var e1 = app(P, [1, 0]), e2 = app(P, [0, 1]);
+    FV.arrow(ctx, m.X(0), m.Y(0), m.X(e1[0]), m.Y(e1[1]), c.accent2, 2);
+    FV.arrow(ctx, m.X(0), m.Y(0), m.X(e2[0]), m.Y(e2[1]), c.pink, 2);
+    var lab = ord === 'AB' ? 'A·B' : 'B·A';
+    FV.legend(ctx, m, [[o.t.first + ' (' + (ord === 'AB' ? 'B' : 'A') + ')', c.warn], [o.t.res + ' (' + lab + ')', c.accent], [lab + ' e₁', c.accent2], [lab + ' e₂', c.pink]], c);
+    var same = Math.abs(P[0][0] - Q[0][0]) + Math.abs(P[0][1] - Q[0][1]) + Math.abs(P[1][0] - Q[1][0]) + Math.abs(P[1][1] - Q[1][1]) < 1e-9;
+    o.out('A = ' + fm(A) + '　B = ' + fm(B) + '<br>A·B = <b>' + fm(mul(A, B)) + '</b>　B·A = <b>' + fm(mul(B, A)) + '</b>　' + (same ? o.t.same : o.t.diff));
+  };
+  o.redraw();
+})();
+</script>
+</div>

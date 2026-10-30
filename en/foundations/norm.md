@@ -22,6 +22,8 @@ A norm is a function that measures the "**length / size**" of a vector. The same
 
 A norm formalizes the plain notion of "size / distance", and allows for several reasonable ways of measuring it. It also measures "how sparse or how extreme a vector is", which is exactly what regularization exploits.
 
+{% include fviz/norm-ball.html %}
+
 ## The math
 
 For a vector $\mathbf{x}=(x_1,\dots,x_n)$:

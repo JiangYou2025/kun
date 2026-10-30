@@ -1,0 +1,91 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-lcurve" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="deg"><button data-v="1" data-t="d1"></button><button data-v="4" data-t="d4"></button><button data-v="9" class="on" data-t="d9"></button></span>
+  <label><span data-t="n"></span> n<input type="range" data-k="n" min="0" max="13" step="1" value="1"></label>
+  <button data-k="new" data-t="new"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '📚 泛化间隙：数据越多，训练误差越接近真实误差', hint: '左图：用 n 个带噪声的样本拟合一个多项式模型。右图：学习曲线——训练误差和泛化误差（在整个分布上的期望误差）随样本数 n 的变化，各取 40 次重复的几何平均。两条线之间的距离就是泛化间隙。对复杂模型（9 次），数据少时它把训练集背得很好、新数据却很差；n 增大后间隙迅速收窄。对太简单的模型（1 次），间隙一直很小，但两条线都停在高处：这是偏差，加数据也没用。', d1: '1 次（简单）', d4: '4 次', d9: '9 次（复杂）', n: '训练样本数', new: '换一批数据', train: '训练误差', test: '泛化误差', gap: '泛化间隙', noise: '噪声下限', err: '误差 (MSE)' },
+    en: { title: '📚 The generalisation gap: more data brings training error closer to the true error', hint: 'Left: a polynomial model fitted to n noisy samples. Right: learning curves, i.e. training error and generalisation error (the expected error over the whole distribution) against the number of samples n, each the geometric mean over 40 repetitions. The distance between the two lines is the generalisation gap. A complex model (degree 9) memorises a small training set well yet does badly on new data; as n grows, the gap closes quickly. A model that is too simple (degree 1) always has a small gap, but both lines stay high: that is bias, and more data will not help.', d1: 'degree 1 (simple)', d4: 'degree 4', d9: 'degree 9 (complex)', n: 'training samples', new: 'new data', train: 'training error', test: 'generalisation error', gap: 'generalisation gap', noise: 'noise floor', err: 'error (MSE)' },
+    fr: { title: '📚 L’écart de généralisation : plus de données rapprochent l’erreur d’entraînement de l’erreur réelle', hint: 'À gauche : un modèle polynomial ajusté sur n échantillons bruités. À droite : les courbes d’apprentissage, c’est-à-dire l’erreur d’entraînement et l’erreur de généralisation (l’erreur attendue sur toute la distribution) en fonction du nombre d’échantillons n, en moyenne géométrique sur 40 répétitions. La distance entre les deux courbes est l’écart de généralisation. Un modèle complexe (degré 9) apprend par cœur un petit jeu d’entraînement mais échoue sur de nouvelles données ; quand n augmente, l’écart se referme vite. Un modèle trop simple (degré 1) a toujours un petit écart, mais les deux courbes restent hautes : c’est le biais, et plus de données n’y changent rien.', d1: 'degré 1 (simple)', d4: 'degré 4', d9: 'degré 9 (complexe)', n: 'échantillons d’entraînement', new: 'nouvelles données', train: 'erreur d’entraînement', test: 'erreur de généralisation', gap: 'écart de généralisation', noise: 'plancher de bruit', err: 'erreur (MSE)' }
+  };
+  var W = 560, H = 290, SIG = 0.3, REP = 40, NS = [10, 12, 15, 20, 25, 30, 40, 50, 65, 80, 100, 130, 160, 200];
+  var o = FV.init('fv-lcurve', T, W, H); if (!o) return;
+  var truth = function (x) { return Math.sin(2.6 * x) + 0.4 * x; };
+  var deg = 9, pts, curves = {}, gx = [];
+  for (var i = 0; i <= 100; i++) gx.push(-1 + i / 50);
+  FV.group(o, 'deg', function (v) { deg = +v; });
+  function cheb(x, d) { var b = [1, x]; for (var k = 2; k <= d; k++) b.push(2 * x * b[k - 1] - b[k - 2]); return b.slice(0, d + 1); }
+  function solve(A, y) {
+    var n = y.length, ii, j, k;
+    for (ii = 0; ii < n; ii++) {
+      var p = ii; for (k = ii + 1; k < n; k++) if (Math.abs(A[k][ii]) > Math.abs(A[p][ii])) p = k;
+      var t = A[ii]; A[ii] = A[p]; A[p] = t; t = y[ii]; y[ii] = y[p]; y[p] = t;
+      for (k = ii + 1; k < n; k++) { var f = A[k][ii] / A[ii][ii]; for (j = ii; j < n; j++) A[k][j] -= f * A[ii][j]; y[k] -= f * y[ii]; }
+    }
+    var w = new Array(n);
+    for (ii = n - 1; ii >= 0; ii--) { var s = y[ii]; for (j = ii + 1; j < n; j++) s -= A[ii][j] * w[j]; w[ii] = s / A[ii][ii]; }
+    return w;
+  }
+  function fit(P, d) {
+    var n = d + 1, A = [], b = [], ii, j;
+    for (ii = 0; ii < n; ii++) { A.push(new Array(n).fill(0)); b.push(0); A[ii][ii] = 1e-9; }
+    P.forEach(function (p) { var B = cheb(p[0], d); for (ii = 0; ii < n; ii++) { b[ii] += B[ii] * p[1]; for (j = 0; j < n; j++) A[ii][j] += B[ii] * B[j]; } });
+    var w = solve(A, b);
+    return function (x) { var B = cheb(x, d), s = 0; for (var k = 0; k < n; k++) s += w[k] * B[k]; return s; };
+  }
+  function sample(n) { var P = []; for (var k = 0; k < n; k++) { var x = -1 + 2 * Math.random(); P.push([x, truth(x) + SIG * FV.gauss()]); } return P; }
+  /* training error is measured on the sample; generalisation error is the exact expectation over x ~ U(−1, 1) and the noise */
+  function errs(P, f) {
+    var tr = P.reduce(function (a, p) { var e = f(p[0]) - p[1]; return a + e * e; }, 0) / P.length;
+    var te = gx.reduce(function (a, x) { var e = f(x) - truth(x); return a + e * e; }, 0) / gx.length + SIG * SIG;
+    return [tr, te];
+  }
+  function build(d) {
+    if (curves[d]) return curves[d];
+    return (curves[d] = NS.map(function (n) {
+      var a = 0, b = 0;
+      for (var r = 0; r < REP; r++) { var P = sample(n), e = errs(P, fit(P, d)); a += Math.log(Math.max(e[0], 1e-4)); b += Math.log(e[1]); }
+      return [Math.exp(a / REP), Math.exp(b / REP)];
+    }));
+  }
+  o.q('new').addEventListener('click', function () { pts = sample(200); o.redraw(); });
+  o.draw = function (c) {
+    var ctx = o.ctx, k = o.v('n'), n = NS[k], P = pts.slice(0, n), f = fit(P, deg), e = errs(P, f), cv = build(deg);
+    var m1 = FV.map(W, H, [-1.05, 1.05], [-2.2, 2.2], { l: 30, r: 290, t: 12, b: 24 });
+    FV.axes(ctx, m1, c, { xt: [-1, 0, 1] });
+    FV.curve(ctx, m1, truth, c.muted, 1.2, [5, 4]);
+    P.forEach(function (p) { FV.dot(ctx, m1.X(p[0]), m1.Y(p[1]), n > 80 ? 2.2 : 3.2, c.text); });
+    FV.curve(ctx, m1, f, c.accent, 2.5, null, -1, 1);
+    FV.label(ctx, 'n = ' + n, m1.X(1), m1.p.t + 12, c.text, 'right');
+    var lo = Math.log10, m2 = FV.map(W, H, [1, lo(200)], [8, 11], { l: 316, r: 10, t: 12, b: 24 });
+    /* y is log10 of the error, shifted by +10 inside the map so the axis helper draws no fake "zero" line at 10^0 */
+    FV.axes(ctx, m2, c, { xt: [1, lo(20), lo(50), 2, lo(200)], xf: function (v) { return Math.round(Math.pow(10, v)); }, yt: [8, 9, 10, 11], yf: function (v) { return '10^' + (v - 10); } });
+    var mY = m2.Y; m2.Y = function (v) { return mY(v + 10); };
+    ctx.save(); FV.clip(ctx, m2); ctx.beginPath(); ctx.fillStyle = c.warn; ctx.globalAlpha = 0.12;
+    cv.forEach(function (q, j) { var X = m2.X(lo(NS[j])), Y = m2.Y(lo(q[1])); j ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+    for (var j = cv.length - 1; j >= 0; j--) ctx.lineTo(m2.X(lo(NS[j])), m2.Y(lo(cv[j][0])));
+    ctx.fill(); ctx.restore();
+    [[0, c.text], [1, c.warn]].forEach(function (q) {
+      ctx.save(); FV.clip(ctx, m2); ctx.beginPath(); ctx.strokeStyle = q[1]; ctx.lineWidth = 2;
+      cv.forEach(function (v, jj) { var X = m2.X(lo(NS[jj])), Y = m2.Y(lo(v[q[0]])); jj ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+      ctx.stroke(); ctx.restore();
+    });
+    FV.line(ctx, m2.X(1), m2.Y(lo(SIG * SIG)), m2.X(lo(200)), m2.Y(lo(SIG * SIG)), c.muted, 1, [3, 3]);
+    FV.label(ctx, o.t.noise, m2.X(lo(200)) - 4, m2.Y(lo(SIG * SIG)) + 13, c.muted, 'right');
+    FV.label(ctx, o.t.test, m2.X(lo(200)) - 4, m2.p.t + 12, c.warn, 'right');
+    FV.label(ctx, o.t.train, m2.X(lo(200)) - 4, m2.p.t + 26, c.text, 'right');
+    FV.line(ctx, m2.X(lo(n)), m2.p.t, m2.X(lo(n)), H - m2.p.b, c.accent, 1.5, [3, 3]);
+    o.out('n = ' + n + '　' + o.t.train + ' = ' + FV.fmt(e[0], 3) + '　' + o.t.test + ' = ' + FV.fmt(e[1], 3) + '　' + o.t.gap + ' = <b>' + FV.fmt(e[1] - e[0], 3) + '</b>');
+  };
+  pts = sample(200); o.redraw();
+})();
+</script>
+</div>

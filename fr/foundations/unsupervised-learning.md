@@ -29,6 +29,8 @@ L'apprentissage non supervisé comprend quelques tâches typiques :
 - **Détection d'anomalies (anomaly detection)** : repérer les « points aberrants » nettement différents de la majorité des échantillons, comme une fraude à la carte bancaire ou une panne d'équipement.
 - **Estimation de densité (density estimation)** : estimer la distribution des données dans l'espace, pour comprendre « où les données apparaissent habituellement ».
 
+{% include fviz/kmeans.html %}
+
 ## Principe (intuition mathématique)
 
 Les objectifs d'[optimisation](../optimization/) diffèrent selon les tâches, mais tous tournent autour de la « mesure de la similarité / de l'information » :

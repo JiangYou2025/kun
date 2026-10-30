@@ -41,6 +41,8 @@ $$w = (X^\top X)^{-1} X^\top y$$
 
 où $X$ est la matrice des variables, obtenue en empilant tous les échantillons en lignes. La régression linéaire s'entraîne donc extrêmement vite, ce qui explique en bonne partie qu'elle serve de référence « à essayer d'emblée ».
 
+{% include fviz/linreg.html %}
+
 ## Formulation mathématique : la régression logistique (classification)
 
 S'il s'agit de **classification** (par exemple « pleuvra-t-il demain ? »), produire directement un nombre réel ne convient plus : on veut une **probabilité**. On applique donc à la sortie de la partie linéaire une **fonction sigmoïde**, qui la comprime dans l'intervalle $(0,1)$ :

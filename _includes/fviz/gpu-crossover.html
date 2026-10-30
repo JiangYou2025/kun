@@ -1,0 +1,58 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-gpucross" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="op"><button data-v="mm" class="on" data-t="mm"></button><button data-v="add" data-t="add"></button></span>
+  <span data-g="tr"><button data-v="1" class="on" data-t="tr1"></button><button data-v="0" data-t="tr0"></button></span>
+  <label><span data-t="size"></span> N<input type="range" data-k="k" min="4" max="13" step="0.25" value="10"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🚀 GPU 什么时候真的更快？', hint: '对 N×N 矩阵做一次运算，比较 CPU 与 GPU 的耗时（双对数坐标）。GPU 每次调用有固定的启动开销，还要把数据从内存拷进显存，所以小矩阵上反而更慢；矩阵乘法计算量随 N³ 增长，N 越大 GPU 越占优。换成逐元素加法（计算量只有 N²）再看：算得太少，搬运的时间根本赚不回来。硬件参数是示意性的典型量级。', mm: '矩阵乘法 A @ B', add: '逐元素加法 A + B', tr1: '含 CPU→GPU 拷贝', tr0: '数据已在显存', size: '矩阵大小', cpu: 'CPU', gpu: 'GPU', cross: '交叉点', faster: 'GPU 快', slower: 'GPU 反而慢', times: '倍', never: '在此范围内 GPU 始终更慢' },
+    en: { title: '🚀 When is the GPU actually faster?', hint: 'One operation on N×N matrices, CPU time vs GPU time (log–log axes). Every GPU call has a fixed launch overhead and the data must first be copied from RAM into GPU memory, so small matrices are actually slower on the GPU; matrix multiplication does N³ work, so the larger N gets, the more the GPU wins. Switch to element-wise addition (only N² work): there is too little computation to pay back the transfer. Hardware figures are illustrative orders of magnitude.', mm: 'matrix product A @ B', add: 'element-wise A + B', tr1: 'with CPU→GPU copy', tr0: 'data already on GPU', size: 'matrix size', cpu: 'CPU', gpu: 'GPU', cross: 'crossover', faster: 'GPU faster by', slower: 'GPU slower by', times: '×', never: 'the GPU is slower over the whole range' },
+    fr: { title: '🚀 Quand le GPU est-il vraiment plus rapide ?', hint: 'Une opération sur des matrices N×N : temps CPU vs temps GPU (axes log–log). Chaque appel GPU a un coût de lancement fixe, et les données doivent d’abord être copiées de la RAM vers la mémoire du GPU : sur de petites matrices, le GPU est donc plus lent. Le produit matriciel demande N³ opérations, si bien que plus N grandit, plus le GPU l’emporte. Passez à l’addition terme à terme (seulement N² opérations) : trop peu de calcul pour rentabiliser le transfert. Les caractéristiques matérielles sont des ordres de grandeur indicatifs.', mm: 'produit A @ B', add: 'addition terme à terme A + B', tr1: 'avec copie CPU→GPU', tr0: 'données déjà sur le GPU', size: 'taille de la matrice', cpu: 'CPU', gpu: 'GPU', cross: 'croisement', faster: 'GPU plus rapide de', slower: 'GPU plus lent de', times: '×', never: 'le GPU reste plus lent sur toute la plage' }
+  };
+  var W = 560, H = 300;
+  var o = FV.init('fv-gpucross', T, W, H); if (!o) return;
+  var op = 'mm', tr = true;
+  FV.group(o, 'op', function (v) { op = v; });
+  FV.group(o, 'tr', function (v) { tr = v === '1'; });
+  /* illustrative hardware: CPU 100 GFLOP/s, 10 G element-ops/s; GPU 10 TFLOP/s, 500 G element-ops/s,
+     20 µs launch overhead, 12 GB/s host↔device copy of A, B in and the result out (float32). */
+  function tCPU(N) { return op === 'mm' ? 2 * N * N * N / 1e11 : N * N / 1e10; }
+  function tGPU(N) {
+    var t = 2e-5 + (op === 'mm' ? 2 * N * N * N / 1e13 : N * N / 5e11);
+    return tr ? t + 3 * N * N * 4 / 1.2e10 : t;
+  }
+  var m = FV.map(W, H, [4, 13], [2, 12], { l: 52, r: 14, t: 14, b: 28 });
+  var yl = function (v) { v -= 10; var u = { '-6': '1 µs', '-5': '10 µs', '-4': '0.1 ms', '-3': '1 ms', '-2': '10 ms', '-1': '0.1 s', '0': '1 s', '1': '10 s', '2': '100 s', '-7': '0.1 µs', '-8': '10 ns' }; return u[String(v)] || ''; };
+  var fmtT = function (s) { return s < 1e-3 ? FV.fmt(s * 1e6, 1) + ' µs' : s < 1 ? FV.fmt(s * 1e3, 2) + ' ms' : FV.fmt(s, 2) + ' s'; };
+  o.draw = function (c) {
+    var ctx = o.ctx, k = o.v('k'), N = Math.round(Math.pow(2, k));
+    FV.axes(ctx, m, c, { xt: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13], xf: function (v) { return String(Math.pow(2, v)); }, yt: [2, 4, 6, 8, 10, 12], yf: yl, xl: 'N' });
+    var lc = function (f) { return function (x) { return Math.log10(f(Math.pow(2, x))) + 10; }; };
+    FV.curve(ctx, m, lc(tCPU), c.accent, 2.5);
+    FV.curve(ctx, m, lc(tGPU), c.warn, 2.5);
+    // crossover: first N where GPU becomes faster
+    var cx = null;
+    for (var x = 4; x <= 13; x += 0.005) if (tGPU(Math.pow(2, x)) < tCPU(Math.pow(2, x))) { cx = x; break; }
+    if (cx !== null && cx > 4) {
+      FV.line(ctx, m.X(cx), m.p.t, m.X(cx), H - m.p.b, c.muted, 1, [4, 4]);
+      FV.label(ctx, o.t.cross + ' N ≈ ' + Math.round(Math.pow(2, cx)), m.X(cx) + 5, H - m.p.b - 8, c.muted);
+    }
+    var tc = tCPU(N), tg = tGPU(N);
+    FV.line(ctx, m.X(k), m.p.t, m.X(k), H - m.p.b, c.text, 1);
+    FV.dot(ctx, m.X(k), m.Y(Math.log10(tc) + 10), 5, c.accent);
+    FV.dot(ctx, m.X(k), m.Y(Math.log10(tg) + 10), 5, c.warn);
+    FV.legend(ctx, m, [[o.t.cpu, c.accent], [o.t.gpu, c.warn]], c);
+    var r = tc / tg, verdict = r >= 1 ? o.t.faster + ' <b>' + FV.fmt(r, 1) + '</b> ' + o.t.times : '<span style="color:' + c.bad + '">' + o.t.slower + ' <b>' + FV.fmt(1 / r, 1) + '</b> ' + o.t.times + '</span>';
+    o.out('N = ' + N + '　CPU ' + fmtT(tc) + '　GPU ' + fmtT(tg) + '　' + verdict + (cx === null ? '<br>' + o.t.never : ''));
+  };
+  o.redraw();
+})();
+</script>
+</div>

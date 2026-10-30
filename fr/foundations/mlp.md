@@ -18,6 +18,8 @@ Le **MLP (Multi-Layer Perceptron, perceptron multicouche)** est le [réseau de n
 
 Cela contraste avec le [CNN](../cnn/), qui « ne regarde qu'une fenêtre locale », et avec l'[attention](../attention/), qui « sélectionne l'essentiel selon la pertinence ». Le MLP ne présuppose aucune structure : c'est la forme la plus simple et la plus générale. Avec suffisamment de neurones, il peut en théorie approcher n'importe quelle fonction continue (**théorème d'approximation universelle**). Le prix à payer : beaucoup de paramètres, et aucune exploitation de la structure propre aux données (comme l'ordre temporel ou le voisinage des pixels).
 
+{% include fviz/relu-approx.html %}
+
 ## Formulation mathématique
 
 Un MLP à $L$ couches consiste à imbriquer de façon répétée « transformation linéaire + activation ». Soit l'entrée $\mathbf{x}$ ; on pose $\mathbf{h}^{(0)} = \mathbf{x}$, et la couche $l$ s'écrit :
@@ -38,16 +40,16 @@ $$
 
 Calculons à la main un MLP minuscule : entrée de dimension 2, couche cachée de 2 neurones (ReLU), sortie de dimension 1.
 
-Soit $\mathbf{x} = \begin{bmatrix}1\\2\end{bmatrix}$,
+Soit $\mathbf{x} = \begin{bmatrix}1\cr 2\end{bmatrix}$,
 
 $$
 \mathbf{W}^{(1)} = \begin{bmatrix}1 & 0\\-1 & 1\end{bmatrix},\quad
 \mathbf{b}^{(1)} = \begin{bmatrix}0\\0\end{bmatrix}
 $$
 
-Partie linéaire de la couche 1 : $\mathbf{W}^{(1)}\mathbf{x} = \begin{bmatrix}1\cdot1 + 0\cdot2\\ -1\cdot1 + 1\cdot2\end{bmatrix} = \begin{bmatrix}1\\1\end{bmatrix}$.
+Partie linéaire de la couche 1 : $\mathbf{W}^{(1)}\mathbf{x} = \begin{bmatrix}1\cdot1 + 0\cdot2\cr  -1\cdot1 + 1\cdot2\end{bmatrix} = \begin{bmatrix}1\cr 1\end{bmatrix}$.
 
-Après ReLU : $\mathbf{h}^{(1)} = \begin{bmatrix}\max(0,1)\\\max(0,1)\end{bmatrix} = \begin{bmatrix}1\\1\end{bmatrix}$.
+Après ReLU : $\mathbf{h}^{(1)} = \begin{bmatrix}\max(0,1)\cr\max(0,1)\end{bmatrix} = \begin{bmatrix}1\cr 1\end{bmatrix}$.
 
 Couche de sortie $\mathbf{W}^{(2)} = \begin{bmatrix}2 & 3\end{bmatrix}$, $b^{(2)}=1$ :
 

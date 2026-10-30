@@ -1,0 +1,47 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-resample" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="f"><button data-v="1">1h</button><button data-v="3">3h</button><button data-v="6" class="on">6h</button><button data-v="12">12h</button><button data-v="24">D</button></span>
+  <span data-g="agg"><button data-v="mean" class="on">.mean()</button><button data-v="max">.max()</button><button data-v="min">.min()</button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🕒 Pandas 重采样：把每小时数据聚合成更粗的频率', hint: '灰线是一周的逐小时气温（168 个点）。s.resample(规则) 把时间轴切成等长的桶，每个桶用一个聚合函数压成一个数（彩色台阶，圆点标在桶的左端，这是 Pandas 的默认标签）。从 6h 拖到 D：按天取均值后，昼夜起伏完全消失，只剩缓慢的趋势；换成 .max() 则得到每日最高温。', pts: '个点', from: '168 个逐小时点 →', amp: '聚合后序列的起伏（最大−最小）' },
+    en: { title: '🕒 Pandas resampling: aggregating hourly data to a coarser frequency', hint: 'The grey line is one week of hourly temperatures (168 points). s.resample(rule) cuts the time axis into equal buckets and squeezes each bucket into one number with an aggregation function (coloured steps; the dot sits at the left edge of each bucket, which is the Pandas default label). Go from 6h to D: with a daily mean the day–night swing disappears and only the slow trend remains; with .max() you get the daily high instead.', pts: 'points', from: '168 hourly points →', amp: 'swing of the resampled series (max − min)' },
+    fr: { title: '🕒 Rééchantillonnage Pandas : agréger des données horaires à une fréquence plus grossière', hint: 'La courbe grise montre une semaine de températures horaires (168 points). s.resample(règle) découpe l’axe du temps en intervalles égaux et résume chacun par un seul nombre grâce à une fonction d’agrégation (marches colorées ; le point est placé au bord gauche de l’intervalle, l’étiquette par défaut de Pandas). Passez de 6h à D : avec la moyenne journalière, l’oscillation jour/nuit disparaît et seule reste la tendance lente ; avec .max(), on obtient le maximum de chaque jour.', pts: 'points', from: '168 points horaires →', amp: 'amplitude de la série rééchantillonnée (max − min)' }
+  };
+  var W = 560, H = 280, NH = 168;
+  var o = FV.init('fv-resample', T, W, H); if (!o) return;
+  var f = 6, agg = 'mean';
+  FV.group(o, 'f', function (v) { f = +v; });
+  FV.group(o, 'agg', function (v) { agg = v; });
+  var s = 20240611, R = function () { s = s + 0x6D2B79F5 | 0; var t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  var y = [];
+  for (var h = 0; h < NH; h++) y.push(8 + 0.6 * h / 24 + 5 * Math.sin(2 * Math.PI * (h - 9) / 24) + 1.6 * (R() + R() + R() - 1.5));
+  var m = FV.map(W, H, [0, NH], [0, 22], { l: 38, r: 12, t: 14, b: 26 });
+  o.draw = function (c) {
+    var ctx = o.ctx;
+    FV.axes(ctx, m, c, { xt: [0, 24, 48, 72, 96, 120, 144, 168], xf: function (v) { return v === 168 ? '' : '01-0' + (v / 24 + 1); }, yf: function (v) { return v + '°'; } });
+    ctx.save(); FV.clip(ctx, m); ctx.beginPath(); ctx.strokeStyle = c.muted; ctx.globalAlpha = 0.7; ctx.lineWidth = 1.2;
+    y.forEach(function (v, h) { h ? ctx.lineTo(m.X(h), m.Y(v)) : ctx.moveTo(m.X(h), m.Y(v)); }); ctx.stroke(); ctx.restore();
+    var r = [], col = agg === 'mean' ? c.accent : agg === 'max' ? c.bad : c.blue;
+    for (var a = 0; a < NH; a += f) {
+      var seg = y.slice(a, a + f), v = agg === 'mean' ? seg.reduce(function (p, q) { return p + q; }, 0) / seg.length : agg === 'max' ? Math.max.apply(null, seg) : Math.min.apply(null, seg);
+      r.push(v);
+      if (f > 1) FV.line(ctx, m.X(a), m.Y(v), m.X(a + f), m.Y(v), col, 2.5);
+      FV.dot(ctx, m.X(a), m.Y(v), f >= 6 ? 4 : 2.5, col);
+    }
+    var mx = Math.max.apply(null, r), mn = Math.min.apply(null, r);
+    var rule = f === 24 ? 'D' : f + 'h';
+    FV.label(ctx, 's.resample("' + rule + '").' + agg + '()', W - 16, 30, col, 'right', 'bold 13px ui-monospace,monospace');
+    o.out(o.t.from + ' <b>' + r.length + '</b> ' + o.t.pts + '　' + o.t.amp + ' = <b>' + FV.fmt(mx - mn, 1) + '°</b>');
+  };
+  o.redraw();
+})();
+</script>
+</div>

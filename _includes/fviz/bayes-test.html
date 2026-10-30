@@ -1,0 +1,51 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-bayes" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="prev"></span><input type="range" data-k="pr" min="0.1" max="30" step="0.1" value="1"></label>
+  <label><span data-t="sens"></span><input type="range" data-k="se" min="50" max="100" step="0.5" value="99"></label>
+  <label><span data-t="fpr"></span><input type="range" data-k="fp" min="0" max="30" step="0.5" value="5"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🩺 贝叶斯定理：检测阳性，真的患病吗？', hint: '每个点代表 1 人，共 1000 人。默认值就是正文的例子：患病率 1%，灵敏度 99%，误报率 5%。所有测出阳性的人 = 红点（真阳性）+ 蓝点（误报）。底部条形显示阳性者中真正患病的比例，也就是后验 P(病 | 阳)。注意：红点只有约 10 个，蓝点却有约 50 个——拖动患病率，看看基础概率有多重要。', prev: '患病率', sens: '灵敏度', fpr: '误报率', tp: '患病且阳性', fn: '患病但漏检', fp: '健康但误报', tn: '健康且阴性', bar: '所有阳性者', post: 'P(病 | 阳)', prior: '先验 P(病)', ppl: '人' },
+    en: { title: '🩺 Bayes’ theorem: you tested positive. Are you really ill?', hint: 'Each dot is one person, 1000 in all. The defaults are the example from the text: prevalence 1%, sensitivity 99%, false-positive rate 5%. Everyone who tests positive = red dots (true positives) + blue dots (false alarms). The bar at the bottom shows what fraction of the positives are actually ill, i.e. the posterior P(ill | +). Notice: only about 10 red dots, but about 50 blue ones. Drag the prevalence to see how much the base rate matters.', prev: 'prevalence', sens: 'sensitivity', fpr: 'false-positive rate', tp: 'ill, positive', fn: 'ill, missed', fp: 'healthy, false alarm', tn: 'healthy, negative', bar: 'all positives', post: 'P(ill | +)', prior: 'prior P(ill)', ppl: 'people' },
+    fr: { title: '🩺 Le théorème de Bayes : test positif, êtes-vous vraiment malade ?', hint: 'Chaque point représente une personne, 1000 en tout. Les valeurs par défaut sont celles de l’exemple du texte : prévalence 1 %, sensibilité 99 %, taux de faux positifs 5 %. Toutes les personnes testées positives = points rouges (vrais positifs) + points bleus (fausses alertes). La barre du bas montre la part des positifs réellement malades, c’est-à-dire la probabilité a posteriori P(malade | +). Remarquez : environ 10 points rouges seulement, mais environ 50 bleus. Faites varier la prévalence pour voir à quel point le taux de base compte.', prev: 'prévalence', sens: 'sensibilité', fpr: 'taux de faux positifs', tp: 'malade, positif', fn: 'malade, non détecté', fp: 'sain, fausse alerte', tn: 'sain, négatif', bar: 'tous les positifs', post: 'P(malade | +)', prior: 'a priori P(malade)', ppl: 'personnes' }
+  };
+  var W = 560, H = 300;
+  var o = FV.init('fv-bayes', T, W, H); if (!o) return;
+  var pct = function (v) { return (FV.lang() === 'fr' ? v.replace('.', ',') + ' %' : v + '%'); };
+  o.draw = function (c) {
+    var ctx = o.ctx, pr = o.v('pr') / 100, se = o.v('se') / 100, fp = o.v('fp') / 100;
+    var nS = Math.round(1000 * pr), nTP = Math.round(nS * se), nFN = nS - nTP, nH = 1000 - nS, nFP = Math.round(nH * fp), nTN = nH - nFP;
+    var groups = [[nTP, c.bad, o.t.tp], [nFN, c.warn, o.t.fn], [nFP, c.blue, o.t.fp], [nTN, c.muted, o.t.tn]];
+    var cols = 50, rows = 20, sp = 10.6, x0 = 18, y0 = 14, idx = 0;
+    groups.forEach(function (g, gi) {
+      for (var k = 0; k < g[0]; k++, idx++) {
+        var col = Math.floor(idx / rows), row = idx % rows, X = x0 + col * sp, Y = y0 + row * sp;
+        if (gi === 3) { ctx.globalAlpha = 0.35; FV.dot(ctx, X, Y, 3, g[1]); ctx.globalAlpha = 1; }
+        else FV.dot(ctx, X, Y, 3.8, g[1]);
+      }
+    });
+    var ly = y0 + rows * sp + 8;
+    groups.forEach(function (g, gi) {
+      var X = 18 + gi * 136;
+      FV.dot(ctx, X, ly, 4, g[1]);
+      FV.label(ctx, g[2] + ' ' + g[0], X + 8, ly + 4, c.text, 'left', '11.5px system-ui,sans-serif');
+    });
+    var post = se * pr / (se * pr + fp * (1 - pr)), by = ly + 18, bw = W - 36, bh = 18;
+    FV.label(ctx, o.t.bar + ' (' + (nTP + nFP) + ' ' + o.t.ppl + ')', 18, by + 10, c.muted, 'left', '11.5px system-ui,sans-serif');
+    var tpw = (nTP + nFP) ? bw * nTP / (nTP + nFP) : 0;
+    ctx.fillStyle = c.bad; ctx.fillRect(18, by + 16, tpw, bh);
+    ctx.fillStyle = c.blue; ctx.fillRect(18 + tpw, by + 16, bw - tpw, bh);
+    if (tpw > 40) FV.label(ctx, pct((100 * nTP / (nTP + nFP)).toFixed(1)), 22, by + 29, '#fff', 'left', 'bold 12px system-ui,sans-serif');
+    o.out(o.t.prior + ' = ' + pct((100 * pr).toFixed(1)) + '　→　' + o.t.post + ' = ' + se + '×' + pr.toFixed(3) + ' / (' + se + '×' + pr.toFixed(3) + ' + ' + fp + '×' + (1 - pr).toFixed(3) + ') = <b>' + pct((100 * post).toFixed(1)) + '</b>');
+  };
+  o.redraw();
+})();
+</script>
+</div>

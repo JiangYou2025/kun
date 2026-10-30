@@ -26,6 +26,8 @@ $$O(1) < O(\log n) < O(n) < O(n\log n) < O(n^2) < O(2^n)$$
 
 Plus on est à gauche, mieux c'est. Attention à la croissance **exponentielle** comme $O(2^n)$ : dès $n=50$, on atteint des nombres astronomiques, et le calcul devient en pratique « impossible à exécuter ».
 
+{% include fviz/big-o.html %}
+
 ## Points essentiels
 
 Comment lire la complexité d'un morceau de code ? Regardez l'imbrication des boucles :

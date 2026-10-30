@@ -54,6 +54,8 @@ $$
 
 - $pos$: position index; $i$: dimension index; $d$: model dimension. Sines and cosines at different frequencies give each position a unique "fingerprint".
 
+{% include fviz/attention-heat.html %}
+
 ## A concrete example
 
 A minimal encoder block (built into PyTorch):

@@ -69,6 +69,8 @@ Si la porte d'oubli vérifie $f_t \approx 1$, le gradient **remonte presque inta
 
 Intuitivement : sur $c_t$, l'information « file tout droit » au lieu d'être « sans cesse multipliée par des matrices et comprimée », ce qui lui permet d'aller loin.
 
+{% include fviz/bptt-gradient.html %}
+
 ## Un exemple concret
 
 Supposons qu'une dimension de l'état de cellule vaille actuellement $c_{t-1} = 0.8$ (elle encode l'information « le sujet en début de phrase est au pluriel »). À ce pas :

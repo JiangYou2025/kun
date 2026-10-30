@@ -1,0 +1,91 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-bv" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="deg"></span><input type="range" data-k="deg" min="0" max="12" step="1" value="1"></label>
+  <button data-k="new" data-t="new"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🎯 偏差与方差：换 100 份训练集会怎样', hint: '从同一个真实函数（虚线）反复抽取 100 份带噪声的训练集（每份 20 个点），每份都用 d 次多项式拟合一次。左图画出其中 20 条拟合曲线（细线）和它们的平均（粗线）。平均曲线偏离真实函数的程度就是偏差；细线彼此散开的程度就是方差。右图：偏差² 随 d 下降，方差随 d 上升，两者加噪声就是期望测试误差，在中间最低。', deg: '多项式次数 d', new: '重新抽样', bias: '偏差²', vr: '方差', noise: '噪声 σ²', tot: '期望误差', fits: '各份数据的拟合', mean: '平均拟合', d: '次数 d' },
+    en: { title: '🎯 Bias and variance: what if we drew 100 training sets?', hint: 'We draw 100 noisy training sets (20 points each) from the same true function (dashed) and fit a degree-d polynomial to each. Left: 20 of these fits (thin lines) and their average (thick line). How far the average is from the true function is the bias; how much the thin lines spread out is the variance. Right: bias² falls with d, variance rises with d, and their sum plus the noise is the expected test error, lowest somewhere in between.', deg: 'polynomial degree d', new: 'resample', bias: 'bias²', vr: 'variance', noise: 'noise σ²', tot: 'expected error', fits: 'fits on different data', mean: 'average fit', d: 'degree d' },
+    fr: { title: '🎯 Biais et variance : et si l’on tirait 100 jeux d’entraînement ?', hint: 'On tire 100 jeux d’entraînement bruités (20 points chacun) à partir de la même vraie fonction (en pointillé) et on ajuste sur chacun un polynôme de degré d. À gauche : 20 de ces ajustements (traits fins) et leur moyenne (trait épais). L’écart entre la moyenne et la vraie fonction est le biais ; la dispersion des traits fins est la variance. À droite : le biais² diminue avec d, la variance augmente, et leur somme plus le bruit donne l’erreur de test attendue, minimale entre les deux.', deg: 'degré du polynôme d', new: 'nouveau tirage', bias: 'biais²', vr: 'variance', noise: 'bruit σ²', tot: 'erreur attendue', fits: 'ajustements sur différents jeux', mean: 'ajustement moyen', d: 'degré d' }
+  };
+  var W = 560, H = 290, DM = 12, S = 100, NP = 20, SIG = 0.3, NG = 81;
+  var o = FV.init('fv-bv', T, W, H); if (!o) return;
+  var truth = function (x) { return Math.sin(2.6 * x) + 0.4 * x; };
+  var xs = [], gx = [], curves, stats;
+  for (var i = 0; i < NP; i++) xs.push(-1 + 2 * (i + 0.5) / NP);
+  for (i = 0; i < NG; i++) gx.push(-1 + 2 * i / (NG - 1));
+  function cheb(x, d) { var b = [1, x]; for (var k = 2; k <= d; k++) b.push(2 * x * b[k - 1] - b[k - 2]); return b.slice(0, d + 1); }
+  function solve(A, y) {
+    var n = y.length, ii, j, k;
+    for (ii = 0; ii < n; ii++) {
+      var p = ii; for (k = ii + 1; k < n; k++) if (Math.abs(A[k][ii]) > Math.abs(A[p][ii])) p = k;
+      var t = A[ii]; A[ii] = A[p]; A[p] = t; t = y[ii]; y[ii] = y[p]; y[p] = t;
+      for (k = ii + 1; k < n; k++) { var f = A[k][ii] / A[ii][ii]; for (j = ii; j < n; j++) A[k][j] -= f * A[ii][j]; y[k] -= f * y[ii]; }
+    }
+    var w = new Array(n);
+    for (ii = n - 1; ii >= 0; ii--) { var s = y[ii]; for (j = ii + 1; j < n; j++) s -= A[ii][j] * w[j]; w[ii] = s / A[ii][ii]; }
+    return w;
+  }
+  function fit(ys, d) {
+    var n = d + 1, A = [], b = [], ii, j;
+    for (ii = 0; ii < n; ii++) { A.push(new Array(n).fill(0)); b.push(0); A[ii][ii] = 1e-9; }
+    xs.forEach(function (x, k) { var B = cheb(x, d); for (ii = 0; ii < n; ii++) { b[ii] += B[ii] * ys[k]; for (j = 0; j < n; j++) A[ii][j] += B[ii] * B[j]; } });
+    var w = solve(A, b);
+    return gx.map(function (x) { var B = cheb(x, d), s = 0; for (var k = 0; k < n; k++) s += w[k] * B[k]; return s; });
+  }
+  function data() {
+    var sets = []; for (var s = 0; s < S; s++) sets.push(xs.map(function (x) { return truth(x) + SIG * FV.gauss(); }));
+    curves = []; stats = [];
+    for (var d = 0; d <= DM; d++) {
+      var cs = sets.map(function (ys) { return fit(ys, d); }), b2 = 0, vr = 0;
+      gx.forEach(function (x, g) {
+        var mu = 0; cs.forEach(function (cv) { mu += cv[g]; }); mu /= S;
+        b2 += (mu - truth(x)) * (mu - truth(x));
+        cs.forEach(function (cv) { vr += (cv[g] - mu) * (cv[g] - mu); });
+      });
+      curves.push(cs); stats.push([b2 / NG, vr / NG / S]);
+    }
+  }
+  o.q('new').addEventListener('click', function () { data(); o.redraw(); });
+  function poly(ctx, m, ys, col, w, alpha) {
+    ctx.save(); FV.clip(ctx, m); ctx.beginPath(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.globalAlpha = alpha || 1;
+    ys.forEach(function (y, g) { var X = m.X(gx[g]), Y = Math.max(-1e4, Math.min(1e4, m.Y(y))); g ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+    ctx.stroke(); ctx.restore();
+  }
+  o.draw = function (c) {
+    var ctx = o.ctx, d = o.v('deg'), cs = curves[d];
+    var m1 = FV.map(W, H, [-1.05, 1.05], [-2.2, 2.2], { l: 30, r: 260, t: 12, b: 24 });
+    FV.axes(ctx, m1, c, { xt: [-1, 0, 1] });
+    for (var s = 0; s < 20; s++) poly(ctx, m1, cs[s], c.accent, 1, 0.35);
+    var mu = gx.map(function (_, g) { var a = 0; cs.forEach(function (cv) { a += cv[g]; }); return a / S; });
+    FV.curve(ctx, m1, truth, c.text, 1.5, [5, 4]);
+    poly(ctx, m1, mu, c.warn, 3);
+    FV.legend(ctx, m1, [[o.t.fits, c.accent], [o.t.mean, c.warn]], c);
+    var lo = Math.log10, sg = SIG * SIG;
+    /* y is log10 of the error, shifted by +10 inside the map so the axis helper draws no fake "zero" line at 10^0 */
+    var m2 = FV.map(W, H, [0, DM], [5, 10.5], { l: 342, r: 10, t: 12, b: 24 });
+    FV.axes(ctx, m2, c, { xt: [0, 3, 6, 9, 12], yt: [5, 6, 7, 8, 9, 10], yf: function (v) { return '10^' + (v - 10); }, xl: o.t.d });
+    var mY = m2.Y; m2.Y = function (v) { return mY(v + 10); };
+    [[0, c.pink, o.t.bias], [1, c.blue, o.t.vr], [2, c.text, o.t.tot]].forEach(function (q, row) {
+      ctx.save(); FV.clip(ctx, m2); ctx.beginPath(); ctx.strokeStyle = q[1]; ctx.lineWidth = 2;
+      stats.forEach(function (st, k) { var v = q[0] < 2 ? st[q[0]] : st[0] + st[1] + sg, X = m2.X(k), Y = m2.Y(lo(Math.max(v, 1e-7))); k ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+      ctx.stroke(); ctx.restore();
+      FV.label(ctx, q[2], m2.p.l + 6, H - m2.p.b - 36 + 14 * row, q[1]);
+    });
+    FV.line(ctx, m2.X(0), m2.Y(lo(sg)), m2.X(DM), m2.Y(lo(sg)), c.muted, 1, [3, 3]);
+    FV.label(ctx, o.t.noise, m2.X(0) + 4, m2.Y(lo(sg)) - 4, c.muted);
+    FV.line(ctx, m2.X(d), m2.p.t, m2.X(d), H - m2.p.b, c.accent, 1.5, [3, 3]);
+    var st = stats[d];
+    o.out('d = ' + d + '　' + o.t.bias + ' = <b>' + FV.fmt(st[0], 3) + '</b>　' + o.t.vr + ' = <b>' + FV.fmt(st[1], 3) + '</b>　' + o.t.noise + ' = ' + sg.toFixed(2) + '　' + o.t.tot + ' ≈ ' + FV.fmt(st[0] + st[1] + sg, 3));
+  };
+  data(); o.redraw();
+})();
+</script>
+</div>

@@ -70,6 +70,8 @@ posterior = sens*prior / evidence
 print(round(posterior, 3))   # 0.167
 ```
 
+{% include fviz/bayes-test.html %}
+
 ## Why it matters / where it is used
 
 Bayes' theorem is a unified framework for **learning from data**:

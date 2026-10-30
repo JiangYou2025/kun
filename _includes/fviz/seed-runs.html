@@ -1,0 +1,58 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-seedruns" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="mode"><button data-v="fixed" class="on" data-t="fixed"></button><button data-v="none" data-t="none"></button></span>
+  <label><span data-t="sa"></span><input type="range" data-k="sa" min="0" max="50" step="1" value="42"></label>
+  <label><span data-t="sb"></span><input type="range" data-k="sb" min="0" max="50" step="1" value="42"></label>
+  <button data-k="rerun" data-t="rerun"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🎯 随机种子：同样的种子，同样的曲线', hint: '两次“训练”各画一条损失曲线：随机的初始化、数据打乱和噪声全部来自伪随机数生成器。种子相同，两条曲线完全重合；改动其中一个种子，曲线就不同。切到“不设种子”再点“重新运行”，每次结果都在变——这正是论文结果无法复现的来源。', fixed: '固定种子', none: '不设种子', sa: '运行 A 的种子', sb: '运行 B 的种子', rerun: '重新运行', ra: '运行 A', rb: '运行 B', ep: 'epoch', diff: '两条曲线最大差异', same: '✓ 完全相同，可复现', differ: '结果不同', fin: '最终损失' },
+    en: { title: '🎯 Random seeds: same seed, same curve', hint: 'Two “training runs” each draw a loss curve; the random initialisation, data shuffling and noise all come from a pseudo-random number generator. With equal seeds the two curves coincide exactly; change one seed and they differ. Switch to “no seed” and press “run again”: the result changes every time, which is exactly how published results become impossible to reproduce.', fixed: 'fixed seed', none: 'no seed', sa: 'seed of run A', sb: 'seed of run B', rerun: 'run again', ra: 'run A', rb: 'run B', ep: 'epoch', diff: 'largest gap between the curves', same: '✓ identical, reproducible', differ: 'results differ', fin: 'final loss' },
+    fr: { title: '🎯 Graine aléatoire : même graine, même courbe', hint: 'Deux « entraînements » tracent chacun une courbe de perte ; l’initialisation aléatoire, le mélange des données et le bruit proviennent tous d’un générateur pseudo-aléatoire. Avec la même graine, les deux courbes se superposent exactement ; changez l’une des graines et elles diffèrent. Passez à « sans graine » puis cliquez sur « relancer » : le résultat change à chaque fois, et c’est précisément ainsi qu’un résultat publié devient impossible à reproduire.', fixed: 'graine fixée', none: 'sans graine', sa: 'graine du run A', sb: 'graine du run B', rerun: 'relancer', ra: 'run A', rb: 'run B', ep: 'epoch', diff: 'écart maximal entre les courbes', same: '✓ identiques, reproductible', differ: 'résultats différents', fin: 'perte finale' }
+  };
+  var W = 560, H = 280, E = 60;
+  var o = FV.init('fv-seedruns', T, W, H); if (!o) return;
+  var mode = 'fixed', ra = 0, rb = 0;
+  function newRandom() { ra = Math.floor(Math.random() * 1e9); rb = Math.floor(Math.random() * 1e9); }
+  FV.group(o, 'mode', function (v) { mode = v; newRandom(); });
+  o.q('rerun').addEventListener('click', function () { newRandom(); o.redraw(); });
+  function rng(s) { return function () { s |= 0; s = s + 0x6D2B79F5 | 0; var t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  /* a simulated training run: the seed decides the initial loss, the convergence speed and the per-epoch noise */
+  function curve(seed) {
+    var R = rng(seed * 2654435761), init = 1.0 + 0.5 * R(), tau = 9 + 8 * R(), floor = 0.18 + 0.08 * R(), out = [];
+    for (var e = 0; e <= E; e++) out.push(floor + (init - floor) * Math.exp(-e / tau) + 0.035 * (R() - 0.5) * (1 + 2 * Math.exp(-e / 20)));
+    return out;
+  }
+  var m = FV.map(W, H, [0, E], [0, 1.6], { l: 38, r: 12, t: 12, b: 26 });
+  o.draw = function (c) {
+    var ctx = o.ctx, sA = mode === 'fixed' ? o.v('sa') : ra, sB = mode === 'fixed' ? o.v('sb') : rb;
+    o.q('sa').disabled = o.q('sb').disabled = mode !== 'fixed';
+    var A = curve(sA), B = curve(sB), d = 0;
+    for (var i = 0; i <= E; i++) d = Math.max(d, Math.abs(A[i] - B[i]));
+    FV.axes(ctx, m, c, { xl: o.t.ep, yl: 'loss' });
+    function poly(Y, col, w, dash) {
+      ctx.save(); FV.clip(ctx, m); ctx.beginPath(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash(dash || []);
+      Y.forEach(function (y, e) { e ? ctx.lineTo(m.X(e), m.Y(y)) : ctx.moveTo(m.X(e), m.Y(y)); }); ctx.stroke(); ctx.restore();
+    }
+    poly(A, c.accent, 3.5);
+    poly(B, c.warn, 2, [7, 5]);
+    var la = o.t.ra + (mode === 'fixed' ? ' (seed ' + sA + ')' : ''), lb = o.t.rb + (mode === 'fixed' ? ' (seed ' + sB + ')' : '');
+    ctx.save(); ctx.font = '12px system-ui,sans-serif';
+    [[la, c.accent], [lb, c.warn]].forEach(function (it, k) {
+      var X = W - 170, Y = 30 + k * 18; ctx.fillStyle = it[1]; ctx.fillRect(X, Y - 6, 16, 3); ctx.fillStyle = c.text; ctx.fillText(it[0], X + 22, Y);
+    });
+    ctx.restore();
+    var st = d === 0 ? '<b style="color:' + c.good + '">' + o.t.same + '</b>' : o.t.differ;
+    o.out(o.t.diff + ' = <b>' + d.toFixed(4) + '</b>　' + st + '　' + o.t.fin + ' A = ' + A[E].toFixed(4) + (FV.lang() === 'zh' ? '，' : ', ') + 'B = ' + B[E].toFixed(4));
+  };
+  newRandom(); o.redraw();
+})();
+</script>
+</div>

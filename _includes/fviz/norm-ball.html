@@ -1,0 +1,58 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-norm" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label>p<input type="range" data-k="p" min="0.5" max="10.5" step="0.1" value="2"></label>
+  <span data-g="pp"><button data-v="1">p = 1</button><button data-v="2" class="on">p = 2</button><button data-v="11">p = ∞</button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '📏 范数的“单位球”：p 改变了“长度”的形状', hint: '粗线是所有满足 ‖x‖ₚ = 1 的点（单位球）：p = 1 是菱形，p = 2 是圆，p → ∞ 变成正方形（淡线为这三种作参照）。拖动画布上的橙色向量 x：虚线是穿过 x 的那一圈“等长线”，它在 p 范数下的长度就是这一圈的半径。p < 1 时形状向内凹，三角不等式失效，所以已经不是范数。菱形的尖角正好落在坐标轴上，这就是 L1 正则倾向于产生稀疏解的几何原因。', notnorm: '⚠️ p < 1：单位球不是凸的，不满足三角不等式，不是范数' },
+    en: { title: '📏 The norm “unit ball”: p changes the shape of “length”', hint: 'The thick curve is the set of points with ‖x‖ₚ = 1 (the unit ball): a diamond for p = 1, a circle for p = 2, a square as p → ∞ (the faint outlines show these three for reference). Drag the orange vector x on the canvas: the dashed curve is the “same-length” contour through x, and its radius is the p-norm of x. For p < 1 the shape caves in, the triangle inequality fails, and it is no longer a norm. The diamond’s corners sit exactly on the axes, which is the geometric reason L1 regularisation tends to give sparse solutions.', notnorm: '⚠️ p < 1: the unit ball is not convex, the triangle inequality fails, so this is not a norm' },
+    fr: { title: '📏 La « boule unité » d’une norme : p change la forme de la « longueur »', hint: 'La courbe épaisse est l’ensemble des points tels que ‖x‖ₚ = 1 (la boule unité) : un losange pour p = 1, un cercle pour p = 2, un carré quand p → ∞ (les contours pâles montrent ces trois cas pour référence). Faites glisser le vecteur orange x sur le canevas : la courbe en pointillés est le contour « de même longueur » passant par x, et son rayon est la norme p de x. Pour p < 1 la forme se creuse, l’inégalité triangulaire tombe en défaut et ce n’est plus une norme. Les pointes du losange sont exactement sur les axes : c’est la raison géométrique pour laquelle la régularisation L1 tend à donner des solutions creuses.', notnorm: '⚠️ p < 1 : la boule unité n’est pas convexe, l’inégalité triangulaire est violée, ce n’est donc pas une norme' }
+  };
+  var W = 560, H = 300;
+  var o = FV.init('fv-norm', T, W, H); if (!o) return;
+  var m = FV.map(W, H, [-2.5, 2.5], [-1.3889, 1.3889], { l: 10, r: 10, t: 10, b: 10 });
+  var pIn = o.q('p'), v = [1.0, 0.6];
+  FV.group(o, 'pp', function (x) { pIn.value = x; });
+  o.root.querySelector('[data-k="p"]').addEventListener('input', function () {
+    o.root.querySelectorAll('[data-g="pp"] button').forEach(function (b) { b.classList.remove('on'); });
+  });
+  function nrm(x, y, p) { if (p === Infinity) return Math.max(Math.abs(x), Math.abs(y)); return Math.pow(Math.pow(Math.abs(x), p) + Math.pow(Math.abs(y), p), 1 / p); }
+  function ball(ctx, p, r, col, w, dash, alpha) {
+    ctx.save(); ctx.globalAlpha = alpha || 1; ctx.beginPath();
+    for (var i = 0; i <= 720; i++) { var a = i / 720 * 2 * Math.PI, cx = Math.cos(a), cy = Math.sin(a), s = r / nrm(cx, cy, p); i ? ctx.lineTo(m.X(s * cx), m.Y(s * cy)) : ctx.moveTo(m.X(s * cx), m.Y(s * cy)); }
+    ctx.closePath(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash(dash || []); ctx.stroke(); ctx.restore();
+  }
+  var cv = o.cv, drag = false;
+  cv.style.touchAction = 'none'; cv.style.cursor = 'grab';
+  function pos(e) { var r = cv.getBoundingClientRect(), X = (e.clientX - r.left) * W / r.width, Y = (e.clientY - r.top) * H / r.height;
+    return [Math.max(-2.3, Math.min(2.3, -2.5 + (X - 10) / (W - 20) * 5)), Math.max(-1.3, Math.min(1.3, 1.3889 - (Y - 10) / (H - 20) * 2.7778))]; }
+  cv.addEventListener('pointerdown', function (e) { drag = true; v = pos(e); cv.setPointerCapture(e.pointerId); o.redraw(); });
+  cv.addEventListener('pointermove', function (e) { if (drag) { v = pos(e); o.redraw(); } });
+  cv.addEventListener('pointerup', function () { drag = false; });
+  o.draw = function (c) {
+    var ctx = o.ctx, pr = o.v('p'), p = pr > 10 ? Infinity : pr;
+    FV.axes(ctx, m, c, { xt: [-2, -1, 0, 1, 2], yt: [-1, 0, 1], xf: function () { return ''; }, yf: function () { return ''; } });
+    FV.label(ctx, '1', m.X(1) + 4, m.Y(0) + 14, c.muted); FV.label(ctx, '1', m.X(0) + 5, m.Y(1) - 5, c.muted); FV.label(ctx, '2', m.X(2) + 4, m.Y(0) + 14, c.muted);
+    [1, 2, Infinity].forEach(function (q) { ball(ctx, q, 1, c.muted, 1, null, 0.6); });
+    ball(ctx, p, 1, c.accent, 3);
+    var n = nrm(v[0], v[1], p);
+    if (n > 1e-6) ball(ctx, p, n, c.warn, 1.3, [5, 4]);
+    FV.arrow(ctx, m.X(0), m.Y(0), m.X(v[0]), m.Y(v[1]), c.warn, 2.5);
+    FV.dot(ctx, m.X(v[0]), m.Y(v[1]), 5, c.warn);
+    FV.label(ctx, 'x = (' + v[0].toFixed(2) + ', ' + v[1].toFixed(2) + ')', m.X(v[0]) + 8, m.Y(v[1]) - 8, c.text);
+    FV.label(ctx, 'p = ' + (p === Infinity ? '∞' : p.toFixed(1)), m.p.l + 8, m.p.t + 16, c.accent, 'left', 'bold 13px system-ui,sans-serif');
+    var ps = p === Infinity ? '∞' : p.toFixed(1);
+    o.out('‖x‖₁ = ' + nrm(v[0], v[1], 1).toFixed(3) + '　‖x‖₂ = ' + nrm(v[0], v[1], 2).toFixed(3) + '　‖x‖∞ = ' + nrm(v[0], v[1], Infinity).toFixed(3) +
+      '　<b>‖x‖<sub>' + ps + '</sub> = ' + n.toFixed(3) + '</b>' + (p < 1 ? '<br>' + o.t.notnorm : ''));
+  };
+  o.redraw();
+})();
+</script>
+</div>

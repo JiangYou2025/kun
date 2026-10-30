@@ -22,6 +22,8 @@ Imaginez une chaîne de transmission : l'engrenage A entraîne l'engrenage B, q
 
 Les rapports (taux de variation) se transmettent en se **multipliant**. C'est exactement ce que dit la règle de dérivation en chaîne : lorsque $x$ influence $u$ et que $u$ influence à son tour $y$, l'influence totale de $x$ sur $y$ est le produit des deux influences.
 
+{% include fviz/chain-rule.html %}
+
 ## Formulation mathématique
 
 Soit $y=f(u)$ et $u=g(x)$, c'est-à-dire $y=f(g(x))$ ; alors

@@ -1,0 +1,106 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-regpath" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="pen"><button data-v="l2" class="on">Ridge (L2)</button><button data-v="l1">Lasso (L1)</button></span>
+  <label><span data-t="lam"></span> log₁₀λ<input type="range" data-k="l" min="-3" max="1.5" step="0.01" value="-1"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🪢 正则化路径：λ 增大时系数怎么变', hint: '数据和正文的例子一样：5 个特征，y 只真正依赖 x₁（系数 3）和 x₂（系数 −2），x₃ 还和 x₁ 相关。左图是每个系数随 λ 变化的“路径”，右图是在新数据上的误差。拖动 λ：Ridge 让所有系数一起平滑地缩小，几乎不会恰好为 0；Lasso 则把无用特征的系数一个个压成 0。λ 太大时两者都会把有用的系数也压扁，误差回升。', lam: '正则强度', coef: '系数', test: '新数据 MSE', zero: '恰为 0 的系数', none: '无', sep: '：' },
+    en: { title: '🪢 Regularisation paths: how coefficients move as λ grows', hint: 'Same data as the example in the text: 5 features, y really depends only on x₁ (coefficient 3) and x₂ (coefficient −2), and x₃ is correlated with x₁. Left: the “path” of each coefficient as λ varies; right: the error on fresh data. Drag λ: Ridge shrinks all coefficients smoothly together and almost never sets one exactly to 0; Lasso pushes the useless coefficients to 0 one after another. When λ is too large, both also crush the useful coefficients and the error goes back up.', lam: 'penalty strength', coef: 'coefficients', test: 'MSE on fresh data', zero: 'coefficients exactly 0', none: 'none', sep: ': ' },
+    fr: { title: '🪢 Chemins de régularisation : comment les coefficients bougent quand λ grandit', hint: 'Mêmes données que l’exemple du texte : 5 variables, y ne dépend vraiment que de x₁ (coefficient 3) et x₂ (coefficient −2), et x₃ est corrélée à x₁. À gauche : le « chemin » de chaque coefficient quand λ varie ; à droite : l’erreur sur de nouvelles données. Faites varier λ : Ridge rétrécit tous les coefficients ensemble, en douceur, sans presque jamais en annuler un ; Lasso ramène les coefficients inutiles à 0 l’un après l’autre. Si λ est trop grand, les deux écrasent aussi les coefficients utiles et l’erreur remonte.', lam: 'force de la pénalité', coef: 'coefficients', test: 'MSE sur nouvelles données', zero: 'coefficients exactement nuls', none: 'aucun', sep: ' : ' }
+  };
+  var W = 560, H = 290, D = 5, N = 100;
+  var o = FV.init('fv-regpath', T, W, H); if (!o) return;
+  var pen = 'l2';
+  FV.group(o, 'pen', function (v) { pen = v; });
+  function make(n) {
+    var X = [], y = [];
+    for (var i = 0; i < n; i++) {
+      var r = [FV.gauss(), FV.gauss(), 0, FV.gauss(), FV.gauss()]; r[2] = 0.7 * r[0] + 0.7 * FV.gauss();
+      X.push(r); y.push(3 * r[0] - 2 * r[1] + 1.5 * FV.gauss());
+    }
+    return { X: X, y: y };
+  }
+  var tr = make(N), te = make(400);
+  /* centre the training data so the (unpenalised) intercept drops out */
+  var mx = [], my = tr.y.reduce(function (a, b) { return a + b; }, 0) / N;
+  for (var j = 0; j < D; j++) mx.push(tr.X.reduce(function (a, r) { return a + r[j]; }, 0) / N);
+  var Xc = tr.X.map(function (r) { return r.map(function (v, j) { return v - mx[j]; }); }), yc = tr.y.map(function (v) { return v - my; });
+  var G = [], c0 = [];
+  for (j = 0; j < D; j++) {
+    G.push([]); c0.push(Xc.reduce(function (a, r, i) { return a + r[j] * yc[i]; }, 0) / N);
+    for (var k = 0; k < D; k++) G[j].push(Xc.reduce(function (a, r) { return a + r[j] * r[k]; }, 0) / N);
+  }
+  function solve(A, b) {
+    A = A.map(function (r) { return r.slice(); }); b = b.slice();
+    var n = b.length, i, jj, kk;
+    for (i = 0; i < n; i++) for (kk = i + 1; kk < n; kk++) { var f = A[kk][i] / A[i][i]; for (jj = i; jj < n; jj++) A[kk][jj] -= f * A[i][jj]; b[kk] -= f * b[i]; }
+    var w = new Array(n);
+    for (i = n - 1; i >= 0; i--) { var s = b[i]; for (jj = i + 1; jj < n; jj++) s -= A[i][jj] * w[jj]; w[i] = s / A[i][i]; }
+    return w;
+  }
+  /* minimise (1/2n)||y − Xw||² + λ·½||w||²  →  (XᵀX/n + λI) w = Xᵀy/n */
+  function ridge(l) { return solve(G.map(function (r, i) { return r.map(function (v, jj) { return v + (i === jj ? l : 0); }); }), c0); }
+  /* minimise (1/2n)||y − Xw||² + λ·||w||₁ by coordinate descent with soft-thresholding */
+  function lasso(l, w0) {
+    var w = w0 ? w0.slice() : new Array(D).fill(0);
+    for (var it = 0; it < 500; it++) {
+      var ch = 0;
+      for (var jj = 0; jj < D; jj++) {
+        var rho = c0[jj]; for (var kk = 0; kk < D; kk++) if (kk !== jj) rho -= G[jj][kk] * w[kk];
+        var nw = Math.sign(rho) * Math.max(0, Math.abs(rho) - l) / G[jj][jj];
+        ch = Math.max(ch, Math.abs(nw - w[jj])); w[jj] = nw;
+      }
+      if (ch < 1e-10) break;
+    }
+    return w;
+  }
+  function testMse(w) {
+    return te.X.reduce(function (a, r, i) { var p = my; for (var jj = 0; jj < D; jj++) p += w[jj] * (r[jj] - mx[jj]); return a + (te.y[i] - p) * (te.y[i] - p); }, 0) / te.X.length;
+  }
+  var grid = [], paths = { l1: [], l2: [] }, errs = { l1: [], l2: [] }, prev = null;
+  for (var g = 1.5; g >= -3 - 1e-9; g -= 0.025) grid.unshift(g);
+  for (var i = grid.length - 1; i >= 0; i--) { prev = lasso(Math.pow(10, grid[i]), prev); paths.l1[i] = prev; errs.l1[i] = testMse(prev); }
+  grid.forEach(function (gv, ii) { var w = ridge(Math.pow(10, gv)); paths.l2[ii] = w; errs.l2[ii] = testMse(w); });
+  function shift(m) { var X = m.X; m.X = function (v) { return X(v + 10); }; }
+  var names = ['x₁', 'x₂', 'x₃', 'x₄', 'x₅'];
+  o.draw = function (c) {
+    var ctx = o.ctx, lg = o.v('l'), l = Math.pow(10, lg), cols = [c.accent, c.warn, c.blue, c.pink, c.good];
+    var w = pen === 'l2' ? ridge(l) : lasso(l, null);
+    /* x is log10 λ, shifted by +10 inside the map so the axis helper does not draw a fake "zero" line at λ = 1 */
+    var m1 = FV.map(W, H, [7, 11.5], [-2.5, 3.5], { l: 34, r: 200, t: 22, b: 24 });
+    FV.axes(ctx, m1, c, { xt: [7, 8, 9, 10, 11], xf: function (v) { return '10^' + (v - 10); } });
+    shift(m1);
+    FV.label(ctx, o.t.coef, m1.p.l, 14, c.text);
+    for (var jj = 0; jj < D; jj++) {
+      ctx.save(); FV.clip(ctx, m1); ctx.beginPath(); ctx.strokeStyle = cols[jj]; ctx.lineWidth = 2;
+      paths[pen].forEach(function (p, ii) { var X = m1.X(grid[ii]), Y = m1.Y(p[jj]); ii ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+      ctx.stroke(); ctx.restore();
+      FV.dot(ctx, m1.X(lg), m1.Y(w[jj]), 4, cols[jj]);
+      FV.label(ctx, names[jj], m1.X(-3) + 4, m1.Y(paths[pen][0][jj]) + (jj === 2 ? 13 : -4), cols[jj]);
+    }
+    FV.line(ctx, m1.X(lg), m1.p.t, m1.X(lg), H - m1.p.b, c.text, 1, [3, 3]);
+    var E = errs[pen], emin = Math.min(Math.min.apply(null, errs.l1), Math.min.apply(null, errs.l2));
+    var m2 = FV.map(W, H, [7, 11.5], [0, Math.ceil(emin * 2.5)], { l: W - 170, r: 10, t: 22, b: 24 });
+    FV.axes(ctx, m2, c, { xt: [7, 9, 11], xf: function (v) { return '10^' + (v - 10); } });
+    shift(m2);
+    FV.label(ctx, o.t.test, m2.p.l, 14, c.text);
+    ctx.save(); FV.clip(ctx, m2); ctx.beginPath(); ctx.strokeStyle = c.accent2; ctx.lineWidth = 2;
+    E.forEach(function (e, ii) { var X = m2.X(grid[ii]), Y = m2.Y(e); ii ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+    ctx.stroke(); ctx.restore();
+    var cur = testMse(w);
+    FV.dot(ctx, m2.X(lg), Math.max(m2.p.t, m2.Y(cur)), 4.5, c.accent2);
+    var zs = []; w.forEach(function (v, jj) { if (v === 0) zs.push(names[jj]); });
+    o.out(w.map(function (v, jj) { return names[jj] + ' = ' + (v === 0 ? '<b>0</b>' : v.toFixed(2)); }).join('　') +
+      '<br>' + o.t.zero + o.t.sep + (zs.length ? zs.join(', ') : o.t.none) + '　' + o.t.test + ' = <b>' + cur.toFixed(2) + '</b>');
+  };
+  o.redraw();
+})();
+</script>
+</div>

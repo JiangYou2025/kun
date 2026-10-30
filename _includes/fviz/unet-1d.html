@@ -1,0 +1,79 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-unet" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="depth"></span> S<input type="range" data-k="S" min="1" max="4" step="1" value="3"></label>
+  <span><button data-k="s1" class="on">skip 1</button> <button data-k="s2" class="on">skip 2</button> <button data-k="s3" class="on">skip 3</button> <button data-k="s4" class="on">skip 4</button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🔻🔺 一维 U-Net：大局来自深处，细节来自跳跃连接', hint: '编码器把长度 96 的序列每级平均池化一半，到瓶颈只剩一条粗糙的“台阶”（橙）。解码器逐级上采样还原（青绿）；每个跳跃连接把该尺度在下采样时丢掉的细节（eₛ₋₁ − Up(eₛ)）送回解码器。逐个关掉 skip：关掉 skip 1，尖峰和细小波动消失；全部关掉，只剩瓶颈的大致趋势。（这里的“编码/解码”是最简单的平均池化与复制上采样，真实 U-Net 会在每级学习变换。）', depth: '深度', inp: '输入', bott: '瓶颈（上采样后）', rec: '解码输出', err: '还原误差 RMSE', len: '瓶颈长度' },
+    en: { title: '🔻🔺 A 1-D U-Net: the big picture comes from the depths, the details from skip connections', hint: 'The encoder halves the length-96 series at each level by average pooling; at the bottleneck only a coarse “staircase” is left (orange). The decoder upsamples level by level (teal); each skip connection hands back to the decoder the details that scale lost when it was downsampled (eₛ₋₁ − Up(eₛ)). Switch the skips off one by one: without skip 1 the spike and the small wiggles disappear; with all of them off, only the bottleneck’s rough trend is left. (Encoding and decoding here are just average pooling and copy-upsampling; a real U-Net learns a transform at each level.)', depth: 'depth', inp: 'input', bott: 'bottleneck (upsampled)', rec: 'decoder output', err: 'reconstruction RMSE', len: 'bottleneck length' },
+    fr: { title: '🔻🔺 Un U-Net 1D : la vue d’ensemble vient des profondeurs, les détails des connexions de saut', hint: 'L’encodeur divise par deux la longueur de la série (96) à chaque niveau par pooling moyen ; au goulot il ne reste qu’un « escalier » grossier (orange). Le décodeur suréchantillonne niveau par niveau (turquoise) ; chaque connexion de saut lui rend les détails perdus à cette échelle lors du sous-échantillonnage (eₛ₋₁ − Up(eₛ)). Coupez les « skip » un à un : sans skip 1, le pic et les petites oscillations disparaissent ; sans aucun saut, il ne reste que la tendance grossière du goulot. (Ici l’encodage et le décodage sont un simple pooling moyen et une recopie ; un vrai U-Net apprend une transformation à chaque niveau.)', depth: 'profondeur', inp: 'entrée', bott: 'goulot (suréchantillonné)', rec: 'sortie du décodeur', err: 'RMSE de reconstruction', len: 'longueur du goulot' }
+  };
+  var W = 560, H = 290, N = 96;
+  var o = FV.init('fv-unet', T, W, H); if (!o) return;
+  var sk = [true, true, true, true];
+  [1, 2, 3, 4].forEach(function (s) {
+    var b = o.q('s' + s);
+    b.addEventListener('click', function () { sk[s - 1] = !sk[s - 1]; b.classList.toggle('on', sk[s - 1]); o.redraw(); });
+  });
+  var sd = 5, rnd = function () { sd = (sd * 16807) % 2147483647; return sd / 2147483647; };
+  var x = [];
+  for (var t = 0; t < N; t++) x.push(0.025 * t + 1.5 * Math.sin(2 * Math.PI * t / 32) + 0.5 * Math.sin(2 * Math.PI * t / 6) + (t === 61 ? 2.5 : 0) + 0.3 * (rnd() - 0.5));
+  var down = function (a) { var r = []; for (var i = 0; i < a.length / 2; i++) r.push((a[2 * i] + a[2 * i + 1]) / 2); return r; };
+  var up = function (a) { var r = []; a.forEach(function (v) { r.push(v, v); }); return r; };
+  var full = function (a) { while (a.length < N) a = up(a); return a; };
+  var m = FV.map(410, H, [-0.5, N - 0.5], [-2.5, 6], { l: 30, r: 8, t: 12, b: 24 });
+  o.draw = function (c) {
+    var ctx = o.ctx, S = o.v('S'), e = [x], i;
+    [1, 2, 3, 4].forEach(function (k) { var b = o.q('s' + k); b.disabled = k > S; b.style.opacity = k > S ? 0.35 : 1; });
+    for (var s = 1; s <= S; s++) e.push(down(e[s - 1]));
+    var r = e[S];
+    for (s = S; s >= 1; s--) {
+      var u = up(r);
+      if (sk[s - 1]) { var lo = up(e[s]); u = u.map(function (v, k) { return v + (e[s - 1][k] - lo[k]); }); }
+      r = u;
+    }
+    var bott = full(e[S]), se = 0;
+    for (i = 0; i < N; i++) se += (r[i] - x[i]) * (r[i] - x[i]);
+    FV.axes(ctx, m, c, { xt: [0, 24, 48, 72, 95], yt: [-2, 0, 2, 4, 6] });
+    var poly = function (a, col, w, step, dash) {
+      ctx.save(); ctx.beginPath(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash(dash || []);
+      a.forEach(function (v, k) {
+        if (step) { if (k) ctx.lineTo(m.X(k - 0.5), m.Y(v)); else ctx.moveTo(m.X(-0.5), m.Y(v)); ctx.lineTo(m.X(k + 0.5), m.Y(v)); }
+        else if (k) ctx.lineTo(m.X(k), m.Y(v)); else ctx.moveTo(m.X(k), m.Y(v));
+      });
+      ctx.stroke(); ctx.restore();
+    };
+    poly(x, c.muted, 1.5, false, [3, 3]);
+    poly(bott, c.warn, 2, true);
+    poly(r, c.accent, 2.2, true);
+    FV.legend(ctx, m, [[o.t.inp, c.muted], [o.t.bott, c.warn], [o.t.rec, c.accent]], c);
+    /* schematic of the U on the right */
+    var X0 = 425, X1 = W - 8, cx = (X0 + X1) / 2, lh = 46, y0 = 30;
+    for (s = 0; s <= S; s++) {
+      var len = N >> s, bw = 6 + 30 * len / N, Y = y0 + s * lh;
+      ctx.fillStyle = s === S ? c.warn : c.accent2;
+      ctx.globalAlpha = 0.85;
+      ctx.fillRect(X0 + 4 + s * 7, Y, bw * 0.55, 18);
+      if (s < S) { ctx.fillStyle = c.accent; ctx.fillRect(X1 - 4 - s * 7 - bw * 0.55, Y, bw * 0.55, 18); }
+      ctx.globalAlpha = 1;
+      FV.label(ctx, String(len), s === S ? cx : X0 + 4 + s * 7 + bw * 0.55 + 4, Y + 13, c.muted, s === S ? 'center' : 'left', '10px system-ui,sans-serif');
+      if (s < S) {
+        var on = sk[s];
+        FV.line(ctx, X0 + 4 + s * 7 + bw * 0.55 + 22, Y + 9, X1 - 6 - s * 7 - bw * 0.55, Y + 9, on ? c.good : c.border, on ? 2 : 1, on ? [] : [3, 3]);
+        FV.arrow(ctx, X0 + 10 + s * 7, Y + 20, X0 + 10 + (s + 1) * 7, Y + lh - 2, c.muted, 1.2);
+        FV.arrow(ctx, X1 - 10 - (s + 1) * 7, Y + lh - 2, X1 - 10 - s * 7, Y + 20, c.muted, 1.2);
+      }
+    }
+    o.out(o.t.err + ' = <b>' + FV.fmt(Math.sqrt(se / N), 3) + '</b>　' + o.t.len + ' = ' + (N >> S) + '　skip ' + sk.slice(0, S).map(function (b, k) { return (k + 1) + (b ? '✓' : '✗'); }).join(' '));
+  };
+  o.redraw();
+})();
+</script>
+</div>

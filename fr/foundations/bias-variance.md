@@ -41,6 +41,8 @@ Explication terme par terme :
 
 Seuls les deux premiers termes sont sous notre contrôle ; l'objectif est de minimiser la somme **biais$^2$ + variance** — et non de réduire à l'extrême l'un des deux isolément.
 
+{% include fviz/bias-variance.html %}
+
 ## Un exemple concret
 
 Ajustons une courbe bruitée avec des polynômes pour voir comment la complexité influence les deux termes :

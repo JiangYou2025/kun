@@ -19,6 +19,8 @@ math: true
 - **变换的复合**：如果 $B$ 是"先做一个变换"、$A$ 是"再做一个变换"，那么 $AB$ 就是"一口气完成这两个变换"的单个矩阵。先 $B$ 后 $A$，顺序不能反——这就是它**不可交换**的根源。
 - **行点积列**：结果矩阵第 $i$ 行第 $j$ 列的元素，是 $A$ 的第 $i$ **行**和 $B$ 的第 $j$ **列**做点积。"行碰列"是手算的口诀。
 
+{% include fviz/matmul-compose.html %}
+
 ## 数学表达
 
 设 $A\in\mathbb{R}^{m\times k}$，$B\in\mathbb{R}^{k\times n}$，则积 $C=AB\in\mathbb{R}^{m\times n}$：

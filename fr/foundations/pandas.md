@@ -68,6 +68,8 @@ print(a + b)
 # 2026-01-03    23.0   ← 3 + 20
 ```
 
+{% include fviz/resample.html %}
+
 ## Intérêt pour la prévision de séries temporelles
 
 Les données fournies à **KUN / Kernel U-Net** passent presque toutes d'abord par Pandas :

@@ -19,6 +19,8 @@ On peut comprendre $C=AB$ de deux manières :
 - **Composition de transformations** : si $B$ signifie « appliquer d'abord une transformation » et $A$ « en appliquer ensuite une autre », alors $AB$ est la matrice unique qui « réalise les deux d'un seul coup ». D'abord $B$, puis $A$ — l'ordre ne peut pas être inversé : c'est là l'origine de sa **non-commutativité**.
 - **Ligne fois colonne** : l'élément en ligne $i$, colonne $j$ du résultat est le produit scalaire de la **ligne** $i$ de $A$ et de la **colonne** $j$ de $B$. « Ligne contre colonne » : c'est le moyen mnémotechnique du calcul à la main.
 
+{% include fviz/matmul-compose.html %}
+
 ## Formulation mathématique
 
 Soit $A\in\mathbb{R}^{m\times k}$ et $B\in\mathbb{R}^{k\times n}$ ; le produit $C=AB\in\mathbb{R}^{m\times n}$ vaut :

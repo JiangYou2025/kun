@@ -22,6 +22,8 @@ Imagine a gear train: gear A drives gear B, and gear B drives gear C.
 
 Ratios (rates of change) propagate by **multiplication**. That is exactly what the chain rule says: when $x$ affects $u$ and $u$ in turn affects $y$, the total effect of $x$ on $y$ is the product of the two effects.
 
+{% include fviz/chain-rule.html %}
+
 ## Mathematical formulation
 
 Let $y=f(u)$ and $u=g(x)$, i.e. $y=f(g(x))$. Then

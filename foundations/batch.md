@@ -34,6 +34,8 @@ batch size 的影响：
 - **越大**：梯度估计越平滑稳定，越能吃满 GPU 并行，但占内存更多，且有时[泛化](../generalization/)略差。
 - **越小**：更新更频繁、内存占用小，但梯度噪声大、训练抖动。
 
+{% include fviz/batch-size.html %}
+
 ## 一个例子
 
 PyTorch 用 `DataLoader` 自动把数据切成批：

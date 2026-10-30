@@ -29,6 +29,8 @@ Unsupervised learning covers a few typical tasks:
 - **Anomaly detection**: find "outliers" that differ markedly from most samples, such as credit-card fraud or equipment failures.
 - **Density estimation**: estimate how the data is distributed in space, to understand "where data usually appears".
 
+{% include fviz/kmeans.html %}
+
 ## How it works (mathematical intuition)
 
 The [optimization](../optimization/) objectives behind the different tasks differ, but all of them revolve around "measuring similarity / information":

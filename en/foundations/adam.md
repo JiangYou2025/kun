@@ -60,6 +60,8 @@ Symbol by symbol:
 
 Intuition: $\dfrac{\hat m_t}{\sqrt{\hat v_t}}$ **automatically normalizes** each parameter's effective step size — in directions where the gradient has been large for a long time, the denominator is large and the step is shrunk; and vice versa.
 
+{% include fviz/optimizer.html %}
+
 ## A concrete example
 
 For a single parameter, first step: $g_1 = 0.1$, $\beta_1=0.9,\beta_2=0.999,\eta=0.001,\epsilon=10^{-8}$.

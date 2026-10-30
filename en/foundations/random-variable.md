@@ -47,6 +47,8 @@ $$
 
 Relationships between several random variables are described by their **joint distribution** and their **covariance** $\operatorname{Cov}(X,Y)$.
 
+{% include fviz/distributions.html %}
+
 ## A concrete example
 
 A Bernoulli random variable: a single toss with probability of heads $p=0.3$; let $X=1$ for heads and $X=0$ for tails.

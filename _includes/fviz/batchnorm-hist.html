@@ -1,0 +1,61 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-bn" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="mu"></span><input type="range" data-k="mu" min="-6" max="6" step="0.1" value="3"></label>
+  <label><span data-t="sd"></span><input type="range" data-k="sd" min="0.3" max="3" step="0.05" value="2"></label>
+  <label>γ<input type="range" data-k="g" min="0.2" max="2" step="0.05" value="1"></label>
+  <label>β<input type="range" data-k="b" min="-2" max="2" step="0.05" value="0"></label>
+  <button data-k="again" data-t="again"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '⚖️ BatchNorm：不管输入怎么漂，输出分布都由 γ、β 说了算', hint: '左边是一个 mini-batch（256 个样本）在某一维上的激活值，右边是经过 BN 之后的结果。拖动“输入均值 / 输入尺度”模拟上一层分布的漂移：左图到处跑，右图却纹丝不动——它只听 γ（宽度）和 β（中心）的。', mu: '输入均值', sd: '输入尺度', again: '换一个 batch', before: '归一化前 x', after: 'BN 之后 y = γx̂ + β', bm: '批均值 μ_B', bs: '批标准差 σ_B', am: '输出均值', as: '输出标准差' },
+    en: { title: '⚖️ BatchNorm: however the input drifts, γ and β decide the output distribution', hint: 'Left: the activations of one feature over a mini-batch of 256 samples. Right: the same values after BN. Drag “input mean / input scale” to mimic the previous layer drifting: the left histogram wanders around while the right one stays put — it only listens to γ (width) and β (centre).', mu: 'input mean', sd: 'input scale', again: 'new batch', before: 'before normalisation x', after: 'after BN y = γx̂ + β', bm: 'batch mean μ_B', bs: 'batch std σ_B', am: 'output mean', as: 'output std' },
+    fr: { title: '⚖️ BatchNorm : quelle que soit la dérive de l’entrée, γ et β fixent la distribution de sortie', hint: 'À gauche : les activations d’une caractéristique sur un mini-lot de 256 exemples. À droite : les mêmes valeurs après BN. Faites varier « moyenne / échelle d’entrée » pour simuler une dérive de la couche précédente : l’histogramme de gauche se promène, celui de droite ne bouge pas — il n’obéit qu’à γ (largeur) et β (centre).', mu: 'moyenne d’entrée', sd: 'échelle d’entrée', again: 'nouveau lot', before: 'avant normalisation x', after: 'après BN y = γx̂ + β', bm: 'moyenne du lot μ_B', bs: 'écart-type du lot σ_B', am: 'moyenne de sortie', as: 'écart-type de sortie' }
+  };
+  var W = 560, H = 270, M = 256, z = [];
+  var o = FV.init('fv-bn', T, W, H); if (!o) return;
+  /* skewed standard noise (shifted exponential mix), so the shape is visibly preserved by BN */
+  function sample() { z = []; for (var i = 0; i < M; i++) z.push(0.6 * FV.gauss() + (Math.random() < 0.35 ? 1.2 + 0.5 * FV.gauss() : 0)); }
+  o.q('again').addEventListener('click', function () { sample(); o.redraw(); });
+  function stats(a) { var s = 0, q = 0; a.forEach(function (v) { s += v; }); s /= a.length; a.forEach(function (v) { q += (v - s) * (v - s); }); return [s, q / a.length]; }
+  function bins(a, lo, hi, nb) {
+    var w = (hi - lo) / nb, cnt = [];
+    for (var i = 0; i < nb; i++) cnt.push(0);
+    a.forEach(function (v) { var k = Math.floor((v - lo) / w); if (k >= 0 && k < nb) cnt[k]++; });
+    return { cnt: cnt, w: w, lo: lo, top: Math.max.apply(null, cnt) / M / w };
+  }
+  function hist(ctx, m, h, col) {
+    ctx.save(); ctx.fillStyle = col; ctx.globalAlpha = 0.75;
+    h.cnt.forEach(function (n, i) { var X0 = m.X(h.lo + i * h.w), X1 = m.X(h.lo + (i + 1) * h.w), Y = m.Y(n / M / h.w); ctx.fillRect(X0 + 0.5, Y, X1 - X0 - 1, m.Y(0) - Y); });
+    ctx.restore();
+  }
+  var r2 = function (v) { return FV.fmt(Math.abs(v) < 5e-3 ? 0 : v, 2); };
+  o.draw = function (c) {
+    var ctx = o.ctx, mu = o.v('mu'), sd = o.v('sd'), g = o.v('g'), b = o.v('b'), half = W / 2;
+    var x = z.map(function (v) { return mu + sd * v; }), st = stats(x), den = Math.sqrt(st[1] + 1e-5);
+    var y = x.map(function (v) { return g * (v - st[0]) / den + b; }), sy = stats(y);
+    var p = { l: 30, r: 12, t: 22, b: 26 };
+    var h1 = bins(x, -10, 10, 40), m1 = FV.map(half, H, [-10, 10], [0, h1.top * 1.12], p);
+    FV.axes(ctx, m1, c, { xt: [-10, -5, 0, 5, 10], yt: [] });
+    hist(ctx, m1, h1, c.warn);
+    FV.line(ctx, m1.X(st[0]), p.t, m1.X(st[0]), H - p.b, c.text, 1.5, [4, 3]);
+    FV.label(ctx, o.t.before, p.l, 14, c.text);
+    ctx.save(); ctx.translate(half, 0);
+    var h2 = bins(y, -5, 5, 40), m2 = FV.map(half, H, [-5, 5], [0, h2.top * 1.12], p);
+    FV.axes(ctx, m2, c, { xt: [-4, -2, 0, 2, 4], yt: [] });
+    hist(ctx, m2, h2, c.accent);
+    FV.line(ctx, m2.X(sy[0]), p.t, m2.X(sy[0]), H - p.b, c.text, 1.5, [4, 3]);
+    FV.label(ctx, o.t.after, p.l, 14, c.text);
+    ctx.restore();
+    o.out(o.t.bm + ' = ' + r2(st[0]) + '　' + o.t.bs + ' = ' + r2(Math.sqrt(st[1])) + '　→　' + o.t.am + ' = <b>' + r2(sy[0]) + '</b>　' + o.t.as + ' = <b>' + r2(Math.sqrt(sy[1])) + '</b>');
+  };
+  sample(); o.redraw();
+})();
+</script>
+</div>

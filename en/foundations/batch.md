@@ -34,6 +34,8 @@ Effects of the batch size:
 - **Larger**: smoother, more stable gradient estimates and better use of GPU parallelism, but more memory, and sometimes slightly worse [generalization](../generalization/).
 - **Smaller**: more frequent updates and less memory, but noisy gradients and jittery training.
 
+{% include fviz/batch-size.html %}
+
 ## An example
 
 PyTorch uses a `DataLoader` to split data into batches automatically:

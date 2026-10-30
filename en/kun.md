@@ -64,16 +64,16 @@ In 2026, the field's hottest directions can be grouped into six frontier problem
 
 ## Answering these questions with Kernel U-Net
 
-Faced with these challenges, the exploration this site offers is **KUN (Kernel U-Net)**. KUN splits a model into two parts: a fixed **U-shaped skeleton**, and an **interchangeable kernel** at every level. So responding to a new problem rarely means redesigning the model; it usually takes a change in just one place: **swap a kernel**, **add a component to the skeleton**, or **change the output head**. The table below gives the entry point for each of the six problems. Most of them are explorations still in progress, not finished answers:
+Faced with these challenges, the exploration this site offers is **KUN (Kernel U-Net)**. KUN splits a model into two parts: a fixed **U-shaped skeleton**, and an **interchangeable kernel** at every level. So responding to a new problem rarely means redesigning the model; it usually takes a change in just one place: **swap a kernel**, **add a component to the skeleton**, or **change the output head**. The table below gives the entry point for each of the six problems: directions with published work list the paper in the right-hand column, and those marked "(in development)" are still in progress.
 
 | Frontier problem | What changes | KUN's approach |
 |------------------|--------------|----------------|
-| Foundation models | Swap the kernel | Use MoE (mixture-of-experts) kernels and more levels, and see whether data from more domains can be trained into a single base model |
-| Very long sequences | Add a component | Add a memory layer to the U-shaped skeleton to remember a longer history; level-by-level downsampling also shortens the sequence at deep levels, so they can afford heavier kernels |
-| Uncertainty quantification | Change the output head | Point forecasts by default; quantile regression or conformal prediction can be attached to the output to give prediction intervals |
-| Anomaly prediction | Change the output head | Replace "predict future values" with "predict the future distribution (density)", and raise an early warning when actual observations fall into low-density regions |
-| Spatio-temporal forecasting | Change the skeleton | Apply the hierarchy along the spatial axes as well, so the level-by-level downsampling / upsampling covers both time and space |
-| Generalization | Swap the kernel | Adaptive forecasting: choose or adapt each level's kernel according to the characteristics of the data, to transfer to unseen domains and distributions |
+| Foundation models (in development) | Swap the kernel | Use MoE (mixture-of-experts) kernels and more levels, and see whether data from more domains can be trained into a single base model |
+| Very long sequences (in development) | Add a component | Add a memory layer to the U-shaped skeleton to remember a longer history; level-by-level downsampling also shortens the sequence at deep levels, so they can afford heavier kernels |
+| Uncertainty quantification (in development) | Change the output head | Point forecasts by default; quantile regression or conformal prediction can be attached to the output to give prediction intervals |
+| Anomaly prediction | Change the output head | Replace "predict future values" with "predict the future distribution (density)", and raise an early warning when actual observations fall into low-density regions<br>📄 [Anomaly Prediction: A Novel Approach with Explicit Delay and Horizon (ICCP 2024)](https://arxiv.org/abs/2408.04377) |
+| Spatio-temporal forecasting | Change the skeleton | Apply the hierarchy along the spatial axes as well, so the level-by-level downsampling / upsampling covers both time and space<br>📄 [Enhancing Spatio-Temporal Forecasting with Spatial Neighbourhood Fusion: A Case Study on Mobility in Peru (ICASSP 2026)](https://arxiv.org/abs/2507.00031) |
+| Generalization | Swap the kernel | Adaptive forecasting: choose or adapt each level's kernel according to the characteristics of the data, to transfer to unseen domains and distributions<br>📄 [Dynamic Perturbed Adaptive Method for Infinite Task-Conflicting Time Series (arXiv 2025)](https://arxiv.org/abs/2505.11902) |
 
 The core intuition: **write the skeleton once, and realise new ideas by swapping kernels and adding components.** These frontier questions therefore do not require a giant model; ordinary compute is enough to get started. Each new direction means writing one new kernel or module and plugging it into the same lightweight skeleton.
 

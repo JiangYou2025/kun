@@ -1,0 +1,131 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-families" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="mdl"><button data-v="lin" class="on" data-t="lin"></button><button data-v="tree" data-t="tree"></button><button data-v="svm" data-t="svm"></button><button data-v="knn" data-t="knn"></button><button data-v="mlp" data-t="mlp"></button></span>
+  <button data-k="new" data-t="new"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🗺️ 同一份数据，五种“世界观”', hint: '同一份两类数据（蓝 / 橙），分别交给五族模型训练，底色是各自画出的决策区域。切换模型，对比边界的形状：直线、台阶、平滑曲线、贴着数据的锯齿、自由曲线。下方是训练集和新数据上的准确率。', lin: '线性（逻辑回归）', tree: '决策树（深度 4）', svm: 'SVM（RBF 核）', knn: 'kNN（k = 5）', mlp: '神经网络（16 个隐藏单元）', new: '换一批数据', train: '训练准确率', test: '新数据准确率', sv: '支持向量数', d_lin: '一条直线：表达力有限，月牙形状只能粗略切开', d_tree: '横平竖直的台阶：每次只按一个特征切一刀', d_svm: '平滑曲线，并尽量远离两类点（带圈的是支持向量）', d_knn: '边界紧贴数据、局部弯曲：完全由最近的邻居决定', d_mlp: '自由的平滑曲线：层层非线性组合出任意形状' },
+    en: { title: '🗺️ Same data, five “world views”', hint: 'The same two-class data (blue / orange) is given to five model families; the background shows the decision regions each one draws. Switch models and compare the shapes of the boundaries: a straight line, axis-aligned steps, a smooth curve, a jagged line hugging the data, a free-form curve. Below: accuracy on the training set and on fresh data.', lin: 'linear (logistic regression)', tree: 'decision tree (depth 4)', svm: 'SVM (RBF kernel)', knn: 'kNN (k = 5)', mlp: 'neural network (16 hidden units)', new: 'new data', train: 'training accuracy', test: 'accuracy on fresh data', sv: 'support vectors', d_lin: 'a straight line: limited expressiveness, it can only roughly cut the two moons apart', d_tree: 'axis-aligned steps: each cut uses a single feature', d_svm: 'a smooth curve that keeps as far as possible from both classes (circled: support vectors)', d_knn: 'a boundary that hugs the data and bends locally: decided entirely by the nearest neighbours', d_mlp: 'a free-form smooth curve: stacked non-linearities can build any shape' },
+    fr: { title: '🗺️ Mêmes données, cinq « visions du monde »', hint: 'Les mêmes données à deux classes (bleu / orange) sont confiées à cinq familles de modèles ; le fond montre les régions de décision que chacune dessine. Changez de modèle et comparez la forme des frontières : une droite, des marches parallèles aux axes, une courbe lisse, une ligne en dents de scie collée aux données, une courbe libre. En dessous : l’exactitude sur l’entraînement et sur de nouvelles données.', lin: 'linéaire (régression logistique)', tree: 'arbre de décision (profondeur 4)', svm: 'SVM (noyau RBF)', knn: 'kNN (k = 5)', mlp: 'réseau de neurones (16 unités cachées)', new: 'nouvelles données', train: 'exactitude d’entraînement', test: 'exactitude sur nouvelles données', sv: 'vecteurs de support', d_lin: 'une droite : expressivité limitée, elle ne sépare les deux croissants que grossièrement', d_tree: 'des marches parallèles aux axes : chaque coupe n’utilise qu’une variable', d_svm: 'une courbe lisse qui reste aussi loin que possible des deux classes (cerclés : vecteurs de support)', d_knn: 'une frontière collée aux données qui ondule localement : entièrement décidée par les plus proches voisins', d_mlp: 'une courbe lisse et libre : l’empilement de non-linéarités peut construire n’importe quelle forme' }
+  };
+  var W = 560, H = 300;
+  var o = FV.init('fv-families', T, W, H); if (!o) return;
+  var m = FV.map(W, H, [-3.6, 3.6], [-1.93, 1.93], { l: 4, r: 4, t: 4, b: 4 });
+  var mdl = 'lin', P, Q, models = {};
+  FV.group(o, 'mdl', function (v) { mdl = v; });
+  function sample(n) {
+    var out = [];
+    for (var i = 0; i < n; i++) {
+      var y = i % 2, a = Math.PI * Math.random();
+      var x0 = y ? 1 - 2 * Math.cos(a) : -1 + 2 * Math.cos(a), x1 = y ? 0.6 - 1.3 * Math.sin(a) : -0.6 + 1.3 * Math.sin(a);
+      out.push([x0 + 0.35 * FV.gauss(), x1 + 0.35 * FV.gauss(), y]);
+    }
+    return out;
+  }
+  /* each trainer returns a function (x, y) → probability-like score; class 1 when > 0.5 */
+  function logistic() {
+    var w = [0, 0, 0], n = P.length;
+    for (var it = 0; it < 3000; it++) {
+      var g = [0, 0, 0];
+      P.forEach(function (p) { var z = w[0] * p[0] + w[1] * p[1] + w[2], e = 1 / (1 + Math.exp(-z)) - p[2]; g[0] += e * p[0]; g[1] += e * p[1]; g[2] += e; });
+      for (var k = 0; k < 3; k++) w[k] -= 0.5 * g[k] / n;
+    }
+    return function (x, y) { return 1 / (1 + Math.exp(-(w[0] * x + w[1] * y + w[2]))); };
+  }
+  function tree() {
+    function gini(a, n) { if (!n) return 0; var p = a / n; return 1 - p * p - (1 - p) * (1 - p); }
+    function build(idx, d) {
+      var n1 = 0; idx.forEach(function (i) { n1 += P[i][2]; });
+      var nd = { v: n1 / idx.length };
+      if (d === 4 || n1 === 0 || n1 === idx.length) return nd;
+      var best = null, bs = gini(n1, idx.length) * idx.length - 1e-9;
+      [0, 1].forEach(function (f) {
+        var s = idx.slice().sort(function (a, b) { return P[a][f] - P[b][f]; }), l1 = 0;
+        for (var j = 0; j < s.length - 1; j++) {
+          l1 += P[s[j]][2]; if (P[s[j]][f] === P[s[j + 1]][f]) continue;
+          var nl = j + 1, nr = s.length - nl, sc = gini(l1, nl) * nl + gini(n1 - l1, nr) * nr;
+          if (sc < bs) { bs = sc; best = [f, (P[s[j]][f] + P[s[j + 1]][f]) / 2]; }
+        }
+      });
+      if (!best) return nd;
+      nd.f = best[0]; nd.t = best[1];
+      nd.L = build(idx.filter(function (i) { return P[i][nd.f] <= nd.t; }), d + 1);
+      nd.R = build(idx.filter(function (i) { return P[i][nd.f] > nd.t; }), d + 1);
+      return nd;
+    }
+    var root = build(P.map(function (_, i) { return i; }), 0);
+    return function (x, y) { var nd = root; while (nd.L) nd = (nd.f ? y : x) <= nd.t ? nd.L : nd.R; return nd.v; };
+  }
+  function svm() {
+    /* soft-margin kernel SVM solved in the dual by coordinate ascent; the "+1" in the kernel absorbs the bias */
+    var n = P.length, C = 5, gam = 1, al = new Array(n).fill(0), Y = P.map(function (p) { return p[2] ? 1 : -1; });
+    var K = P.map(function (a) { return P.map(function (b) { var dx = a[0] - b[0], dy = a[1] - b[1]; return Math.exp(-gam * (dx * dx + dy * dy)) + 1; }); });
+    var f = new Array(n).fill(0);
+    for (var ep = 0; ep < 300; ep++) for (var i = 0; i < n; i++) {
+      var G = Y[i] * f[i] - 1, na = Math.max(0, Math.min(C, al[i] - G / K[i][i])), d = na - al[i];
+      if (d !== 0) { for (var j = 0; j < n; j++) f[j] += d * Y[i] * K[i][j]; al[i] = na; }
+    }
+    var sv = []; al.forEach(function (a, i) { if (a > 1e-6) sv.push(i); });
+    var fn = function (x, y) {
+      var s = 0; sv.forEach(function (i) { var dx = P[i][0] - x, dy = P[i][1] - y; s += al[i] * Y[i] * (Math.exp(-gam * (dx * dx + dy * dy)) + 1); });
+      return s > 0 ? 1 : 0;
+    };
+    fn.sv = sv.filter(function (i) { return Y[i] * f[i] < 1 + 1e-3; });
+    return fn;
+  }
+  function knn() {
+    return function (x, y) {
+      var d = P.map(function (p) { return [(p[0] - x) * (p[0] - x) + (p[1] - y) * (p[1] - y), p[2]]; }).sort(function (a, b) { return a[0] - b[0]; });
+      return (d[0][1] + d[1][1] + d[2][1] + d[3][1] + d[4][1]) / 5;
+    };
+  }
+  function mlp() {
+    var Hn = 16, W1 = [], b1 = [], W2 = [], b2 = 0, prm = [], i, k;
+    for (i = 0; i < Hn; i++) { W1.push([FV.gauss(), FV.gauss()]); b1.push(0.5 * FV.gauss()); W2.push(0.5 * FV.gauss()); }
+    var mo = {}, ve = {}, t = 0;
+    function adam(key, g) { mo[key] = 0.9 * (mo[key] || 0) + 0.1 * g; ve[key] = 0.999 * (ve[key] || 0) + 0.001 * g * g; return 0.03 * (mo[key] / (1 - Math.pow(0.9, t))) / (Math.sqrt(ve[key] / (1 - Math.pow(0.999, t))) + 1e-8); }
+    for (var it = 0; it < 1500; it++) {
+      t++;
+      var gW1 = W1.map(function () { return [0, 0]; }), gb1 = new Array(Hn).fill(0), gW2 = new Array(Hn).fill(0), gb2 = 0;
+      P.forEach(function (p) {
+        var h = [], z = b2;
+        for (k = 0; k < Hn; k++) { h.push(Math.tanh(W1[k][0] * p[0] + W1[k][1] * p[1] + b1[k])); z += W2[k] * h[k]; }
+        var e = (1 / (1 + Math.exp(-z)) - p[2]) / P.length;
+        gb2 += e;
+        for (k = 0; k < Hn; k++) { gW2[k] += e * h[k]; var dh = e * W2[k] * (1 - h[k] * h[k]); gW1[k][0] += dh * p[0]; gW1[k][1] += dh * p[1]; gb1[k] += dh; }
+      });
+      for (k = 0; k < Hn; k++) { W2[k] -= adam('w2' + k, gW2[k]); b1[k] -= adam('b1' + k, gb1[k]); W1[k][0] -= adam('a' + k, gW1[k][0]); W1[k][1] -= adam('b' + k, gW1[k][1]); }
+      b2 -= adam('b2', gb2);
+    }
+    return function (x, y) { var z = b2; for (var k = 0; k < Hn; k++) z += W2[k] * Math.tanh(W1[k][0] * x + W1[k][1] * y + b1[k]); return 1 / (1 + Math.exp(-z)); };
+  }
+  var trainers = { lin: logistic, tree: tree, svm: svm, knn: knn, mlp: mlp };
+  function data() { P = sample(100); Q = sample(600); models = {}; }
+  o.q('new').addEventListener('click', function () { data(); o.redraw(); });
+  o.draw = function (c) {
+    var ctx = o.ctx, f = models[mdl] || (models[mdl] = trainers[mdl]()), S = 7, cols = [c.blue, c.warn];
+    for (var X = 0; X < W; X += S) for (var Y = 0; Y < H; Y += S) {
+      var x = m.xr[0] + (X + S / 2 - m.p.l) / (W - m.p.l - m.p.r) * (m.xr[1] - m.xr[0]);
+      var y = m.yr[0] + (H - m.p.b - Y - S / 2) / (H - m.p.t - m.p.b) * (m.yr[1] - m.yr[0]);
+      ctx.fillStyle = cols[f(x, y) > 0.5 ? 1 : 0]; ctx.globalAlpha = 0.18; ctx.fillRect(X, Y, S, S);
+    }
+    ctx.globalAlpha = 1;
+    P.forEach(function (p) { FV.dot(ctx, m.X(p[0]), m.Y(p[1]), 4, cols[p[2]]); });
+    if (f.sv) f.sv.forEach(function (i) { FV.dot(ctx, m.X(P[i][0]), m.Y(P[i][1]), 7.5, c.text, true); });
+    var tr = 0, te = 0;
+    P.forEach(function (p) { tr += (f(p[0], p[1]) > 0.5 ? 1 : 0) === p[2] ? 1 : 0; });
+    Q.forEach(function (p) { te += (f(p[0], p[1]) > 0.5 ? 1 : 0) === p[2] ? 1 : 0; });
+    o.out(o.t['d_' + mdl] + '<br>' + o.t.train + ' = ' + (100 * tr / P.length).toFixed(0) + '%　' + o.t.test + ' = <b>' + (100 * te / Q.length).toFixed(1) + '%</b>' +
+      (f.sv ? '　' + o.t.sv + ' = ' + f.sv.length : ''));
+  };
+  data(); o.redraw();
+})();
+</script>
+</div>

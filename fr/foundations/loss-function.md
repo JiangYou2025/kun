@@ -58,6 +58,8 @@ $$\ell_\delta(y,\hat y)=\begin{cases}\frac12 (y-\hat y)^2 & |y-\hat y|\le \delta
 
 $\delta$ est le point de bascule : en deçà de $\delta$, l'erreur est élevée au carré (sensible et lisse) ; au-delà, elle devient linéaire (pour ne pas être emportée par les valeurs aberrantes).
 
+{% include fviz/loss-outlier.html %}
+
 ## Pertes de classification : prédire une classe
 
 Lorsque la tâche est une classification (chat ou chien, courriel indésirable ou non), le modèle produit généralement une **probabilité** $\hat p$. On utilise alors le plus souvent l'**[entropie croisée](../cross-entropy/) (cross-entropy)**.

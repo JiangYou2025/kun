@@ -40,6 +40,8 @@ $$
 - $\eta=1.0$：因子 $-1$，在 $+1,-1$ 之间**永远震荡**。
 - $\eta=1.5$：因子 $-2$，$|\theta|$ 越来越大，**发散**！
 
+{% include fviz/optimizer.html %}
+
 ## 学习率调度（schedule）
 
 固定学习率往往不是最优。常见做法是**先大后小**：
@@ -60,6 +62,8 @@ for epoch in range(100):
     sched.step()                 # 每个 epoch 更新一次学习率
     print(sched.get_last_lr())
 ```
+
+{% include fviz/lr-schedule.html %}
 
 ## 怎么选学习率
 

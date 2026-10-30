@@ -18,6 +18,8 @@ For a function of one variable, the "derivative" is a single number (the slope).
 
 Imagine standing on a mountain. The gradient is like an arrow: it **points up the steepest slope**, and **the longer the arrow, the steeper the slope**. To go downhill, walk in the opposite direction of the arrow. Once you stand at the bottom of a valley (a minimum), nothing rises in any direction and the arrow shrinks to length 0 — this is what "the gradient is zero" means.
 
+{% include fviz/gradient-field.html %}
+
 ## Mathematical formulation
 
 For $f(x_1,x_2,\dots,x_n)$, the gradient is the vector formed by its **partial derivatives**:

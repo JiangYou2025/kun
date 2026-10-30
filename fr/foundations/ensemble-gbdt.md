@@ -60,6 +60,8 @@ Quelques hyperparamètres clés de la formule :
 
 Notez que $\eta$ et $M$ forment un couple qui se compense : **petit $\eta$ + grand $M$** donne souvent les meilleurs résultats, au prix d'un entraînement plus lent.
 
+{% include fviz/gbdt-boost.html %}
+
 ## Implémentations et régularisation
 
 Écrire un GBDT à la main est lent ; en pratique, on utilise presque toujours l'une de ces trois bibliothèques hautement optimisées :

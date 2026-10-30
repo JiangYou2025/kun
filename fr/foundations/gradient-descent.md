@@ -22,6 +22,8 @@ Imaginez-vous sur le flanc d'une montagne, dans un épais brouillard : vous ne v
 
 La longueur du pas est le **[taux d'apprentissage](../learning-rate/)**. Des pas trop petits rendent la descente désespérément lente ; des pas trop grands risquent d'enjamber le fond de la vallée, de faire des allers-retours d'un versant à l'autre, voire de remonter de plus en plus haut.
 
+{% include fviz/optimizer.html %}
+
 ## Formulation mathématique
 
 La règle de mise à jour :

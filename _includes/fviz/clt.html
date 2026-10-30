@@ -1,0 +1,55 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-clt" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="src"><button data-v="die" class="on" data-t="die"></button><button data-v="exp" data-t="exp"></button></span>
+  <label><span data-t="n"></span><input type="range" data-k="n" min="1" max="50" step="1" value="1"></label>
+  <button data-k="again" data-t="again"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🎲 中心极限定理：平均值为什么总是正态的', hint: '每次抽 n 个样本取平均，重复 4000 次，画出“平均值”的直方图。不管原始分布长什么样（均匀的骰子、严重偏斜的指数分布），n 一大，平均值的分布都会变成钟形（虚线是正态曲线），而且越来越窄。', die: '骰子（均匀）', exp: '等待时间（指数，偏斜）', n: '每次平均的样本数 n', again: '重新抽样', sd: '平均值的标准差', theo: '理论值 σ/√n', mean: '样本均值的平均' },
+    en: { title: '🎲 The central limit theorem: why averages look normal', hint: 'Draw n samples and take their mean; repeat 4,000 times and plot a histogram of the means. Whatever the original distribution (a uniform die, a heavily skewed exponential), once n grows the means become bell-shaped (dashed line: normal curve) and narrower and narrower.', die: 'die (uniform)', exp: 'waiting time (exponential, skewed)', n: 'samples per mean, n', again: 'resample', sd: 'std of the means', theo: 'theory σ/√n', mean: 'average of the means' },
+    fr: { title: '🎲 Le théorème central limite : pourquoi les moyennes semblent normales', hint: 'Tirez n échantillons et prenez leur moyenne ; recommencez 4 000 fois et tracez l’histogramme des moyennes. Quelle que soit la loi de départ (un dé uniforme, une exponentielle très asymétrique), dès que n grandit, les moyennes prennent une forme en cloche (pointillés : courbe normale) de plus en plus étroite.', die: 'dé (uniforme)', exp: 'temps d’attente (exponentielle, asymétrique)', n: 'échantillons par moyenne, n', again: 'nouveau tirage', sd: 'écart type des moyennes', theo: 'théorie σ/√n', mean: 'moyenne des moyennes' }
+  };
+  var o = FV.init('fv-clt', T, 560, 290); if (!o) return;
+  var src = 'die', M = 4000, means = [], lastKey = '';
+  var D = {
+    die: { draw: function () { return 1 + Math.floor(Math.random() * 6); }, mu: 3.5, sd: Math.sqrt(35 / 12), xr: [1, 6] },
+    exp: { draw: function () { return -Math.log(1 - Math.random()); }, mu: 1, sd: 1, xr: [0, 4] }
+  };
+  function sample() {
+    var d = D[src], n = o.v('n'); means = [];
+    for (var i = 0; i < M; i++) { var s = 0; for (var j = 0; j < n; j++) s += d.draw(); means.push(s / n); }
+    lastKey = src + n;
+  }
+  FV.group(o, 'src', function (v) { src = v; lastKey = ''; });
+  o.q('again').addEventListener('click', function () { lastKey = ''; o.redraw(); });
+  o.draw = function (c) {
+    if (lastKey !== src + o.v('n')) sample();
+    var d = D[src], n = o.v('n'), ctx = o.ctx, B = src === 'die' ? 50 : 48;
+    var bw = (d.xr[1] - d.xr[0]) / B, bins = new Array(B).fill(0);
+    means.forEach(function (x) { var k = Math.floor((x - d.xr[0]) / bw); if (x === d.xr[1]) k = B - 1; if (k >= 0 && k < B) bins[k]++; });
+    var sdn = d.sd / Math.sqrt(n), peak = M * bw / (sdn * Math.sqrt(2 * Math.PI));
+    var ymax = Math.max(Math.max.apply(null, bins), n >= 2 ? peak : 0) * 1.1;
+    var m = FV.map(560, 290, d.xr, [0, ymax]);
+    FV.axes(ctx, m, c, { yt: [] });
+    ctx.fillStyle = c.accent; ctx.globalAlpha = 0.75;
+    bins.forEach(function (v, k) {
+      var x0 = m.X(d.xr[0] + k * bw) + 0.5, x1 = m.X(d.xr[0] + (k + 1) * bw) - 0.5;
+      ctx.fillRect(x0, m.Y(v), Math.max(1, x1 - x0), m.Y(0) - m.Y(v));
+    });
+    ctx.globalAlpha = 1;
+    if (n >= 2) FV.curve(ctx, m, function (x) { return peak * Math.exp(-0.5 * Math.pow((x - d.mu) / sdn, 2)); }, c.warn, 2, [6, 4]);
+    var mean = means.reduce(function (a, b) { return a + b; }, 0) / M;
+    var sd = Math.sqrt(means.reduce(function (a, b) { return a + (b - mean) * (b - mean); }, 0) / M);
+    o.out(o.t.mean + ' = ' + mean.toFixed(3) + '　' + o.t.sd + ' = <b>' + sd.toFixed(3) + '</b>　' + o.t.theo + ' = ' + sdn.toFixed(3));
+  };
+  o.redraw();
+})();
+</script>
+</div>

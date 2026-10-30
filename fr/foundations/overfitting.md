@@ -36,6 +36,8 @@ $$
 
 Lors de l'entraînement d'un [réseau de neurones](../neural-network/), tracez une **courbe d'apprentissage** (époques en abscisse, perte en ordonnée) : si la [perte](../loss-function/) d'entraînement continue de baisser alors que la perte de validation commence à **remonter**, ce point d'inflexion marque le début du surapprentissage — c'est aussi là que l'[arrêt précoce](../regularization/) doit intervenir.
 
+{% include fviz/polyfit.html %}
+
 ## Pourquoi cela se produit
 
 Du point de vue du [compromis biais–variance](../bias-variance/), surapprentissage = **variance élevée**. Causes fréquentes :

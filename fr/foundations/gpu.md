@@ -54,6 +54,8 @@ if torch.cuda.is_available():
 
 Typiquement, le GPU est des dizaines de fois plus rapide que le CPU. Notez deux détails : `.cuda()` transfère le tenseur dans la mémoire vidéo ; `synchronize()` est nécessaire parce que les appels au GPU sont **asynchrones** — sans synchronisation, la mesure du temps serait fausse.
 
+{% include fviz/gpu-crossover.html %}
+
 ## Intérêt pour la prévision de séries temporelles
 
 Entraîner des modèles comme **KUN / Kernel U-Net** est presque impossible sans GPU :

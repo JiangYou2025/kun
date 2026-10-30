@@ -56,6 +56,8 @@ print(X_norm.std(axis=0).round(6))     # écart-type de chaque colonne ≈ 1
 
 Qu'une matrice `(1000, 5)` et un vecteur `(5,)` puissent être combinés directement, c'est la **diffusion** : le vecteur est automatiquement « recopié » sur chaque ligne — sans être réellement copié, ce qui économise mémoire et temps.
 
+{% include fviz/broadcast.html %}
+
 ## Intérêt pour la prévision de séries temporelles
 
 NumPy est le moteur de bas niveau du traitement des données temporelles :

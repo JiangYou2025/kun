@@ -65,6 +65,8 @@ plt.legend(); plt.title("Décomposition de la tendance")
 
 Remarquez que les données **circulent librement** entre Pandas, NumPy et Matplotlib, presque sans conversion manuelle — c'est toute la valeur d'une pile unifiée.
 
+{% include fviz/rolling-trend.html %}
+
 ## Intérêt pour la prévision de séries temporelles
 
 Pour une prévision du type **KUN / Kernel U-Net**, chaque élément de la pile a son rôle :

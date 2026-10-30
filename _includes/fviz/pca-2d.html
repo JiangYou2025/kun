@@ -1,0 +1,67 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-pca" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="ang"></span> θ<input type="range" data-k="th" min="0" max="180" step="1" value="100"></label>
+  <span data-g="snap"><button data-v="pc1" data-t="pc1"></button><button data-v="pc2" data-t="pc2"></button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🎯 PCA：找一个让投影最“分散”的方向', hint: '左边是一团相关的二维数据（已中心化）。转动方向 θ：每个点沿短线投影到橙色直线上（橙色小点），投影后的方差显示在右图。右图的曲线在第一主成分 PC1（紫色虚线）处最高、在与之垂直的 PC2 处最低。PCA 用 PC1 一个数代替两个坐标，丢掉的只是 PC2 方向上那一点点方差。', ang: '方向', pc1: '对准 PC1', pc2: '对准 PC2', vxl: 'θ（度）', vyl: '投影方差', v: '当前方向的投影方差', ex: 'PC1 解释的方差比例' },
+    en: { title: '🎯 PCA: find the direction where the projection is most “spread out”', hint: 'On the left is a correlated 2D point cloud (already centred). Turn the direction θ: each point is projected along a short segment onto the orange line (small orange dots), and the variance of those projections is plotted on the right. That curve peaks at the first principal component PC1 (purple dashed) and bottoms out at the perpendicular PC2. PCA replaces two coordinates by the single PC1 coordinate, losing only the small variance along PC2.', ang: 'direction', pc1: 'snap to PC1', pc2: 'snap to PC2', vxl: 'θ (degrees)', vyl: 'projected variance', v: 'projected variance along θ', ex: 'share of variance explained by PC1' },
+    fr: { title: '🎯 ACP : trouver la direction où la projection est la plus « étalée »', hint: 'À gauche, un nuage de points 2D corrélés (déjà centré). Tournez la direction θ : chaque point est projeté le long d’un petit segment sur la droite orange (petits points orange), et la variance de ces projections est tracée à droite. Cette courbe culmine sur la première composante principale PC1 (pointillés violets) et est minimale sur PC2, perpendiculaire. L’ACP remplace deux coordonnées par la seule coordonnée sur PC1, en ne perdant que la faible variance selon PC2.', ang: 'direction', pc1: 'aligner sur PC1', pc2: 'aligner sur PC2', vxl: 'θ (degrés)', vyl: 'variance projetée', v: 'variance projetée selon θ', ex: 'part de variance expliquée par PC1' }
+  };
+  var W = 560, H = 300;
+  var o = FV.init('fv-pca', T, W, H); if (!o) return;
+  var seed = 7; function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+  function gs() { var u = 1 - rnd(), v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  var D = [], a0 = 33 * Math.PI / 180, mx = 0, my = 0;
+  for (var i = 0; i < 90; i++) { var s = 1.25 * gs(), t = 0.42 * gs(); D.push([s * Math.cos(a0) - t * Math.sin(a0), s * Math.sin(a0) + t * Math.cos(a0)]); }
+  D.forEach(function (p) { mx += p[0] / D.length; my += p[1] / D.length; });
+  D = D.map(function (p) { return [p[0] - mx, p[1] - my]; });
+  var sxx = 0, syy = 0, sxy = 0;
+  D.forEach(function (p) { sxx += p[0] * p[0]; syy += p[1] * p[1]; sxy += p[0] * p[1]; });
+  sxx /= D.length - 1; syy /= D.length - 1; sxy /= D.length - 1;
+  var tr = sxx + syy, dt = sxx * syy - sxy * sxy, l1 = tr / 2 + Math.sqrt(tr * tr / 4 - dt), l2 = tr - l1;
+  var th1 = Math.atan2(l1 - sxx, sxy) * 180 / Math.PI; th1 = ((th1 % 180) + 180) % 180;
+  function pv(th) { var a = th * Math.PI / 180, c = Math.cos(a), s = Math.sin(a); return sxx * c * c + 2 * sxy * c * s + syy * s * s; }
+  var thIn = o.q('th');
+  FV.group(o, 'snap', function (v) { thIn.value = Math.round(v === 'pc1' ? th1 : (th1 + 90) % 180); });
+  var m = FV.map(W, H, [-3.4, 3.4], [-2.8, 2.8], { l: 10, r: 210, t: 10, b: 10 });
+  var m2 = FV.map(W, H, [0, 180], [0, Math.ceil(l1 * 1.15 * 2) / 2], { l: 392, r: 12, t: 22, b: 30 });
+  o.draw = function (c) {
+    var ctx = o.ctx, th = o.v('th'), a = th * Math.PI / 180, u = [Math.cos(a), Math.sin(a)];
+    ctx.save(); ctx.strokeStyle = c.border; ctx.strokeRect(m.p.l, m.p.t, W - m.p.l - m.p.r, H - m.p.t - m.p.b); ctx.restore();
+    ctx.save(); FV.clip(ctx, m);
+    FV.line(ctx, m.X(-3.4), m.Y(0), m.X(3.4), m.Y(0), c.border, 1); FV.line(ctx, m.X(0), m.Y(-2.8), m.X(0), m.Y(2.8), c.border, 1);
+    var b1 = th1 * Math.PI / 180;
+    FV.line(ctx, m.X(-5 * Math.cos(b1)), m.Y(-5 * Math.sin(b1)), m.X(5 * Math.cos(b1)), m.Y(5 * Math.sin(b1)), c.accent2, 1.5, [6, 4]);
+    FV.line(ctx, m.X(-5 * u[0]), m.Y(-5 * u[1]), m.X(5 * u[0]), m.Y(5 * u[1]), c.warn, 2);
+    D.forEach(function (p) {
+      var z = p[0] * u[0] + p[1] * u[1], q = [z * u[0], z * u[1]];
+      ctx.save(); ctx.globalAlpha = 0.35; FV.line(ctx, m.X(p[0]), m.Y(p[1]), m.X(q[0]), m.Y(q[1]), c.muted, 1); ctx.restore();
+    });
+    D.forEach(function (p) {
+      var z = p[0] * u[0] + p[1] * u[1];
+      FV.dot(ctx, m.X(p[0]), m.Y(p[1]), 3, c.accent);
+      FV.dot(ctx, m.X(z * u[0]), m.Y(z * u[1]), 2, c.warn);
+    });
+    ctx.restore();
+    FV.label(ctx, 'PC1', m.X(2.6 * Math.cos(b1)) + 6, m.Y(2.6 * Math.sin(b1)) + 4, c.accent2);
+    FV.axes(ctx, m2, c, { xt: [0, 45, 90, 135, 180], yt: FV.ticks(m2.yr, 4) });
+    FV.label(ctx, o.t.vyl, m2.p.l, 14, c.muted, 'left', '11px system-ui,sans-serif');
+    FV.label(ctx, o.t.vxl, W - 12, H - 2, c.muted, 'right', '11px system-ui,sans-serif');
+    FV.curve(ctx, m2, pv, c.accent, 2);
+    FV.line(ctx, m2.X(th1), m2.p.t, m2.X(th1), H - m2.p.b, c.accent2, 1.2, [5, 4]);
+    FV.dot(ctx, m2.X(th), m2.Y(pv(th)), 5, c.warn);
+    o.out(o.t.v + ' = <b>' + pv(th).toFixed(2) + '</b>　PC1: θ = ' + th1.toFixed(0) + '°, λ₁ = ' + l1.toFixed(2) + '　PC2: λ₂ = ' + l2.toFixed(2) +
+      '<br>' + o.t.ex + ' = λ₁ / (λ₁ + λ₂) = <b>' + (100 * l1 / (l1 + l2)).toFixed(1) + '%</b>');
+  };
+  o.redraw();
+})();
+</script>
+</div>

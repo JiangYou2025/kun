@@ -1,0 +1,48 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-rolltrend" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="win"></span><input type="range" data-k="w" min="1" max="30" step="1" value="7"></label>
+  <button data-k="new" data-t="new"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '📈 上面例子的流水线：随机游走 → 滚动均线 → 残差', hint: '灰线是 100 天的随机游走 np.random.randn(100).cumsum()，粗线是 s.rolling(窗口, min_periods=1).mean()，下方柱子是残差 = 原始 − 均线。窗口越大，均线越平滑，但越“迟钝”（落后于真实走势），残差也越大；窗口 = 1 时均线就是原序列本身，残差为 0。', win: '窗口（天）', new: '新数据', raw: '原始序列', trend: '滚动均线', res: '残差', std: '残差标准差', lag: '均线滞后约', days: '天' },
+    en: { title: '📈 The pipeline from the example: random walk → rolling mean → residual', hint: 'The grey line is a 100-day random walk np.random.randn(100).cumsum(), the thick line is s.rolling(window, min_periods=1).mean(), and the bars below are the residual = raw − trend. A wider window gives a smoother trend that is also more sluggish (it lags behind the real movement), so the residual grows; with window = 1 the trend is the series itself and the residual is zero.', win: 'window (days)', new: 'new data', raw: 'raw series', trend: 'rolling mean', res: 'residual', std: 'residual std', lag: 'the trend lags by about', days: 'days' },
+    fr: { title: '📈 Le pipeline de l’exemple : marche aléatoire → moyenne glissante → résidu', hint: 'La courbe grise est une marche aléatoire de 100 jours np.random.randn(100).cumsum(), la courbe épaisse est s.rolling(fenêtre, min_periods=1).mean(), et les barres du bas montrent le résidu = brut − tendance. Plus la fenêtre est large, plus la tendance est lisse, mais aussi plus « lente » (elle est en retard sur le mouvement réel) : le résidu grandit. Avec une fenêtre de 1, la tendance est la série elle-même et le résidu est nul.', win: 'fenêtre (jours)', new: 'nouvelles données', raw: 'série brute', trend: 'moyenne glissante', res: 'résidu', std: 'écart type du résidu', lag: 'retard de la tendance d’environ', days: 'jours' }
+  };
+  var W = 560, H = 300, N = 100;
+  var o = FV.init('fv-rolltrend', T, W, H); if (!o) return;
+  var s = [];
+  function gen() { s = []; var v = 0; for (var i = 0; i < N; i++) { v += FV.gauss(); s.push(v); } }
+  o.q('new').addEventListener('click', function () { gen(); o.redraw(); });
+  o.draw = function (c) {
+    var ctx = o.ctx, w = o.v('w'), tr = [], res = [];
+    for (var i = 0; i < N; i++) { var a = Math.max(0, i - w + 1), sum = 0; for (var j = a; j <= i; j++) sum += s[j]; tr.push(sum / (i - a + 1)); res.push(s[i] - tr[i]); }
+    var lo = Math.min.apply(null, s), hi = Math.max.apply(null, s), pad = (hi - lo) * 0.08 + 0.5;
+    var top = FV.map(W, 200, [0, N - 1], [lo - pad, hi + pad], { l: 38, r: 12, t: 12, b: 8 });
+    FV.axes(ctx, top, c, { xt: [] });
+    function poly(mp, Y, col, wd) { ctx.save(); FV.clip(ctx, mp); ctx.beginPath(); ctx.strokeStyle = col; ctx.lineWidth = wd; Y.forEach(function (y, k) { k ? ctx.lineTo(mp.X(k), mp.Y(y)) : ctx.moveTo(mp.X(k), mp.Y(y)); }); ctx.stroke(); ctx.restore(); }
+    poly(top, s, c.muted, 1.4);
+    poly(top, tr, c.accent, 2.5);
+    ctx.save(); ctx.globalAlpha = 0.85; ctx.fillStyle = c.bg; ctx.fillRect(top.p.l + 4, top.p.t + 2, 150, 36); ctx.restore();
+    FV.legend(ctx, top, [[o.t.raw, c.muted], [o.t.trend + ' (' + w + ')', c.accent]], c);
+    var ra = Math.max(1, Math.max.apply(null, res.map(Math.abs)));
+    var bot = { xr: [0, N - 1], yr: [-ra, ra], p: { l: 38, r: 12, t: 210, b: 22 }, W: W, H: H,
+      X: function (x) { return 38 + x / (N - 1) * (W - 50); }, Y: function (y) { return 210 + (ra - y) / (2 * ra) * (H - 232); } };
+    FV.axes(ctx, bot, c, { xt: [0, 20, 40, 60, 80, 99], yt: [0] });
+    var bw = (W - 50) / N * 0.7;
+    res.forEach(function (r, k) { ctx.fillStyle = c.warn; ctx.globalAlpha = 0.75; ctx.fillRect(bot.X(k) - bw / 2, Math.min(bot.Y(0), bot.Y(r)), bw, Math.abs(bot.Y(r) - bot.Y(0))); });
+    ctx.globalAlpha = 1;
+    FV.label(ctx, o.t.res, 44, 206, c.warn);
+    var m = res.reduce(function (p, q) { return p + q; }, 0) / N, v = res.reduce(function (p, q) { return p + (q - m) * (q - m); }, 0) / N;
+    o.out(o.t.std + ' = <b>' + Math.sqrt(v).toFixed(3) + '</b>　' + o.t.lag + ' ' + FV.fmt((w - 1) / 2, 1) + ' ' + o.t.days);
+  };
+  gen(); o.redraw();
+})();
+</script>
+</div>

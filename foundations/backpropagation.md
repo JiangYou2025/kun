@@ -98,6 +98,8 @@ gw1 = d1*x
 print(round(gw1,3), round(gw2,3))               # 0.115 0.152
 ```
 
+{% include fviz/backprop-graph.html %}
+
 ## 为什么重要 / 用在哪
 
 - **没有反向传播就没有现代深度学习**。它让训练百万参数的网络在计算上变得可行。

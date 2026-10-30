@@ -1,0 +1,78 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-tree" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="depth"></span><input type="range" data-k="d" min="0" max="10" step="1" value="1"></label>
+  <button data-k="new" data-t="new"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🌳 决策树：一刀一刀横平竖直地切', hint: '每加一层深度，每个叶子就再按基尼不纯度挑出“最好的一刀”（只能平行于坐标轴）。粗线是最新这一层的切分，底色是叶子的多数类。看训练准确率如何一路涨到 100%，而新数据上的准确率先升后降：树太深就开始背噪声了。', depth: '最大深度', new: '换一批数据', leaves: '叶子数', train: '训练准确率', test: '新数据准确率' },
+    en: { title: '🌳 Decision tree: cut by cut, always parallel to an axis', hint: 'Each extra level of depth lets every leaf pick its “best cut” by Gini impurity (always parallel to an axis). Thick lines are the cuts of the newest level; the background shows each leaf’s majority class. Watch the training accuracy climb all the way to 100% while the accuracy on fresh data rises and then falls: a tree that is too deep starts memorising noise.', depth: 'max depth', new: 'new data', leaves: 'leaves', train: 'training accuracy', test: 'accuracy on fresh data' },
+    fr: { title: '🌳 Arbre de décision : coupe après coupe, parallèlement aux axes', hint: 'Chaque niveau de profondeur supplémentaire permet à chaque feuille de choisir sa « meilleure coupe » selon l’impureté de Gini (toujours parallèle à un axe). Les traits épais sont les coupes du niveau le plus récent ; le fond indique la classe majoritaire de chaque feuille. L’exactitude d’entraînement grimpe jusqu’à 100 %, tandis que celle sur de nouvelles données monte puis redescend : un arbre trop profond apprend le bruit par cœur.', depth: 'profondeur max', new: 'nouvelles données', leaves: 'feuilles', train: 'exactitude d’entraînement', test: 'exactitude sur de nouvelles données' }
+  };
+  var W = 560, H = 300;
+  var o = FV.init('fv-tree', T, W, H); if (!o) return;
+  var m = FV.map(W, H, [0, 10], [0, 5], { l: 26, r: 10, t: 10, b: 22 });
+  var P, Q, root;
+  function label(x, y) { return (y > 1.2 + 0.25 * x && x > 2) || (x > 7.5 && y < 1.5) || (x < 2.2 && y > 3.6) ? 1 : 0; }
+  function sample(n) {
+    var out = [];
+    for (var i = 0; i < n; i++) { var x = 10 * Math.random(), y = 5 * Math.random(), c = label(x, y); out.push([x, y, Math.random() < 0.1 ? 1 - c : c]); }
+    return out;
+  }
+  function gini(n1, n) { if (!n) return 0; var p = n1 / n; return 1 - p * p - (1 - p) * (1 - p); }
+  function build(idx, depth) {
+    var n1 = 0; idx.forEach(function (i) { n1 += P[i][2]; });
+    var node = { cls: n1 * 2 > idx.length ? 1 : n1 * 2 < idx.length ? 0 : P[idx[0]][2], n: idx.length, depth: depth };
+    if (depth >= 10 || n1 === 0 || n1 === idx.length || idx.length < 2) return node;
+    var best = null, bs = gini(n1, idx.length) * idx.length - 1e-9;
+    [0, 1].forEach(function (f) {
+      var s = idx.slice().sort(function (a, b) { return P[a][f] - P[b][f]; }), l1 = 0;
+      for (var j = 0; j < s.length - 1; j++) {
+        l1 += P[s[j]][2];
+        if (P[s[j]][f] === P[s[j + 1]][f]) continue;
+        var nl = j + 1, nr = s.length - nl, sc = gini(l1, nl) * nl + gini(n1 - l1, nr) * nr;
+        if (sc < bs) { bs = sc; best = [f, (P[s[j]][f] + P[s[j + 1]][f]) / 2]; }
+      }
+    });
+    if (!best) return node;
+    node.f = best[0]; node.t = best[1];
+    node.L = build(idx.filter(function (i) { return P[i][node.f] <= node.t; }), depth + 1);
+    node.R = build(idx.filter(function (i) { return P[i][node.f] > node.t; }), depth + 1);
+    return node;
+  }
+  function predict(nd, p, d) { while (nd.L && nd.depth < d) nd = p[nd.f] <= nd.t ? nd.L : nd.R; return nd.cls; }
+  function data() { P = sample(150); Q = sample(1000); root = build(P.map(function (_, i) { return i; }), 0); }
+  o.q('new').addEventListener('click', function () { data(); o.redraw(); });
+  o.draw = function (c) {
+    var ctx = o.ctx, d = o.v('d'), cols = [c.blue, c.warn], leaves = 0, cuts = [];
+    FV.axes(ctx, m, c, { xt: [0, 2, 4, 6, 8, 10], yt: [0, 1, 2, 3, 4, 5] });
+    (function walk(nd, x0, x1, y0, y1) {
+      if (!nd.L || nd.depth >= d) {
+        leaves++; ctx.fillStyle = cols[nd.cls]; ctx.globalAlpha = 0.2;
+        ctx.fillRect(m.X(x0), m.Y(y1), m.X(x1) - m.X(x0), m.Y(y0) - m.Y(y1)); ctx.globalAlpha = 1; return;
+      }
+      cuts.push([nd, x0, x1, y0, y1]);
+      if (nd.f === 0) { walk(nd.L, x0, nd.t, y0, y1); walk(nd.R, nd.t, x1, y0, y1); }
+      else { walk(nd.L, x0, x1, y0, nd.t); walk(nd.R, x0, x1, nd.t, y1); }
+    })(root, 0, 10, 0, 5);
+    cuts.forEach(function (k) {
+      var nd = k[0], last = nd.depth === d - 1, col = last ? c.text : c.muted, w = last ? 2.5 : 1.2;
+      if (nd.f === 0) FV.line(ctx, m.X(nd.t), m.Y(k[3]), m.X(nd.t), m.Y(k[4]), col, w);
+      else FV.line(ctx, m.X(k[1]), m.Y(nd.t), m.X(k[2]), m.Y(nd.t), col, w);
+    });
+    P.forEach(function (p) { FV.dot(ctx, m.X(p[0]), m.Y(p[1]), 3.4, cols[p[2]]); });
+    var tr = 0, te = 0;
+    P.forEach(function (p) { tr += predict(root, p, d) === p[2] ? 1 : 0; });
+    Q.forEach(function (p) { te += predict(root, p, d) === p[2] ? 1 : 0; });
+    o.out(o.t.leaves + ' = ' + leaves + '　' + o.t.train + ' = ' + (100 * tr / P.length).toFixed(1) + '%　' + o.t.test + ' = <b>' + (100 * te / Q.length).toFixed(1) + '%</b>');
+  };
+  data(); o.redraw();
+})();
+</script>
+</div>

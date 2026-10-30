@@ -20,6 +20,8 @@ If we then keep only the coordinate on the first axis, we have squeezed two-dime
 
 Why measure information by **variance**? Because a large variance means the samples are well separated along that direction and carry a lot of differences; along a direction with variance close to 0, all samples look nearly the same, so keeping it is useless.
 
+{% include fviz/pca-2d.html %}
+
 ## Principle and mathematics
 
 The standard PCA procedure is as follows. Let the data matrix $X$ have $n$ rows (samples) and $p$ columns (features).

@@ -30,6 +30,8 @@ math: true
 - **支持向量机 ([SVM](../svm/))**：最大间隔分类
 - **聚类与降维**：K-means、[PCA](../pca/)
 
+{% include fviz/kmeans.html %}
+
 ## 3. [训练流程](../training-pipeline/)
 
 - **[损失函数](../loss-function/)**：回归用 MSE / MAE，分类用[交叉熵](../cross-entropy/)
@@ -37,6 +39,8 @@ math: true
 - **数据切分**：训练 / 验证 / 测试
 - **[交叉验证](../cross-validation/)**：更稳健的超参选择（**时间序列要用按时间顺序的切分**，不能随机打乱）
 - **超参数调优**：网格 / 随机 / 贝叶斯搜索
+
+{% include fviz/ts-split.html %}
 
 ## 4. [泛化](../generalization/)：核心挑战
 
@@ -46,6 +50,8 @@ math: true
 - **[过拟合](../overfitting/)**：太复杂，记住噪声，高方差
 - **[偏差—方差权衡](../bias-variance/)**：找复杂度的平衡点
 - **[正则化](../regularization/)**：$\ell_1$ / $\ell_2$、[早停](../early-stopping/)、剪枝——给模型加约束
+
+{% include fviz/polyfit.html %}
 
 ## 5. [评估指标](../evaluation-metrics/)
 

@@ -1,0 +1,49 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-bigo" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="n"></span><input type="range" data-k="n" min="4" max="60" step="1" value="20"></label>
+  <span data-g="scale"><button data-v="lin" class="on" data-t="lin"></button><button data-v="log" data-t="log"></button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '⏱️ 复杂度增长：Big-O', hint: '横轴是输入规模 n，纵轴是操作次数。拖大 n 看各条曲线如何拉开差距；切到对数刻度，才能把 2ⁿ 和其他曲线放在同一张图里。', n: '最大 n', lin: '线性刻度', log: '对数刻度', at: '当 n =', ops: '次操作', big: '如果 n = 10⁶、每秒 10⁹ 次运算：n log n ≈ 0.02 秒，n² ≈ 17 分钟，2ⁿ 宇宙寿命也算不完。' },
+    en: { title: '⏱️ How complexity grows: Big-O', hint: 'The x-axis is the input size n, the y-axis the number of operations. Drag n up to watch the curves pull apart; switch to a log scale to fit 2ⁿ on the same chart as the others.', n: 'max n', lin: 'linear scale', log: 'log scale', at: 'at n =', ops: 'operations', big: 'With n = 10⁶ and 10⁹ operations per second: n log n ≈ 0.02 s, n² ≈ 17 minutes, 2ⁿ would outlast the universe.' },
+    fr: { title: '⏱️ Croissance de la complexité : Big-O', hint: 'L’axe horizontal est la taille d’entrée n, l’axe vertical le nombre d’opérations. Augmentez n pour voir les courbes s’écarter ; passez en échelle logarithmique pour faire tenir 2ⁿ sur le même graphique.', n: 'n maximal', lin: 'échelle linéaire', log: 'échelle log', at: 'pour n =', ops: 'opérations', big: 'Avec n = 10⁶ et 10⁹ opérations par seconde : n log n ≈ 0,02 s, n² ≈ 17 minutes, 2ⁿ dépasserait l’âge de l’univers.' }
+  };
+  var o = FV.init('fv-bigo', T, 560, 300); if (!o) return;
+  var logScale = false;
+  FV.group(o, 'scale', function (v) { logScale = v === 'log'; });
+  var lg = function (x) { return Math.log(x) / Math.LN2; };
+  o.draw = function (c) {
+    var ctx = o.ctx, n = o.v('n');
+    var F = [
+      ['O(1)', function () { return 1; }, c.muted],
+      ['O(log n)', function (x) { return Math.max(lg(x), 0); }, c.good],
+      ['O(n)', function (x) { return x; }, c.accent],
+      ['O(n log n)', function (x) { return x * Math.max(lg(x), 0); }, c.accent2],
+      ['O(n²)', function (x) { return x * x; }, c.warn],
+      ['O(2ⁿ)', function (x) { return Math.pow(2, x); }, c.bad]
+    ];
+    var m;
+    if (logScale) {
+      var top = Math.ceil(lg(Math.pow(2, n)) * Math.log10(2)) + 1;
+      m = FV.map(560, 300, [1, n], [0, top], { l: 46, r: 12, t: 12, b: 26 });
+      FV.axes(ctx, m, c, { yt: FV.ticks([0, top], 5).filter(function (v) { return v === Math.round(v); }), yf: function (v) { return '10^' + v; } });
+      F.forEach(function (f) { FV.curve(ctx, m, function (x) { var y = f[1](x); return y > 0 ? Math.log10(y) : 0; }, f[2], 2.2); });
+    } else {
+      m = FV.map(560, 300, [1, n], [0, n * n * 1.15], { l: 46, r: 12, t: 12, b: 26 });
+      FV.axes(ctx, m, c);
+      F.forEach(function (f) { FV.curve(ctx, m, f[1], f[2], 2.2); });
+    }
+    FV.legend(ctx, m, F.map(function (f) { return [f[0], f[2]]; }), c);
+    o.out(o.t.at + ' ' + n + '：' + F.map(function (f) { return f[0] + ' ≈ <b>' + FV.fmt(f[1](n), 0) + '</b>'; }).join('　') + '<br>' + o.t.big);
+  };
+  o.redraw();
+})();
+</script>
+</div>

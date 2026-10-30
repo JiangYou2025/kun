@@ -42,6 +42,8 @@ $$
 
 **Statistical inference**: estimate the population mean with the sample mean $\bar x$, and quantify "how sure we are" with confidence intervals and hypothesis tests.
 
+{% include fviz/clt.html %}
+
 ## A concrete example
 
 Roll a fair six-sided die, and let $X$ be the number shown.

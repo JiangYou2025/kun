@@ -1,0 +1,74 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-roc" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="thr"></span><input type="range" data-k="t" min="-3" max="5" step="0.05" value="1"></label>
+  <label><span data-t="sep"></span><input type="range" data-k="d" min="0" max="4" step="0.1" value="2"></label>
+  <span data-g="bal"><button data-v="0.5" class="on" data-t="b50"></button><button data-v="0.1" data-t="b10"></button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🎚️ 阈值、混淆矩阵与 ROC 曲线', hint: '分类器给每个样本打一个分数，分数 ≥ 阈值就判为阳性。左图：阴性（蓝）和阳性（橙）样本的分数分布，阈值右边都被判为阳性。拖动阈值，看 TP / FP / FN / TN、精确率和召回率如何此消彼长；右图的 ROC 曲线是扫遍所有阈值得到的，圆点是当前阈值。切到“阳性 10%”：准确率变得很好看，精确率却明显下降。', thr: '阈值', sep: '模型区分度', b50: '阳性 50%', b10: '阳性 10%', score: '模型分数', neg: '阴性', pos: '阳性', acc: '准确率', prec: '精确率', rec: '召回率', fpr: '假正例率' },
+    en: { title: '🎚️ Threshold, confusion matrix and ROC curve', hint: 'The classifier gives each sample a score and calls it positive when score ≥ threshold. Left: the score distribution of negatives (blue) and positives (orange); everything to the right of the threshold is predicted positive. Drag the threshold and watch TP / FP / FN / TN, precision and recall trade off against each other. The ROC curve on the right sweeps all thresholds; the dot is the current one. Switch to “10% positives”: accuracy looks great, yet precision drops noticeably.', thr: 'threshold', sep: 'model separation', b50: '50% positives', b10: '10% positives', score: 'model score', neg: 'negative', pos: 'positive', acc: 'accuracy', prec: 'precision', rec: 'recall', fpr: 'false positive rate' },
+    fr: { title: '🎚️ Seuil, matrice de confusion et courbe ROC', hint: 'Le classifieur attribue un score à chaque échantillon et le déclare positif si score ≥ seuil. À gauche : la distribution des scores des négatifs (bleu) et des positifs (orange) ; tout ce qui est à droite du seuil est prédit positif. Déplacez le seuil : TP / FP / FN / TN, précision et rappel varient en sens inverse. La courbe ROC à droite balaie tous les seuils ; le point marque le seuil actuel. Passez à « 10 % de positifs » : l’exactitude a l’air excellente, mais la précision chute nettement.', thr: 'seuil', sep: 'séparation du modèle', b50: '50 % de positifs', b10: '10 % de positifs', score: 'score du modèle', neg: 'négatif', pos: 'positif', acc: 'exactitude', prec: 'précision', rec: 'rappel', fpr: 'taux de faux positifs' }
+  };
+  var W = 560, H = 290, N = 400;
+  var o = FV.init('fv-roc', T, W, H); if (!o) return;
+  var bal = 0.5, zp = [], zn = [];
+  for (var i = 0; i < N; i++) { zp.push(FV.gauss()); zn.push(FV.gauss()); }
+  FV.group(o, 'bal', function (v) { bal = +v; });
+  o.draw = function (c) {
+    var ctx = o.ctx, thr = o.v('t'), d = o.v('d');
+    var nn = N, np = bal === 0.5 ? N : Math.round(N * bal / (1 - bal));
+    var P = zp.slice(0, np).map(function (z) { return z + d; }), Ng = zn.slice(0, nn);
+    var m1 = FV.map(W, H, [-3.5, 6.5], [0, 1], { l: 12, r: 290, t: 22, b: 24 });
+    FV.axes(ctx, m1, c, { xt: [-2, 0, 2, 4, 6], yt: [] });
+    FV.label(ctx, o.t.score, m1.p.l, 14, c.text);
+    var B = 40, bw = 10 / B, hp = new Array(B).fill(0), hn = new Array(B).fill(0);
+    P.forEach(function (s) { var k = Math.floor((s + 3.5) / bw); if (k >= 0 && k < B) hp[k]++; });
+    Ng.forEach(function (s) { var k = Math.floor((s + 3.5) / bw); if (k >= 0 && k < B) hn[k]++; });
+    var top = Math.max(Math.max.apply(null, hp), Math.max.apply(null, hn)) * 1.1;
+    [[hn, c.blue], [hp, c.warn]].forEach(function (h) {
+      h[0].forEach(function (v, k) {
+        var x0 = -3.5 + k * bw, X0 = m1.X(x0), X1 = m1.X(x0 + bw), Y = m1.Y(v / top);
+        ctx.fillStyle = h[1]; ctx.globalAlpha = x0 + bw / 2 >= thr ? 0.6 : 0.25; ctx.fillRect(X0 + 0.5, Y, X1 - X0 - 1, m1.Y(0) - Y);
+      });
+    });
+    ctx.globalAlpha = 1;
+    FV.line(ctx, m1.X(thr), m1.p.t, m1.X(thr), H - m1.p.b, c.text, 2);
+    FV.label(ctx, '◀ ' + o.t.neg, m1.X(thr) - 6, m1.p.t + 12, c.blue, 'right');
+    FV.label(ctx, o.t.pos + ' ▶', m1.X(thr) + 6, m1.p.t + 12, c.warn, 'left');
+    var TP = 0, FN = 0, FP = 0, TN = 0;
+    P.forEach(function (s) { if (s >= thr) TP++; else FN++; });
+    Ng.forEach(function (s) { if (s >= thr) FP++; else TN++; });
+    /* ROC: sweep every threshold; AUC = probability that a random positive outranks a random negative */
+    var all = P.map(function (s) { return [s, 1]; }).concat(Ng.map(function (s) { return [s, 0]; })).sort(function (a, b) { return b[0] - a[0]; });
+    var m2 = FV.map(W, H, [0, 1], [0, 1], { l: W - 12 - (H - 46), r: 12, t: 22, b: 24 });
+    FV.axes(ctx, m2, c, { xt: [0, 0.5, 1], yt: [0, 0.5, 1], xl: 'FPR', yl: 'TPR' });
+    FV.label(ctx, 'ROC', m2.p.l, 14, c.text);
+    FV.line(ctx, m2.X(0), m2.Y(0), m2.X(1), m2.Y(1), c.muted, 1, [4, 4]);
+    var tp = 0, fp = 0, auc = 0;
+    ctx.beginPath(); ctx.moveTo(m2.X(0), m2.Y(0));
+    for (var k = 0; k < all.length; k++) {
+      if (all[k][1]) tp++; else { fp++; auc += tp; }
+      if (k + 1 < all.length && all[k + 1][0] === all[k][0]) continue;
+      ctx.lineTo(m2.X(fp / nn), m2.Y(tp / np));
+    }
+    auc /= np * nn;
+    ctx.strokeStyle = c.accent; ctx.lineWidth = 2.2; ctx.stroke();
+    var tpr = TP / np, fpr = FP / nn;
+    FV.dot(ctx, m2.X(fpr), m2.Y(tpr), 5.5, c.text);
+    FV.label(ctx, 'AUC = ' + auc.toFixed(3), m2.X(0.95), m2.Y(0.06), c.accent, 'right');
+    var prec = TP + FP ? TP / (TP + FP) : NaN, rec = tpr, f1 = prec + rec ? 2 * prec * rec / (prec + rec) : 0;
+    o.out('TP = <b>' + TP + '</b>　FP = <b>' + FP + '</b>　FN = <b>' + FN + '</b>　TN = <b>' + TN + '</b><br>' +
+      o.t.acc + ' = ' + (100 * (TP + TN) / (np + nn)).toFixed(1) + '%　' + o.t.prec + ' = <b>' + (isNaN(prec) ? '—' : prec.toFixed(3)) + '</b>　' +
+      o.t.rec + ' = <b>' + rec.toFixed(3) + '</b>　F1 = <b>' + (isNaN(prec) ? '—' : f1.toFixed(3)) + '</b>　' + o.t.fpr + ' = ' + fpr.toFixed(3));
+  };
+  o.redraw();
+})();
+</script>
+</div>

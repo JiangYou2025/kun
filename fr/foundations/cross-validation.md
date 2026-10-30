@@ -79,6 +79,8 @@ print(-scores.mean())                        # MAE moyenne
 
 Attention : les plis produits par `TimeSeriesSplit` **ne sont pas** des blocs aléatoires de même taille et sans recouvrement, mais une structure glissante où « l'ensemble d'entraînement s'allonge et l'ensemble de validation est toujours dans le futur ».
 
+{% include fviz/ts-split.html %}
+
 ## Intérêt pour la prévision de séries temporelles
 
 C'est la partie **la plus importante** de cette section. Les séries temporelles ont une « direction du temps » : le futur ne peut pas servir à prédire le passé, et la validation croisée exige donc un traitement particulier.

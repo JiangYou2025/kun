@@ -62,6 +62,8 @@ g = torch.Generator(); g.manual_seed(42)
 
 As long as the seed and the environment are the same, `np.random.rand(3)` produces **exactly the same** numbers every time — this is the starting point of reproducibility. Combine it with `pip freeze > requirements.txt` to lock dependency versions, and others can reproduce your curves on their own machines.
 
+{% include fviz/seed-runs.html %}
+
 ## Relevance to time series forecasting
 
 When researching **KUN / Kernel U-Net**, reproducibility directly determines whether a conclusion holds up:

@@ -1,0 +1,71 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-fibmemo" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span>n</span><input type="range" data-k="n" min="2" max="8" step="1" value="6"></label>
+  <span data-g="mode"><button data-v="naive" class="on" data-t="naive"></button><button data-v="memo" data-t="memo"></button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🌳 动态规划：斐波那契递归树 vs 记忆化', hint: '每个圆圈是一次函数调用 F(k)。朴素递归里，橙色的调用都在重复计算早已算过的子问题；切到“记忆化”，这些重复调用直接查表返回（绿色空心），整棵树塌缩成一条链。拖大 n 看调用次数如何爆炸。', naive: '朴素递归', memo: '记忆化（lru_cache）', first: '首次计算', dup: '重复计算', hit: '查表命中', calls: '调用次数', distinct: '不同子问题', at40: 'n = 40 时：朴素递归', vs: '次调用，记忆化只需', times: '次' },
+    en: { title: '🌳 Dynamic programming: Fibonacci call tree vs memoization', hint: 'Each circle is one function call F(k). In plain recursion, every orange call recomputes a subproblem that was already solved; switch to “memoized” and those calls return straight from the cache (hollow green), so the whole tree collapses into a chain. Drag n up to watch the call count explode.', naive: 'plain recursion', memo: 'memoized (lru_cache)', first: 'first computation', dup: 'recomputation', hit: 'cache hit', calls: 'calls', distinct: 'distinct subproblems', at40: 'at n = 40: plain recursion makes', vs: 'calls, memoization only', times: '' },
+    fr: { title: '🌳 Programmation dynamique : arbre d’appels de Fibonacci vs mémoïsation', hint: 'Chaque cercle est un appel de fonction F(k). Dans la récursion naïve, chaque appel orange recalcule un sous-problème déjà résolu ; passez en « mémoïsé » et ces appels renvoient directement la valeur en cache (vert creux) : l’arbre s’effondre en une simple chaîne. Augmentez n pour voir exploser le nombre d’appels.', naive: 'récursion naïve', memo: 'mémoïsé (lru_cache)', first: 'premier calcul', dup: 'recalcul', hit: 'lu dans le cache', calls: 'appels', distinct: 'sous-problèmes distincts', at40: 'pour n = 40 : la récursion naïve fait', vs: 'appels, contre', times: 'seulement avec la mémoïsation' }
+  };
+  var W = 560, H = 300;
+  var o = FV.init('fv-fibmemo', T, W, H); if (!o) return;
+  var mode = 'naive';
+  FV.group(o, 'mode', function (v) { mode = v; });
+  function build(n, memo) {
+    var seen = {}, leaves = 0, depth = 0, stats = { calls: 0, dup: 0, hit: 0 };
+    function rec(k, d) {
+      var nd = { k: k, d: d, kids: [], kind: 'first' };
+      stats.calls++; if (d > depth) depth = d;
+      if (seen[k]) {
+        if (memo) { nd.kind = 'hit'; stats.hit++; nd.x = leaves++; return nd; }
+        nd.kind = 'dup'; stats.dup++;
+      }
+      seen[k] = true;
+      if (k >= 2) { nd.kids.push(rec(k - 1, d + 1)); nd.kids.push(rec(k - 2, d + 1)); nd.x = (nd.kids[0].x + nd.kids[1].x) / 2; }
+      else nd.x = leaves++;
+      return nd;
+    }
+    var root = rec(n, 0);
+    return { root: root, leaves: leaves, depth: depth, stats: stats };
+  }
+  function fib(n) { var a = 0, b = 1; for (var i = 0; i < n; i++) { var t = a + b; a = b; b = t; } return a; }
+  o.draw = function (c) {
+    var ctx = o.ctx, n = o.v('n'), tr = build(n, mode === 'memo');
+    var top = 46, bot = 22, slot = (W - 40) / Math.max(tr.leaves, 1), dy = (H - top - bot) / Math.max(tr.depth, 1);
+    var r = Math.max(4, Math.min(12, slot * 0.4, dy * 0.32));
+    var X = function (nd) { return 20 + (nd.x + 0.5) * slot; }, Y = function (nd) { return top + nd.d * dy; };
+    function edges(nd) { nd.kids.forEach(function (ch) { FV.line(ctx, X(nd), Y(nd), X(ch), Y(ch), c.border, 1.2); edges(ch); }); }
+    function nodes(nd) {
+      var col = nd.kind === 'first' ? c.accent : nd.kind === 'dup' ? c.warn : c.good;
+      if (nd.kind === 'hit') { FV.dot(ctx, X(nd), Y(nd), r, c.bg); FV.dot(ctx, X(nd), Y(nd), r, col, true); }
+      else FV.dot(ctx, X(nd), Y(nd), r, col);
+      if (r >= 6.5) FV.label(ctx, String(nd.k), X(nd), Y(nd) + 4, nd.kind === 'hit' ? c.good : c.bg, 'center', 'bold ' + Math.round(r * 1.05) + 'px system-ui,sans-serif');
+      nd.kids.forEach(nodes);
+    }
+    edges(tr.root); nodes(tr.root);
+    var items = mode === 'memo' ? [[o.t.first, c.accent], [o.t.hit, c.good]] : [[o.t.first, c.accent], [o.t.dup, c.warn]];
+    var lx = 14;
+    items.forEach(function (it) {
+      FV.dot(ctx, lx + 5, 15, 5, it[1]);
+      ctx.font = '12px system-ui,sans-serif';
+      FV.label(ctx, it[0], lx + 14, 19, c.text);
+      lx += 30 + ctx.measureText(it[0]).width;
+    });
+    FV.label(ctx, 'F(' + n + ') = ' + fib(n), W - 14, 19, c.text, 'right', 'bold 12px system-ui,sans-serif');
+    var s = tr.stats, extra = mode === 'memo' ? '（' + o.t.hit + ' ' + s.hit + '）' : '（' + o.t.dup + ' ' + s.dup + '）';
+    if (FV.lang() !== 'zh') extra = mode === 'memo' ? ' (' + o.t.hit + ': ' + s.hit + ')' : ' (' + o.t.dup + ': ' + s.dup + ')';
+    o.out(o.t.calls + ' <b>' + s.calls + '</b>' + extra + '　' + o.t.distinct + ' ' + (n + 1) +
+      '<br>' + o.t.at40 + ' <b>' + (2 * fib(41) - 1).toLocaleString(FV.lang() === 'fr' ? 'fr-FR' : 'en-US') + '</b> ' + o.t.vs + ' <b>79</b> ' + o.t.times);
+  };
+  o.redraw();
+})();
+</script>
+</div>

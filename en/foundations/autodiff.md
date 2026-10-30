@@ -46,6 +46,8 @@ $$
 
 Notation: $\mathcal{L}$ is the final scalar output (the loss); $\bar v$ means "if $v$ changes a little, how much does $\mathcal{L}$ change"; $\frac{\partial u_i}{\partial v}$ is the **local derivative** of a single elementary operation (known). A single backward sweep fills in every $\bar v$.
 
+{% include fviz/backprop-graph.html %}
+
 ## A concrete example
 
 Find the derivative of $f(x) = x^2 \cdot \sin(x)$ at $x=2$. By hand, $f'(x) = 2x\sin x + x^2\cos x$; substituting $x=2$: $4\sin2 + 4\cos2 \approx 4(0.909) + 4(-0.416) \approx 1.97$.

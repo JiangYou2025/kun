@@ -54,6 +54,8 @@ $$
 
 - $pos$ : l'indice de position ; $i$ : l'indice de dimension ; $d$ : la dimension du modèle. Des sinus et cosinus de fréquences différentes donnent à chaque position une « empreinte » unique.
 
+{% include fviz/attention-heat.html %}
+
 ## Un exemple concret
 
 Le plus petit bloc encodeur (intégré à PyTorch) :

@@ -49,6 +49,8 @@ $$
 
 Either way, the goal is to ensure that **the expected output is the same at training and inference time**. Modern frameworks (such as PyTorch's `nn.Dropout`) use Inverted Dropout by default, and it is only active in `model.train()` mode and switched off automatically in `model.eval()` mode — be sure to remember this.
 
+{% include fviz/dropout.html %}
+
 ## A concrete example
 
 Let the drop rate be $1-p = 0.5$ (i.e. $p=0.5$) and a layer's output be $x = [2, 4, 6, 8]$. In one training step the sampled mask is $m = [1, 0, 1, 0]$; with Inverted Dropout:

@@ -72,6 +72,8 @@ Sortie      96 ◄───────┘   ← on recolle les détails les plu
 
 En descendant, la résolution passe de $96\to48\to24\to12$, et au niveau 12 le modèle « voit tout l'ensemble d'un seul coup d'œil » ; en remontant, il reconstruit progressivement, en recollant à chaque étape les détails conservés à l'échelle correspondante. La sortie finale peut être un masque de segmentation (image) ou une séquence future (prévision).
 
+{% include fviz/unet-1d.html %}
+
 ## Pourquoi c'est important / où l'utiliser
 
 - **Le multi-échelles est son âme** : modéliser à la fois la « structure globale » et les « détails locaux » est crucial pour de nombreuses tâches.

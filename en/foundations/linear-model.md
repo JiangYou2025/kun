@@ -41,6 +41,8 @@ $$w = (X^\top X)^{-1} X^\top y$$
 
 where $X$ is the feature matrix formed by stacking all samples as rows. This means linear regression trains extremely fast, which is a major reason it serves as a "just try it" baseline.
 
+{% include fviz/linreg.html %}
+
 ## Mathematical formulation: logistic regression (classification)
 
 If the task is **classification** (for example "will it rain tomorrow?"), outputting a raw real number is not appropriate; we want a **probability**. So the output of the linear part is passed through a **sigmoid function**, which squashes it into the interval $(0,1)$:

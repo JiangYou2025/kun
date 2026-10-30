@@ -58,6 +58,8 @@ $$\ell_\delta(y,\hat y)=\begin{cases}\frac12 (y-\hat y)^2 & |y-\hat y|\le \delta
 
 $\delta$ 是切换点：误差在 $\delta$ 以内用平方（敏感、光滑），超出 $\delta$ 就转成线性（不被异常点带飞）。
 
+{% include fviz/loss-outlier.html %}
+
 ## 分类损失：预测一个类别
 
 当任务是分类（是猫还是狗、邮件是否垃圾）时，模型一般输出**概率** $\hat p$。这时最常用的是**[交叉熵](../cross-entropy/)（cross-entropy）**。

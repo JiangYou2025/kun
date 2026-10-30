@@ -65,6 +65,8 @@ Let patience=3 and min_delta=0. Suppose a training run produces the following va
 
 Epoch 3 reaches the minimum of 0.39, which is saved. Then epochs 4, 5 and 6 bring no improvement three times in a row, wait reaches patience=3, so training **stops** at epoch 6 and the model is **rolled back to the weights from epoch 3**. Even if epoch 7 might (or might not) bounce back, we don't gamble — early stopping chooses to stop safely at the known best point.
 
+{% include fviz/early-stop.html %}
+
 ## Why it matters / where it is used
 
 - **Almost cost-free [regularization](../regularization/)**: it doesn't change the network architecture or the loss function — it just "knows when to quit" — yet it can significantly improve generalization.

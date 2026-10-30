@@ -49,6 +49,8 @@ $$
 
 无论哪种，目标都是保证**训练与推理时的期望输出一致**。现代框架（如 PyTorch 的 `nn.Dropout`）默认用 Inverted Dropout，并且只在 `model.train()` 模式下生效、`model.eval()` 模式下自动关闭——这点务必记牢。
 
+{% include fviz/dropout.html %}
+
 ## 一个具体例子
 
 设丢弃率 $1-p = 0.5$（即 $p=0.5$），某层输出 $x = [2, 4, 6, 8]$。某次训练采到掩码 $m = [1, 0, 1, 0]$，用 Inverted Dropout：

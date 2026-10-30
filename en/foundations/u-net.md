@@ -72,6 +72,8 @@ Output      96 ◄───────┘   ← concatenate the finest details 
 
 On the way down the resolution goes $96\to48\to24\to12$, and at level 12 the model "takes in the whole picture at a glance"; on the way up it is restored step by step, and at each step the details stored at the corresponding scale are concatenated back in. The final output can be a segmentation mask (images) or a future sequence (forecasting).
 
+{% include fviz/unet-1d.html %}
+
 ## Why it matters / where it is used
 
 - **Multi-scale is its soul**: it models "global structure" and "local detail" at the same time, which is crucial for many tasks.

@@ -46,6 +46,8 @@ $$
 
 C'est la « **log-vraisemblance négative** » : elle ne pénalise que le fait d'attribuer une probabilité trop faible à la bonne réponse.
 
+{% include fviz/cross-entropy.html %}
+
 ## Un exemple concret
 
 Classification à trois classes, l'étiquette réelle est la classe 1, en one-hot $p=[1,0,0]$.

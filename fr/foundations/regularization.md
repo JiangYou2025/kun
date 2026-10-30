@@ -103,6 +103,8 @@ Vous observerez :
 - **Ridge** : à mesure que `alpha` augmente, tous les coefficients **rétrécissent globalement**, mais deviennent rarement exactement nuls.
 - **Lasso** : à mesure que `alpha` augmente, les **coefficients des variables inutiles tombent à 0 l'un après l'autre**, jusqu'à ne laisser que les deux premières, réellement importantes — c'est la sélection automatique de variables.
 
+{% include fviz/reg-path.html %}
+
 ## Pourquoi c'est important : le lien avec le surapprentissage et le compromis biais–variance
 
 La régularisation est l'arme la plus directe et la plus utilisée contre le [surapprentissage](../overfitting/). Dans le langage du [compromis biais–variance](../bias-variance/) :

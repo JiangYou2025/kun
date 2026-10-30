@@ -41,6 +41,8 @@ $$ a = \sigma(z) = \sigma(\mathbf{w}^\top \mathbf{x} + b) $$
 
 Without $\sigma$ (i.e. if $\sigma$ is the identity function), no matter how many layers you stack, the whole network is only a composition of linear transformations, and therefore still just a linear function — this is why [activation functions](../activation-function/) are indispensable.
 
+{% include fviz/neuron-2d.html %}
+
 ## A concrete example
 
 Suppose a neuron has two inputs $x_1, x_2$, weights $\mathbf{w} = (0.5,\ -1.2)$, bias $b = 0.3$, and uses ReLU as its activation function ($\mathrm{ReLU}(z)=\max(0,z)$).

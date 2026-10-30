@@ -1,0 +1,53 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-dropout" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="p"></span> p<input type="range" data-k="p" min="0" max="0.8" step="0.05" value="0.5"></label>
+  <button data-k="again" data-t="again"></button>
+  <button data-k="auto" data-t="auto"></button>
+  <span data-g="mode"><button data-v="train" class="on" data-t="train"></button><button data-v="test" data-t="test"></button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🎭 Dropout：每一步训练一个随机子网络', hint: '训练时每个隐藏神经元以概率 p 被临时“关掉”（虚线圈），它的连线也一起消失。每个小批量都抽一个不同的子网络，于是没有哪个神经元能依赖特定的同伴，模型被迫学到更稳健的特征。测试时所有神经元都参与。', p: '丢弃率', again: '重新抽一次', auto: '自动播放', train: '训练模式', test: '测试模式', kept: '这一步保留的隐藏神经元', scale: '保留下来的激活乘以 1/(1−p) =', testm: '测试时不丢弃：所有神经元都在，输出无需再缩放（训练时已经用 1/(1−p) 补偿过）。' },
+    en: { title: '🎭 Dropout: a random sub-network at every training step', hint: 'During training each hidden neuron is temporarily “switched off” with probability p (dashed circle), and its connections disappear with it. Every mini-batch samples a different sub-network, so no neuron can rely on particular partners and the model is forced to learn more robust features. At test time every neuron takes part.', p: 'drop rate', again: 'resample', auto: 'autoplay', train: 'training mode', test: 'test mode', kept: 'hidden neurons kept this step', scale: 'surviving activations are multiplied by 1/(1−p) =', testm: 'No dropout at test time: every neuron is active and no rescaling is needed (training already compensated with 1/(1−p)).' },
+    fr: { title: '🎭 Dropout : un sous-réseau aléatoire à chaque pas d’entraînement', hint: 'Pendant l’entraînement, chaque neurone caché est temporairement « éteint » avec une probabilité p (cercle pointillé), et ses connexions disparaissent avec lui. Chaque mini-lot tire un sous-réseau différent : aucun neurone ne peut compter sur des partenaires précis, et le modèle apprend des caractéristiques plus robustes. Au test, tous les neurones participent.', p: 'taux d’abandon', again: 'nouveau tirage', auto: 'lecture auto', train: 'mode entraînement', test: 'mode test', kept: 'neurones cachés conservés à ce pas', scale: 'les activations conservées sont multipliées par 1/(1−p) =', testm: 'Pas de dropout au test : tous les neurones sont actifs et aucune remise à l’échelle n’est nécessaire (l’entraînement a déjà compensé par 1/(1−p)).' }
+  };
+  var W = 560, H = 260, Ls = [4, 7, 7, 3];
+  var o = FV.init('fv-dropout', T, W, H); if (!o) return;
+  var mask = [], mode = 'train', timer = null;
+  function sample() { var p = o.v('p'); mask = Ls.map(function (n, l) { var a = []; for (var i = 0; i < n; i++) a.push(l === 0 || l === Ls.length - 1 || Math.random() >= p); return a; }); }
+  FV.group(o, 'mode', function (v) { mode = v; });
+  o.root.addEventListener('input', sample, true);
+  o.q('again').addEventListener('click', function () { sample(); o.redraw(); });
+  o.q('auto').addEventListener('click', function () {
+    if (timer) { clearInterval(timer); timer = null; o.q('auto').classList.remove('on'); }
+    else { timer = setInterval(function () { sample(); o.redraw(); }, 900); o.q('auto').classList.add('on'); }
+  });
+  o.draw = function (c) {
+    var ctx = o.ctx, pos = Ls.map(function (n, l) { var a = []; for (var i = 0; i < n; i++) a.push([70 + l * (W - 140) / (Ls.length - 1), H / 2 + (i - (n - 1) / 2) * 32]); return a; });
+    var on = function (l, i) { return mode === 'test' || mask[l][i]; };
+    for (var l = 0; l < Ls.length - 1; l++)
+      pos[l].forEach(function (a, i) { pos[l + 1].forEach(function (b, j) {
+        if (on(l, i) && on(l + 1, j)) { ctx.globalAlpha = 0.45; FV.line(ctx, a[0], a[1], b[0], b[1], c.accent, 1); ctx.globalAlpha = 1; }
+      }); });
+    var kept = 0, tot = 0;
+    pos.forEach(function (col, l) { col.forEach(function (p, i) {
+      var hidden = l > 0 && l < Ls.length - 1, alive = on(l, i);
+      if (hidden) { tot++; if (alive) kept++; }
+      ctx.beginPath(); ctx.arc(p[0], p[1], 10, 0, 2 * Math.PI);
+      if (alive) { ctx.fillStyle = hidden ? c.accent : c.accent2; ctx.fill(); }
+      else { ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = c.muted; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
+        FV.line(ctx, p[0] - 5, p[1] - 5, p[0] + 5, p[1] + 5, c.bad, 2); FV.line(ctx, p[0] - 5, p[1] + 5, p[0] + 5, p[1] - 5, c.bad, 2); }
+    }); });
+    var p = o.v('p');
+    o.out(mode === 'test' ? o.t.testm : o.t.kept + ' <b>' + kept + ' / ' + tot + '</b>　' + o.t.scale + ' ' + FV.fmt(1 / (1 - p), 2));
+  };
+  sample(); o.redraw();
+})();
+</script>
+</div>

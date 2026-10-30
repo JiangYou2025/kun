@@ -45,6 +45,8 @@ $$
 
 **Pas adaptatif (par exemple Adam)** : on redimensionne en plus le pas de chaque paramètre — petits pas pour les paramètres dont le gradient reste grand, grands pas pour ceux qui sont rarement mis à jour. C'est ce que fait [Adam](../adam/), qui combine momentum et adaptation par paramètre.
 
+{% include fviz/optimizer.html %}
+
 ## Un exemple concret
 
 Minimisons $\mathcal{L}(\theta) = \theta^2$ (optimum $\theta=0$, gradient $g=2\theta$). Partons de $\theta_0 = 1$ avec $\eta=0.1$ et SGD :

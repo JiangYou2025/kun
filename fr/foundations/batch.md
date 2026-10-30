@@ -34,6 +34,8 @@ Effet de la batch size :
 - **Plus elle est grande** : l'estimation du gradient est plus lisse et plus stable, le parallélisme du GPU est mieux exploité, mais la mémoire consommée augmente, et la [généralisation](../generalization/) est parfois un peu moins bonne.
 - **Plus elle est petite** : les mises à jour sont plus fréquentes et la mémoire occupée est faible, mais le gradient est bruité et l'entraînement instable.
 
+{% include fviz/batch-size.html %}
+
 ## Un exemple
 
 PyTorch découpe automatiquement les données en lots avec `DataLoader` :

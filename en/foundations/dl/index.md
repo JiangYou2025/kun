@@ -21,6 +21,8 @@ math: true
 
 $$h = \sigma(Wx + b)$$
 
+{% include fviz/activation.html %}
+
 ## 2. How to train: [backpropagation](../backpropagation/)
 
 - **[Loss function](../loss-function/)**: measures the gap between prediction and truth
@@ -28,6 +30,8 @@ $$h = \sigma(Wx + b)$$
 - **[Automatic differentiation](../autodiff/)**: the framework does the differentiation for you (you only write the forward pass)
 - **[Optimizers](../optimizer/)**: SGD, Momentum, RMSProp, **[Adam](../adam/)** (the most widely used)
 - **[Learning rate](../learning-rate/)**: the most important hyperparameter — too large and training diverges, too small and it crawls
+
+{% include fviz/optimizer.html %}
 
 ## 3. Preventing [overfitting](../overfitting/)
 
@@ -37,6 +41,8 @@ Deep models have enormous numbers of parameters, so generalization is the centra
 - **[Batch normalization (BatchNorm)](../batchnorm/) / layer normalization (LayerNorm)**: stabilize training
 - **[Early stopping](../early-stopping/)**: stop when the validation set gets worse
 - **Data augmentation / weight decay**: further regularization
+
+{% include fviz/dropout.html %}
 
 ## 4. Common [architectures](../architectures/)
 

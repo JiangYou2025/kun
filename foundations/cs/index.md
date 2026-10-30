@@ -29,6 +29,10 @@ next: /foundations/ml/
 - **常见算法**：排序、搜索、递归、[动态规划](../dynamic-programming/)
 - **数值稳定性**：浮点误差、溢出与下溢
 
+{% include fviz/big-o.html %}
+
+{% include fviz/binary-search.html %}
+
 ## 3. 科学计算栈
 
 时间序列与机器学习的日常工具。

@@ -1,0 +1,38 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-xent" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label><span data-t="p"></span><input type="range" data-k="p" min="0.02" max="0.98" step="0.01" value="0.3"></label>
+  <label><span data-t="q"></span><input type="range" data-k="q" min="0.02" max="0.98" step="0.01" value="0.7"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: 'ℹ️ 熵、交叉熵与 KL 散度', hint: '一枚硬币真实正面概率为 p，模型猜它是 q。曲线是交叉熵 H(p, q) 随 q 的变化：在 q = p 时最低，最低点正好等于熵 H(p)（虚线）。多出来的那段（橙色）就是 KL 散度。训练分类器时最小化交叉熵，就是在把模型分布推向真实分布。', p: '真实 p', q: '模型 q', H: '熵 H(p)', CE: '交叉熵 H(p, q)', KL: 'KL(p‖q)', unit: '比特', xl: '模型的 q', yl: '比特' },
+    en: { title: 'ℹ️ Entropy, cross-entropy and KL divergence', hint: 'A coin lands heads with true probability p; the model guesses q. The curve is the cross-entropy H(p, q) as q varies: it is lowest at q = p, and that minimum is exactly the entropy H(p) (dashed line). The extra part (orange) is the KL divergence. Minimising cross-entropy when training a classifier pushes the model distribution towards the true one.', p: 'true p', q: 'model q', H: 'entropy H(p)', CE: 'cross-entropy H(p, q)', KL: 'KL(p‖q)', unit: 'bits', xl: 'model’s q', yl: 'bits' },
+    fr: { title: 'ℹ️ Entropie, entropie croisée et divergence KL', hint: 'Une pièce tombe sur pile avec une probabilité réelle p ; le modèle devine q. La courbe est l’entropie croisée H(p, q) en fonction de q : elle est minimale en q = p, et ce minimum vaut exactement l’entropie H(p) (pointillés). Le surplus (orange) est la divergence KL. Minimiser l’entropie croisée en entraînant un classifieur pousse la loi du modèle vers la vraie loi.', p: 'p réel', q: 'q du modèle', H: 'entropie H(p)', CE: 'entropie croisée H(p, q)', KL: 'KL(p‖q)', unit: 'bits', xl: 'q du modèle', yl: 'bits' }
+  };
+  var o = FV.init('fv-xent', T, 560, 290); if (!o) return;
+  var lg = function (x) { return Math.log(x) / Math.LN2; };
+  var m = FV.map(560, 290, [0, 1], [0, 4]);
+  o.draw = function (c) {
+    var ctx = o.ctx, p = o.v('p'), q = o.v('q');
+    var H = -(p * lg(p) + (1 - p) * lg(1 - p)), CE = -(p * lg(q) + (1 - p) * lg(1 - q)), ce = function (x) { return -(p * lg(x) + (1 - p) * lg(1 - x)); };
+    FV.axes(ctx, m, c, { xl: o.t.xl, yl: o.t.yl });
+    FV.curve(ctx, m, function () { return H; }, c.muted, 1.5, [5, 4]);
+    FV.curve(ctx, m, ce, c.accent, 2.5, null, 0.005, 0.995);
+    FV.line(ctx, m.X(q), m.Y(H), m.X(q), m.Y(Math.min(CE, 4)), c.warn, 4);
+    FV.line(ctx, m.X(p), m.Y(0), m.X(p), m.Y(H), c.muted, 1, [2, 3]);
+    FV.dot(ctx, m.X(p), m.Y(H), 4, c.muted);
+    if (CE <= 4) FV.dot(ctx, m.X(q), m.Y(CE), 5, c.accent);
+    FV.label(ctx, 'q = p', m.X(p), m.Y(0) - 4, c.muted, 'center');
+    FV.label(ctx, 'KL', m.X(q) + 8, m.Y((H + Math.min(CE, 4)) / 2) + 4, c.warn);
+    o.out(o.t.H + ' = ' + H.toFixed(3) + '　' + o.t.CE + ' = <b>' + CE.toFixed(3) + '</b>　' + o.t.KL + ' = ' + (CE - H).toFixed(3) + ' ' + o.t.unit);
+  };
+  o.redraw();
+})();
+</script>
+</div>

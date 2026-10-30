@@ -66,6 +66,8 @@ Pour faire remonter une erreur commise $T$ pas plus tôt, il faut multiplier ce 
 
 C'est la manifestation typique, dans les modèles de séquences, du problème de [disparition / explosion du gradient](../vanishing-exploding-gradient/). Comme $\tanh'$ vaut au plus 1 et devient proche de 0 loin de l'origine, le RNN simple est particulièrement sujet à la disparition du gradient et **a beaucoup de mal à retenir une information vieille de quelques dizaines de pas**. L'explosion est souvent atténuée par l'« écrêtage du gradient » (*gradient clipping*), tandis que la disparition a donné naissance au [LSTM](../lstm/).
 
+{% include fviz/bptt-gradient.html %}
+
 ## Un exemple concret
 
 Déroulons quelques chiffres avec un mini-RNN à une dimension pour sentir comment la mémoire s'accumule. Prenons $W_x = 0.5,\ W_h = 0.9,\ b = 0$, la séquence d'entrée $x = [1, 1, 1]$ et $h_0 = 0$ :

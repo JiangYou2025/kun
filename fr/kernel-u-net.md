@@ -13,16 +13,17 @@ math: true
 
 ## En une phrase
 
-**KUN (Kernel U-Net) = la forme hiérarchique du U-Net + des noyaux interchangeables.** Il transpose aux séries temporelles le schéma du [U-Net](../foundations/u-net/) issu de la segmentation d'images — « sous-échantillonnage dans l'encodeur, sur-échantillonnage dans le décodeur, connexions résiduelles (*skip connections*) » — et remplace la convolution fixe de chaque nœud par une petite fonction librement choisie : linéaire, [MLP](../foundations/mlp/) ou [attention](../foundations/attention/).
+**KUN (Kernel U-Net) = un squelette en U fixe + des noyaux interchangeables.** Le squelette est emprunté au [U-Net](../foundations/u-net/) de la segmentation d'images — sous-échantillonnage dans l'encodeur, suréchantillonnage dans le décodeur, connexions résiduelles (*skip connections*) — et transposé aux séries temporelles. L'opération de chaque nœud n'est plus une convolution figée, mais un noyau que l'on peut remplacer d'un bloc : linéaire, [MLP](../foundations/mlp/), [attention](../foundations/attention/), ou un module que vous écrivez vous-même. **Changez de noyau, et vous obtenez un nouveau modèle.**
 
-## Quel problème KUN veut-il résoudre ?
+## Quel problème KUN veut-il résoudre ?
 
-Comme on l'a vu dans [Les questions de pointe des séries temporelles en 2026](../kun/), la prévision à long horizon se heurte à deux contradictions incontournables :
+Comme on l'a vu dans [Les questions de pointe des séries temporelles en 2026](../kun/), la prévision à long horizon se heurte à deux contradictions incontournables, et la recherche à une difficulté très concrète :
 
 1. **Le multi-échelle** — une série réelle superpose à la fois une tendance de long terme, des cycles de moyen terme et des détails haute fréquence de court terme, comme un mélange de plusieurs formes d'onde. Tout modèle qui ne regarde qu'une seule échelle est incomplet.
-2. **Efficacité contre expressivité** — le [Transformer](../foundations/transformer/) capture les dépendances à longue portée grâce à l'auto-attention, mais sa complexité est en $O(L^2)$ et devient intenable dès que la séquence s'allonge ; à l'inverse, le modèle linéaire minimaliste (DLinear) est rapide et performant, mais peine à exprimer des structures complexes.
+2. **Efficacité contre expressivité** — le [Transformer](../foundations/transformer/) capture les dépendances à longue portée grâce à l'auto-attention, mais sa complexité est en $O(L^2)$ et devient intenable dès que la séquence s'allonge ; à l'inverse, le modèle linéaire minimaliste (DLinear) est rapide et performant, mais peine à exprimer des structures complexes.
+3. **Le coût d'une idée nouvelle** — chaque nouveau modèle de séquence est en général réécrit de bout en bout, du découpage et de l'encodage jusqu'au décodage et à la sortie, alors que la partie réellement nouvelle n'est souvent que l'opérateur du milieu.
 
-La réponse de KUN : **séparer naturellement les échelles grâce à une structure hiérarchique, et glisser librement entre « rapide » et « puissant » grâce à des noyaux interchangeables.**
+La réponse de KUN : **séparer naturellement les échelles grâce à une structure hiérarchique, glisser librement entre « rapide » et « puissant » grâce à des noyaux interchangeables, et n'écrire le squelette qu'une fois : tester une idée nouvelle revient alors à écrire un nouveau noyau.**
 
 ## D'abord, bien voir qu'une série est « multi-échelle »
 
@@ -273,3 +274,20 @@ Comparez ce chiffre à la **base de référence naïve saisonnière**. Si KUN l'
 <div class="note">
   <strong>Citer KUN.</strong> Si KUN vous a été utile pour vos recherches ou votre produit, merci de citer les travaux de Jiang You sur le Kernel U-Net et d'ajouter un lien vers ce dépôt.
 </div>
+
+```bibtex
+@inproceedings{you_2024_kernel_u_net,
+  author={You, Jiang and Cela, Arben and Natowicz, René and Ouanounou, Jacob and Siarry, Patrick},
+  booktitle={2024 International Conference on INnovations in Intelligent SysTems and Applications (INISTA)},
+  title={Kernel-U-Net: Multivariate Time Series Forecasting using Custom Kernels},
+  year={2024},
+  pages={1-8},
+  doi={10.1109/INISTA62901.2024.10683862}}
+```
+
+Travaux associés :
+
+- Prédiction d'anomalies : [Anomaly Prediction: A Novel Approach with Explicit Delay and Horizon (ICCP 2024)](https://arxiv.org/abs/2408.04377)
+- Prévision spatio-temporelle : [Enhancing Spatio-Temporal Forecasting with Spatial Neighbourhood Fusion: A Case Study on Mobility in Peru (ICASSP 2026)](https://arxiv.org/abs/2507.00031)
+- Prévision adaptative : [Dynamic Perturbed Adaptive Method for Infinite Task-Conflicting Time Series (arXiv 2025)](https://arxiv.org/abs/2505.11902)
+- Prévision robuste : [Robust Time Series Forecasting with Non-Heavy-Tailed Gaussian Loss-Weighted Sampler (arXiv 2024)](https://arxiv.org/abs/2406.13871)

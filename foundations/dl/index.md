@@ -21,6 +21,8 @@ math: true
 
 $$h = \sigma(Wx + b)$$
 
+{% include fviz/activation.html %}
+
 ## 2. 如何训练：[反向传播](../backpropagation/)
 
 - **[损失函数](../loss-function/)**：衡量预测与真实的差距
@@ -28,6 +30,8 @@ $$h = \sigma(Wx + b)$$
 - **[自动微分](../autodiff/)**：框架自动完成上述求导（你只写前向）
 - **[优化器](../optimizer/)**：SGD、Momentum、RMSProp、**[Adam](../adam/)**（最常用）
 - **[学习率](../learning-rate/)**：最关键的超参数，太大发散、太小太慢
+
+{% include fviz/optimizer.html %}
 
 ## 3. 防止[过拟合](../overfitting/)
 
@@ -37,6 +41,8 @@ $$h = \sigma(Wx + b)$$
 - **[批归一化 (BatchNorm)](../batchnorm/) / 层归一化 (LayerNorm)**：稳定训练
 - **[早停 (early stopping)](../early-stopping/)**：验证集变差就停
 - **数据增强 / 权重衰减**：进一步正则化
+
+{% include fviz/dropout.html %}
 
 ## 4. 常见[架构](../architectures/)
 

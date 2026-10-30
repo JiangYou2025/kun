@@ -1,0 +1,78 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-matrix" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label>a<input type="range" data-k="a" min="-2" max="2" step="0.1" value="1"></label>
+  <label>b<input type="range" data-k="b" min="-2" max="2" step="0.1" value="0.5"></label>
+  <label>c<input type="range" data-k="c" min="-2" max="2" step="0.1" value="0"></label>
+  <label>d<input type="range" data-k="d" min="-2" max="2" step="0.1" value="1"></label>
+</div>
+<div class="ctl"><span data-g="preset">
+  <button data-v="1,0,0,1" data-t="id"></button>
+  <button data-v="0.9,-0.5,0.5,0.9" data-t="rot"></button>
+  <button data-v="1.5,0,0,0.5" data-t="scale"></button>
+  <button data-v="1,0.8,0,1" data-t="shear"></button>
+  <button data-v="-1,0,0,1" data-t="refl"></button>
+  <button data-v="1,1,0.5,0.5" data-t="sing"></button>
+</span></div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🔲 矩阵 = 线性变换', hint: '矩阵 [[a, b], [c, d]] 把基向量 e₁ 送到第一列 (a, c)、e₂ 送到第二列 (b, d)，整张网格随之变形。行列式是单位正方形面积的缩放倍数；虚线是特征向量方向：变换后方向不变、只被拉伸。', id: '恒等', rot: '旋转', scale: '缩放', shear: '剪切', refl: '反射', sing: '奇异（压扁）', det: '行列式 det', area: '面积缩放倍数', flip: '（负号：方向翻转）', collapse: '平面被压成一条线，矩阵不可逆', eig: '特征值', complex: '复特征值：含旋转成分，没有保持方向的实向量' },
+    en: { title: '🔲 A matrix is a linear transformation', hint: 'The matrix [[a, b], [c, d]] sends basis vector e₁ to its first column (a, c) and e₂ to its second column (b, d); the whole grid deforms with them. The determinant is the factor by which the unit square’s area is scaled; dashed lines show eigenvector directions, which keep their direction and are only stretched.', id: 'identity', rot: 'rotation', scale: 'scaling', shear: 'shear', refl: 'reflection', sing: 'singular (flatten)', det: 'determinant det', area: 'area scale factor', flip: '(negative: orientation flipped)', collapse: 'the plane is squashed onto a line, so the matrix is not invertible', eig: 'eigenvalues', complex: 'complex eigenvalues: there is a rotation component, so no real vector keeps its direction' },
+    fr: { title: '🔲 Une matrice est une transformation linéaire', hint: 'La matrice [[a, b], [c, d]] envoie le vecteur de base e₁ sur sa première colonne (a, c) et e₂ sur sa deuxième colonne (b, d) ; toute la grille se déforme avec eux. Le déterminant est le facteur d’échelle de l’aire du carré unité ; les pointillés montrent les directions propres, qui gardent leur direction et sont seulement étirées.', id: 'identité', rot: 'rotation', scale: 'mise à l’échelle', shear: 'cisaillement', refl: 'réflexion', sing: 'singulière (aplatie)', det: 'déterminant det', area: 'facteur d’aire', flip: '(négatif : orientation inversée)', collapse: 'le plan est écrasé sur une droite : la matrice n’est pas inversible', eig: 'valeurs propres', complex: 'valeurs propres complexes : il y a une composante de rotation, aucun vecteur réel ne garde sa direction' }
+  };
+  var W = 560, H = 340, S = 46;
+  var o = FV.init('fv-matrix', T, W, H); if (!o) return;
+  var P = function (x, y) { return [W / 2 + x * S, H / 2 - y * S]; };
+  FV.group(o, 'preset', function (v) {
+    v.split(',').forEach(function (n, i) { o.q('abcd'[i]).value = n; });
+  });
+  o.draw = function (c) {
+    var ctx = o.ctx, a = o.v('a'), b = o.v('b'), cc = o.v('c'), d = o.v('d');
+    var M = function (x, y) { return P(a * x + b * y, cc * x + d * y); }, i, p, q;
+    ctx.save(); ctx.lineWidth = 1;
+    for (i = -8; i <= 8; i++) {
+      ctx.strokeStyle = c.border;
+      p = P(i, -8); q = P(i, 8); ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
+      p = P(-8, i); q = P(8, i); ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
+      ctx.strokeStyle = c.accent; ctx.globalAlpha = 0.28;
+      p = M(i, -8); q = M(i, 8); ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
+      p = M(-8, i); q = M(8, i); ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+    var sq = [M(0, 0), M(1, 0), M(1, 1), M(0, 1)];
+    ctx.beginPath(); sq.forEach(function (pt, k) { k ? ctx.lineTo(pt[0], pt[1]) : ctx.moveTo(pt[0], pt[1]); });
+    ctx.closePath(); ctx.fillStyle = c.accent; ctx.globalAlpha = 0.25; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.strokeStyle = c.accent; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
+    var det = a * d - b * cc, tr = a + d, disc = tr * tr - 4 * det, eig;
+    if (disc >= -1e-9) {
+      var r = Math.sqrt(Math.max(0, disc)), ls = [(tr + r) / 2, (tr - r) / 2];
+      ls.forEach(function (l) {
+        var v = Math.abs(b) > 1e-9 ? [b, l - a] : Math.abs(cc) > 1e-9 ? [l - d, cc] : null;
+        var vs = v ? [v] : [[1, 0], [0, 1]];
+        vs.forEach(function (u) {
+          var n = Math.hypot(u[0], u[1]); if (n < 1e-9) return;
+          var p1 = P(-9 * u[0] / n, -9 * u[1] / n), p2 = P(9 * u[0] / n, 9 * u[1] / n);
+          FV.line(ctx, p1[0], p1[1], p2[0], p2[1], c.accent2, 1.5, [6, 5]);
+        });
+      });
+      eig = o.t.eig + ' λ = ' + FV.fmt(ls[0]) + ', ' + FV.fmt(ls[1]);
+    } else eig = o.t.complex;
+    var O = P(0, 0), e1 = M(1, 0), e2 = M(0, 1);
+    FV.arrow(ctx, O[0], O[1], e1[0], e1[1], c.warn);
+    FV.arrow(ctx, O[0], O[1], e2[0], e2[1], c.pink);
+    FV.label(ctx, 'Ae₁ = (' + FV.fmt(a) + ', ' + FV.fmt(cc) + ')', e1[0] + 6, e1[1] - 6, c.warn);
+    FV.label(ctx, 'Ae₂ = (' + FV.fmt(b) + ', ' + FV.fmt(d) + ')', e2[0] + 6, e2[1] - 6, c.pink);
+    var txt = 'A = [[' + FV.fmt(a) + ', ' + FV.fmt(b) + '], [' + FV.fmt(cc) + ', ' + FV.fmt(d) + ']]　' +
+      o.t.det + ' = <b>' + FV.fmt(det) + '</b>　';
+    txt += Math.abs(det) < 1e-9 ? o.t.collapse : o.t.area + ' |det| = ' + FV.fmt(Math.abs(det)) + (det < 0 ? ' ' + o.t.flip : '');
+    o.out(txt + '<br>' + eig);
+  };
+  o.redraw();
+})();
+</script>
+</div>

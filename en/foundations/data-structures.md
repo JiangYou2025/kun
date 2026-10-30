@@ -37,6 +37,8 @@ Complexity differs greatly across structures and operations:
 
 Remember one central trade-off: **trading space for time**. A hash table uses a bit more memory in exchange for near-instant lookups.
 
+{% include fviz/hash-lookup.html %}
+
 ## An example
 
 The same task — "find which elements occur more than once" — has wildly different complexity depending on the structure:

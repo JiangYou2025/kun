@@ -68,6 +68,8 @@ print(a + b)
 # 2026-01-03    23.0   ← 3 + 20
 ```
 
+{% include fviz/resample.html %}
+
 ## 在时间序列预测中的意义
 
 喂给 **KUN / Kernel U-Net** 的数据，几乎都要先过一遍 Pandas：

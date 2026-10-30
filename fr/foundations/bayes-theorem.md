@@ -70,6 +70,8 @@ posterior = sens*prior / evidence
 print(round(posterior, 3))   # 0.167
 ```
 
+{% include fviz/bayes-test.html %}
+
 ## Pourquoi c'est important / où l'utilise-t-on
 
 Le théorème de Bayes est un cadre unifié pour **apprendre à partir des données** :

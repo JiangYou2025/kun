@@ -46,6 +46,8 @@ $$
 
 符号解释：$\mathcal{L}$ 是最终标量输出（损失）；$\bar v$ 表示"$v$ 变一点，$\mathcal{L}$ 变多少"；$\frac{\partial u_i}{\partial v}$ 是单个基本运算的**局部导数**（已知）。一次反向扫描就填满所有 $\bar v$。
 
+{% include fviz/backprop-graph.html %}
+
 ## 一个具体例子
 
 求 $f(x) = x^2 \cdot \sin(x)$ 在 $x=2$ 处的导数。手算结果应是 $f'(x) = 2x\sin x + x^2\cos x$，代入 $x=2$：$4\sin2 + 4\cos2 \approx 4(0.909) + 4(-0.416) \approx 1.97$。

@@ -1,0 +1,63 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-neuron2d" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <label>w₁<input type="range" data-k="w1" min="-2" max="2" step="0.05" value="0.5"></label>
+  <label>w₂<input type="range" data-k="w2" min="-2" max="2" step="0.05" value="-1.2"></label>
+  <label>b<input type="range" data-k="b" min="-3" max="3" step="0.05" value="0.3"></label>
+  <span data-g="act"><button data-v="relu" class="on">ReLU</button><button data-v="sig">Sigmoid</button><button data-v="step" data-t="step"></button></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🧠 一个神经元在二维输入平面上做了什么', hint: '背景颜色越深，神经元输出 a = σ(w₁x₁ + w₂x₂ + b) 越大。虚线是 z = 0 的那条直线：权重决定它的方向（箭头 w 垂直于它、指向“兴奋”的一侧），偏置把它平移。点击画面可移动输入点 x。注意：一个神经元只能用一条直线切开平面。', step: '阶跃', inp: '输入 x', act: '输出 a', on: '兴奋', off: '沉默' },
+    en: { title: '🧠 What one neuron does on a 2-D input plane', hint: 'The darker the background, the larger the neuron’s output a = σ(w₁x₁ + w₂x₂ + b). The dashed line is where z = 0: the weights set its direction (the arrow w is perpendicular to it and points to the “excited” side), the bias shifts it. Click the plot to move the input point x. Notice that a single neuron can only cut the plane with one straight line.', step: 'step', inp: 'input x', act: 'output a', on: 'excited', off: 'silent' },
+    fr: { title: '🧠 Ce que fait un neurone sur un plan d’entrées 2D', hint: 'Plus le fond est foncé, plus la sortie a = σ(w₁x₁ + w₂x₂ + b) du neurone est grande. La droite pointillée est le lieu où z = 0 : les poids fixent sa direction (la flèche w lui est perpendiculaire et pointe vers le côté « excité »), le biais la translate. Cliquez sur la figure pour déplacer le point d’entrée x. Un seul neurone ne peut couper le plan que par une droite.', step: 'échelon', inp: 'entrée x', act: 'sortie a', on: 'excité', off: 'silencieux' }
+  };
+  var W = 560, H = 300;
+  var o = FV.init('fv-neuron2d', T, W, H); if (!o) return;
+  var act = 'relu', px = [4, 1];
+  FV.group(o, 'act', function (v) { act = v; });
+  var m = FV.map(W, H, [-5.4, 5.4], [-2.76, 2.76], { l: 30, r: 10, t: 10, b: 24 });
+  var f = function (z) { return act === 'relu' ? Math.max(0, z) : act === 'sig' ? 1 / (1 + Math.exp(-z)) : (z >= 0 ? 1 : 0); };
+  var shade = function (a) { return act === 'relu' ? Math.min(1, a / 5) : a; };
+  o.cv.addEventListener('click', function (e) {
+    var r = o.cv.getBoundingClientRect(), X = (e.clientX - r.left) / r.width * W, Y = (e.clientY - r.top) / r.height * H;
+    px = [m.xr[0] + (X - m.p.l) / (W - m.p.l - m.p.r) * (m.xr[1] - m.xr[0]), m.yr[0] + (H - m.p.b - Y) / (H - m.p.t - m.p.b) * (m.yr[1] - m.yr[0])];
+    px = [Math.max(m.xr[0], Math.min(m.xr[1], px[0])), Math.max(m.yr[0], Math.min(m.yr[1], px[1]))];
+    o.redraw();
+  });
+  o.draw = function (c) {
+    var ctx = o.ctx, w1 = o.v('w1'), w2 = o.v('w2'), b = o.v('b'), s = 6;
+    ctx.save(); FV.clip(ctx, m); ctx.fillStyle = c.accent;
+    for (var X = m.p.l; X < W - m.p.r; X += s) for (var Y = m.p.t; Y < H - m.p.b; Y += s) {
+      var x1 = m.xr[0] + (X + s / 2 - m.p.l) / (W - m.p.l - m.p.r) * (m.xr[1] - m.xr[0]);
+      var x2 = m.yr[0] + (H - m.p.b - Y - s / 2) / (H - m.p.t - m.p.b) * (m.yr[1] - m.yr[0]);
+      ctx.globalAlpha = 0.75 * shade(f(w1 * x1 + w2 * x2 + b));
+      ctx.fillRect(X, Y, s, s);
+    }
+    ctx.restore();
+    FV.axes(ctx, m, c, { xl: 'x₁', yl: 'x₂' });
+    var n2 = w1 * w1 + w2 * w2;
+    if (n2 > 1e-6) {
+      if (Math.abs(w2) > Math.abs(w1)) FV.curve(ctx, m, function (x) { return -(w1 * x + b) / w2; }, c.text, 2, [6, 4]);
+      else { var xa = -(w2 * m.yr[0] + b) / w1, xb = -(w2 * m.yr[1] + b) / w1;
+        ctx.save(); FV.clip(ctx, m); FV.line(ctx, m.X(xa), m.Y(m.yr[0]), m.X(xb), m.Y(m.yr[1]), c.text, 2, [6, 4]); ctx.restore(); }
+      var p0 = [-b * w1 / n2, -b * w2 / n2], k = 1.2 / Math.sqrt(n2);
+      if (Math.abs(p0[0]) < 5 && Math.abs(p0[1]) < 2.4) {
+        FV.arrow(ctx, m.X(p0[0]), m.Y(p0[1]), m.X(p0[0] + w1 * k), m.Y(p0[1] + w2 * k), c.warn, 2.5);
+        FV.label(ctx, 'w', m.X(p0[0] + w1 * k) + 6, m.Y(p0[1] + w2 * k) - 4, c.warn, 'left', 'bold 13px system-ui,sans-serif');
+      }
+    }
+    var z = w1 * px[0] + w2 * px[1] + b, a = f(z);
+    FV.dot(ctx, m.X(px[0]), m.Y(px[1]), 6, a > 1e-9 && (act !== 'sig' || z > 0) ? c.good : c.bad);
+    FV.dot(ctx, m.X(px[0]), m.Y(px[1]), 6, c.text, true);
+    o.out(o.t.inp + ' = (' + FV.fmt(px[0], 2) + ', ' + FV.fmt(px[1], 2) + ')　z = <b>' + FV.fmt(z, 2) + '</b>　' + o.t.act + ' = <b>' + FV.fmt(a, 3) + '</b>　' + (z > 0 ? o.t.on : o.t.off));
+  };
+  o.redraw();
+})();
+</script>
+</div>

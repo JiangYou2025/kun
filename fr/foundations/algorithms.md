@@ -23,6 +23,8 @@ Les deux méthodes trouvent la personne, mais leur efficacité n'a rien à voir.
 
 Un algorithme ne pose pas seulement la question « peut-on résoudre le problème ? », mais surtout « en combien de temps et avec combien de mémoire ? ». L'instrument qui le mesure est la [complexité Big-O](../big-o/).
 
+{% include fviz/binary-search.html %}
+
 ## Points essentiels
 
 Un algorithme doit généralement satisfaire plusieurs propriétés :

@@ -1,0 +1,138 @@
+<script>
+/* Shared helpers for the interactive figures in _includes/fviz/. Loaded by every widget; defined once. */
+window.FV = window.FV || (function () {
+  var redraws = [];
+  var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)');
+  if (mq && mq.addEventListener) mq.addEventListener('change', function () { redraws.forEach(function (f) { f(); }); });
+
+  var FV = {
+    lang: function () { return (document.documentElement.lang || 'zh').slice(0, 2); },
+    col: function () {
+      var s = getComputedStyle(document.documentElement), g = function (n) { return s.getPropertyValue(n).trim(); };
+      return { text: g('--text'), muted: g('--muted'), accent: g('--accent'), accent2: g('--accent-2'),
+               border: g('--border'), surface: g('--surface'), bg: g('--bg'),
+               warn: '#f59e0b', pink: '#ec4899', bad: '#ef4444', good: '#22c55e', blue: '#3b82f6' };
+    },
+    /* Wire up a widget: fill [data-t] labels from T[lang], size the canvas for HiDPI, redraw on input. */
+    init: function (id, T, W, H) {
+      var root = document.getElementById(id);
+      if (!root) return null;
+      var t = T[FV.lang()] || T.zh;
+      root.querySelectorAll('[data-t]').forEach(function (e) { e.innerHTML = t[e.getAttribute('data-t')]; });
+      var cv = root.querySelector('canvas'), r = window.devicePixelRatio || 1;
+      cv.width = W * r; cv.height = H * r;
+      var ctx = cv.getContext('2d');
+      ctx.setTransform(r, 0, 0, r, 0, 0);
+      var o = {
+        root: root, t: t, ctx: ctx, W: W, H: H, cv: cv,
+        q: function (k) { return root.querySelector('[data-k="' + k + '"]'); },
+        v: function (k) { return parseFloat(o.q(k).value); },
+        out: function (html) { o.q('out').innerHTML = html; },
+        redraw: function () { ctx.clearRect(0, 0, W, H); if (o.draw) o.draw(FV.col()); }
+      };
+      root.addEventListener('input', function () { o.redraw(); });
+      redraws.push(function () { o.redraw(); });
+      return o;
+    },
+    /* Button group: <span data-g="name"><button data-v="x">…</button>…</span>; calls cb(value) on click. */
+    group: function (o, name, cb) {
+      var bs = o.root.querySelectorAll('[data-g="' + name + '"] button');
+      bs.forEach(function (b) {
+        b.addEventListener('click', function () {
+          bs.forEach(function (x) { x.classList.remove('on'); });
+          b.classList.add('on'); cb(b.getAttribute('data-v')); o.redraw();
+        });
+      });
+    },
+    /* Linear map from data coordinates to a plot box inside the canvas. */
+    map: function (W, H, xr, yr, p) {
+      p = p || { l: 38, r: 12, t: 12, b: 26 };
+      return { xr: xr, yr: yr, p: p, W: W, H: H,
+        X: function (x) { return p.l + (x - xr[0]) / (xr[1] - xr[0]) * (W - p.l - p.r); },
+        Y: function (y) { return H - p.b - (y - yr[0]) / (yr[1] - yr[0]) * (H - p.t - p.b); } };
+    },
+    ticks: function (r, n) {
+      n = n || 5;
+      var span = r[1] - r[0], step = Math.pow(10, Math.floor(Math.log10(span / n))), e = span / n / step;
+      step *= e >= 5 ? 5 : e >= 2 ? 2 : 1;
+      var out = [];
+      for (var v = Math.ceil(r[0] / step) * step; v <= r[1] + 1e-9; v += step) out.push(+v.toFixed(10));
+      return out;
+    },
+    fmt: function (v, d) {
+      if (!isFinite(v)) return '∞';
+      if (v !== 0 && (Math.abs(v) >= 1e5 || Math.abs(v) < 1e-3)) return v.toExponential(1);
+      return (+v.toFixed(d == null ? 2 : d)).toString();
+    },
+    axes: function (ctx, m, c, o) {
+      o = o || {};
+      ctx.save();
+      ctx.lineWidth = 1; ctx.font = '11px system-ui,sans-serif'; ctx.fillStyle = c.muted;
+      var x0 = m.p.l, x1 = m.W - m.p.r, y0 = m.p.t, y1 = m.H - m.p.b;
+      ctx.strokeStyle = c.border;
+      (o.xt || FV.ticks(m.xr)).forEach(function (v) {
+        var X = m.X(v); ctx.beginPath(); ctx.moveTo(X, y0); ctx.lineTo(X, y1); ctx.stroke();
+        ctx.textAlign = 'center'; ctx.fillText(o.xf ? o.xf(v) : FV.fmt(v), X, y1 + 14);
+      });
+      (o.yt || FV.ticks(m.yr)).forEach(function (v) {
+        var Y = m.Y(v); ctx.beginPath(); ctx.moveTo(x0, Y); ctx.lineTo(x1, Y); ctx.stroke();
+        ctx.textAlign = 'right'; ctx.fillText(o.yf ? o.yf(v) : FV.fmt(v), x0 - 5, Y + 4);
+      });
+      ctx.strokeStyle = c.muted;
+      if (m.yr[0] < 0 && m.yr[1] > 0) { ctx.beginPath(); ctx.moveTo(x0, m.Y(0)); ctx.lineTo(x1, m.Y(0)); ctx.stroke(); }
+      if (m.xr[0] < 0 && m.xr[1] > 0) { ctx.beginPath(); ctx.moveTo(m.X(0), y0); ctx.lineTo(m.X(0), y1); ctx.stroke(); }
+      if (o.xl) { ctx.textAlign = 'right'; ctx.fillText(o.xl, x1, y1 - 6); }
+      if (o.yl) { ctx.textAlign = 'left'; ctx.fillText(o.yl, x0 + 6, y0 + 12); }
+      ctx.restore();
+    },
+    clip: function (ctx, m) {
+      ctx.beginPath(); ctx.rect(m.p.l, m.p.t, m.W - m.p.l - m.p.r, m.H - m.p.t - m.p.b); ctx.clip();
+    },
+    curve: function (ctx, m, f, col, w, dash, a, b) {
+      a = a == null ? m.xr[0] : a; b = b == null ? m.xr[1] : b;
+      ctx.save(); FV.clip(ctx, m);
+      ctx.beginPath(); ctx.strokeStyle = col; ctx.lineWidth = w || 2; ctx.setLineDash(dash || []);
+      var N = 400, first = true;
+      for (var i = 0; i <= N; i++) {
+        var x = a + (b - a) * i / N, y = f(x);
+        if (!isFinite(y)) { first = true; continue; }
+        var X = m.X(x), Y = Math.max(-1e4, Math.min(1e4, m.Y(y)));
+        if (first) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+        first = false;
+      }
+      ctx.stroke(); ctx.restore();
+    },
+    line: function (ctx, x0, y0, x1, y1, col, w, dash) {
+      ctx.save(); ctx.beginPath(); ctx.strokeStyle = col; ctx.lineWidth = w || 1.5; ctx.setLineDash(dash || []);
+      ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); ctx.restore();
+    },
+    dot: function (ctx, X, Y, r, col, stroke) {
+      ctx.beginPath(); ctx.arc(X, Y, r, 0, 2 * Math.PI);
+      if (stroke) { ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.stroke(); } else { ctx.fillStyle = col; ctx.fill(); }
+    },
+    arrow: function (ctx, x0, y0, x1, y1, col, w) {
+      var a = Math.atan2(y1 - y0, x1 - x0), h = 9;
+      FV.line(ctx, x0, y0, x1, y1, col, w || 2.5);
+      ctx.beginPath(); ctx.fillStyle = col; ctx.moveTo(x1, y1);
+      ctx.lineTo(x1 - h * Math.cos(a - 0.4), y1 - h * Math.sin(a - 0.4));
+      ctx.lineTo(x1 - h * Math.cos(a + 0.4), y1 - h * Math.sin(a + 0.4)); ctx.fill();
+    },
+    label: function (ctx, s, X, Y, col, align, font) {
+      ctx.save(); ctx.fillStyle = col; ctx.textAlign = align || 'left'; ctx.font = font || '12px system-ui,sans-serif';
+      ctx.fillText(s, X, Y); ctx.restore();
+    },
+    /* Legend in the top-left corner: items = [[label, color], …]. */
+    legend: function (ctx, m, items, c) {
+      ctx.save(); ctx.font = '12px system-ui,sans-serif';
+      items.forEach(function (it, i) {
+        var X = m.p.l + 10, Y = m.p.t + 14 + i * 16;
+        ctx.fillStyle = it[1]; ctx.fillRect(X, Y - 8, 14, 3);
+        ctx.fillStyle = c.text; ctx.textAlign = 'left'; ctx.fillText(it[0], X + 20, Y - 3);
+      });
+      ctx.restore();
+    },
+    gauss: function () { var u = 1 - Math.random(), v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  };
+  return FV;
+})();
+</script>

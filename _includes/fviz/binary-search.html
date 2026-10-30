@@ -1,0 +1,61 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-search" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="size"><button data-v="64" class="on">N = 64</button><button data-v="1024">N = 1024</button></span>
+  <button data-k="step" data-t="step"></button>
+  <button data-k="run" data-t="run"></button>
+  <button data-k="new" data-t="new"></button>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '🔍 线性查找 vs 二分查找', hint: '在一个有序数组里找目标（绿色竖线）。线性查找从左到右逐个检查；二分查找每一步看中间元素，排除一半（变暗）。点“单步”或“自动”，比较步数；换成 N = 1024 再试一次。', step: '单步', run: '自动', new: '新目标', lin: '线性查找', bin: '二分查找', steps: '步', found: '✓ 找到', worst: '二分查找最坏也只要 ⌈log₂ N⌉ + 1 =' },
+    en: { title: '🔍 Linear search vs binary search', hint: 'Find the target (green line) in a sorted array. Linear search checks elements one by one from the left; binary search looks at the middle element and discards half (dimmed) at every step. Use “step” or “run” to compare step counts, then try again with N = 1024.', step: 'step', run: 'run', new: 'new target', lin: 'linear search', bin: 'binary search', steps: 'steps', found: '✓ found', worst: 'binary search needs at most ⌈log₂ N⌉ + 1 =' },
+    fr: { title: '🔍 Recherche linéaire vs recherche dichotomique', hint: 'Trouvez la cible (trait vert) dans un tableau trié. La recherche linéaire vérifie les éléments un par un depuis la gauche ; la recherche dichotomique regarde l’élément du milieu et écarte la moitié (assombrie) à chaque pas. Utilisez « pas » ou « lancer » pour comparer le nombre d’étapes, puis réessayez avec N = 1024.', step: 'pas', run: 'lancer', new: 'nouvelle cible', lin: 'recherche linéaire', bin: 'recherche dichotomique', steps: 'étapes', found: '✓ trouvé', worst: 'la dichotomie demande au plus ⌈log₂ N⌉ + 1 =' }
+  };
+  var W = 560, H = 170;
+  var o = FV.init('fv-search', T, W, H); if (!o) return;
+  var N = 64, target, li, ls, lo, hi, mid, bs, bdone, timer = null;
+  function reset() {
+    target = Math.floor(Math.random() * N);
+    li = -1; ls = 0; lo = 0; hi = N - 1; mid = -1; bs = 0; bdone = false;
+  }
+  function step() {
+    if (li !== target) { li++; ls++; }
+    if (!bdone && lo <= hi) {
+      mid = (lo + hi) >> 1; bs++;
+      if (mid === target) bdone = true; else if (mid < target) lo = mid + 1; else hi = mid - 1;
+    }
+    if (li === target && bdone && timer) { clearInterval(timer); timer = null; }
+    o.redraw();
+  }
+  FV.group(o, 'size', function (v) { N = +v; if (timer) { clearInterval(timer); timer = null; } reset(); });
+  o.q('step').addEventListener('click', step);
+  o.q('new').addEventListener('click', function () { if (timer) { clearInterval(timer); timer = null; } reset(); o.redraw(); });
+  o.q('run').addEventListener('click', function () { if (!timer) timer = setInterval(step, N > 100 ? 8 : 120); });
+  o.draw = function (c) {
+    var ctx = o.ctx, x0 = 12, cw = (W - 24) / N, rows = [[34, 'lin'], [104, 'bin']];
+    rows.forEach(function (r) {
+      var y = r[0], h = 36;
+      FV.label(ctx, o.t[r[1]] + '：' + (r[1] === 'lin' ? ls : bs) + ' ' + o.t.steps + ((r[1] === 'lin' ? li === target : bdone) ? '　' + o.t.found : ''), x0, y - 8, c.text);
+      for (var i = 0; i < N; i++) {
+        var col = c.surface, a = 1;
+        if (r[1] === 'lin') { if (i < li) col = c.muted; if (i === li) col = i === target ? c.good : c.warn; }
+        else { if (i < lo || i > hi) { col = c.border; } else col = c.accent; a = (i < lo || i > hi) ? 0.6 : 0.35; if (i === mid) { col = i === target ? c.good : c.warn; a = 1; } }
+        ctx.globalAlpha = r[1] === 'lin' && i < li ? 0.5 : a;
+        ctx.fillStyle = col; ctx.fillRect(x0 + i * cw + (cw > 3 ? 0.5 : 0), y, Math.max(cw - (cw > 3 ? 1 : 0), 0.6), h);
+        ctx.globalAlpha = 1;
+      }
+      ctx.strokeStyle = c.border; ctx.strokeRect(x0, y, W - 24, h);
+      FV.line(ctx, x0 + (target + 0.5) * cw, y - 3, x0 + (target + 0.5) * cw, y + h + 3, c.good, 2);
+    });
+    o.out(o.t.worst + ' <b>' + (Math.ceil(Math.log2(N)) + 1) + '</b> ' + o.t.steps + '　N = ' + N);
+  };
+  reset(); o.redraw();
+})();
+</script>
+</div>

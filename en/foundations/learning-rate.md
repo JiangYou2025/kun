@@ -40,6 +40,8 @@ A simple example shows its effect on convergence. To minimize $\mathcal{L}=\thet
 - $\eta=1.0$: factor $-1$, **oscillates forever** between $+1$ and $-1$.
 - $\eta=1.5$: factor $-2$, $|\theta|$ keeps growing — **divergence**!
 
+{% include fviz/optimizer.html %}
+
 ## Learning rate schedules
 
 A fixed learning rate is often not optimal. The common approach is **large first, then small**:
@@ -60,6 +62,8 @@ for epoch in range(100):
     sched.step()                 # update the learning rate once per epoch
     print(sched.get_last_lr())
 ```
+
+{% include fviz/lr-schedule.html %}
 
 ## How to choose a learning rate
 

@@ -65,6 +65,8 @@ plt.legend(); plt.title("Trend decomposition")
 
 Notice how the data **flows freely** between Pandas, NumPy and Matplotlib with almost no manual conversion — this is exactly the value of a unified stack.
 
+{% include fviz/rolling-trend.html %}
+
 ## Relevance to time series forecasting
 
 When building forecasting models such as **KUN / Kernel U-Net**, each part of the stack has its own job:

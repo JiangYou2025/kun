@@ -64,6 +64,8 @@ print(round(theta, 4))   # ≈ 2.0
 
 Quand la fonction est trop complexe pour être résolue analytiquement (c'est le cas des réseaux de neurones), on recourt à des méthodes **itératives** comme la [descente de gradient](../gradient-descent/), qui s'approchent de la solution pas à pas.
 
+{% include fviz/optimizer.html %}
+
 ## Pourquoi c'est important / où on l'utilise
 
 - **Entraîner = optimiser** : presque tout « apprentissage » peut s'écrire comme « minimiser une certaine perte ».

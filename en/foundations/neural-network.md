@@ -24,6 +24,8 @@ Each workshop has many workers (neurons). What each worker does is extremely sim
 
 A single worker is dumb, but thousands of workers cooperating in layers can, as a whole, fit extremely complex patterns. **The power of a neural network comes not from any single neuron, but from layered composition and a vast number of parameters.**
 
+{% include fviz/relu-approx.html %}
+
 ## The math
 
 The computation of one neuron is a "weighted sum + activation":

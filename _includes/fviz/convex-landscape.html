@@ -1,0 +1,63 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-convex" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span data-g="f"><button data-v="cvx" data-t="cvx"></button><button data-v="ncv" class="on" data-t="ncv"></button></span>
+  <label><span data-t="x0"></span><input type="range" data-k="x0" min="-3.8" max="3.8" step="0.05" value="1.2"></label>
+  <label><span data-t="lr"></span> η<input type="range" data-k="lr" min="0.01" max="0.25" step="0.01" value="0.1"></label>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '⛰️ 凸 vs 非凸：梯度下降会停在哪里？', hint: '橙点是起点，沿曲线的点是梯度下降每一步的位置。底部色带表示“从这里出发最终落到哪个谷底”：绿色 = 全局最小，红色 = 局部最小。非凸函数有两个谷，从右边出发会被困在较浅的局部最小；切换到凸函数，色带全绿——无论从哪里出发都通向同一个全局最小。', cvx: '凸函数', ncv: '非凸函数', x0: '起点', lr: '学习率', end: '60 步后', glob: '✓ 到达全局最小', loc: '✗ 困在局部最小', div: '⚠️ 发散：学习率太大', slow: '…还没收敛，多走几步或调大学习率', basin: '各起点的归宿' },
+    en: { title: '⛰️ Convex vs non-convex: where does gradient descent stop?', hint: 'The orange dot is the starting point; the dots along the curve are the successive gradient-descent steps. The strip at the bottom shows, for every possible start, which valley it ends up in: green = global minimum, red = local minimum. The non-convex function has two valleys, and starting on the right traps you in the shallower local minimum. Switch to the convex function: the strip turns all green, since every start leads to the same global minimum.', cvx: 'convex', ncv: 'non-convex', x0: 'start', lr: 'learning rate', end: 'after 60 steps', glob: '✓ reached the global minimum', loc: '✗ stuck in a local minimum', div: '⚠️ diverged: learning rate too large', slow: '… not converged yet, raise the learning rate', basin: 'where each start ends up' },
+    fr: { title: '⛰️ Convexe ou non convexe : où s’arrête la descente de gradient ?', hint: 'Le point orange est le départ ; les points le long de la courbe sont les pas successifs de la descente de gradient. La bande du bas indique, pour chaque départ possible, dans quelle vallée on aboutit : vert = minimum global, rouge = minimum local. La fonction non convexe a deux vallées, et partir de la droite vous piège dans le minimum local, moins profond. Passez à la fonction convexe : la bande devient entièrement verte, car tout départ mène au même minimum global.', cvx: 'convexe', ncv: 'non convexe', x0: 'départ', lr: 'taux d’apprentissage', end: 'après 60 pas', glob: '✓ minimum global atteint', loc: '✗ bloqué dans un minimum local', div: '⚠️ divergence : taux trop grand', slow: '… pas encore convergé, augmentez le taux', basin: 'destination de chaque départ' }
+  };
+  var W = 560, H = 300, STEPS = 60;
+  var o = FV.init('fv-convex', T, W, H); if (!o) return;
+  var kind = 'ncv';
+  FV.group(o, 'f', function (v) { kind = v; });
+  var F = {
+    ncv: { f: function (x) { return 0.06 * x * x * x * x - 0.9 * x * x + 0.4 * x; }, d: function (x) { return 0.24 * x * x * x - 1.8 * x + 0.4; } },
+    cvx: { f: function (x) { return 0.35 * (x + 0.8) * (x + 0.8) - 4.2; }, d: function (x) { return 0.7 * (x + 0.8); } }
+  };
+  function gmin(k) { var b = 0, bv = Infinity; for (var x = -4; x <= 4; x += 0.001) { var v = F[k].f(x); if (v < bv) { bv = v; b = x; } } return b; }
+  var GM = { ncv: gmin('ncv'), cvx: gmin('cvx') };
+  function run(x, lr, n) { var P = [x]; for (var i = 0; i < n; i++) { x -= lr * F[kind].d(x); P.push(x); if (!isFinite(x) || Math.abs(x) > 50) break; } return P; }
+  var m = FV.map(W, H, [-4, 4], [-5, 4], { l: 34, r: 10, t: 10, b: 58 });
+  o.draw = function (c) {
+    var ctx = o.ctx, x0 = o.v('x0'), lr = o.v('lr'), fn = F[kind], gm = GM[kind];
+    FV.axes(ctx, m, c, { yt: [-4, -2, 0, 2, 4] });
+    FV.curve(ctx, m, fn.f, c.accent, 2.5);
+    /* basins of attraction */
+    var y = H - 18, x1 = m.p.l, x2 = W - m.p.r;
+    for (var X = x1; X < x2; X += 2) {
+      var xs = m.xr[0] + (X - x1) / (x2 - x1) * 8, e = run(xs, lr, 400), xe = e[e.length - 1], col;
+      if (!isFinite(xe) || Math.abs(xe) > 50) col = c.muted;
+      else col = Math.abs(xe - gm) < 0.3 ? c.good : Math.abs(fn.d(xe)) < 0.05 ? c.bad : c.muted;
+      ctx.fillStyle = col; ctx.globalAlpha = 0.75; ctx.fillRect(X, y, 2, 8);
+    }
+    ctx.globalAlpha = 1;
+    FV.label(ctx, o.t.basin, x1, y - 4, c.muted, 'left', '11px system-ui,sans-serif');
+    FV.line(ctx, m.X(x0), y - 2, m.X(x0), y + 10, c.warn, 2);
+    var P = run(x0, lr, STEPS);
+    ctx.save(); FV.clip(ctx, m);
+    ctx.beginPath(); ctx.strokeStyle = c.warn; ctx.lineWidth = 1; ctx.globalAlpha = 0.6;
+    P.forEach(function (x, i) { var Xp = m.X(Math.max(-60, Math.min(60, x))), Yp = m.Y(fn.f(Math.max(-60, Math.min(60, x)))); i ? ctx.lineTo(Xp, Yp) : ctx.moveTo(Xp, Yp); }); ctx.stroke();
+    ctx.globalAlpha = 1;
+    P.forEach(function (x, i) { if (Math.abs(x) < 5) FV.dot(ctx, m.X(x), m.Y(fn.f(x)), i ? 3 : 6, i ? c.accent2 : c.warn); });
+    ctx.restore();
+    FV.label(ctx, '★', m.X(gm), m.Y(fn.f(gm)) + 6, c.good, 'center', '17px system-ui,sans-serif');
+    var xe = P[P.length - 1], st;
+    if (!isFinite(xe) || Math.abs(xe) > 50) st = o.t.div;
+    else if (Math.abs(fn.d(xe)) > 0.05) st = o.t.slow;
+    else st = Math.abs(xe - gm) < 0.3 ? o.t.glob : o.t.loc;
+    o.out(o.t.end + ' x = <b>' + (isFinite(xe) ? xe.toFixed(3) : '∞') + '</b>, f(x) = ' + (isFinite(xe) && Math.abs(xe) < 50 ? fn.f(xe).toFixed(3) : '∞') + '　' + st);
+  };
+  o.redraw();
+})();
+</script>
+</div>

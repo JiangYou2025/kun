@@ -47,6 +47,8 @@ $$
 
 Entre plusieurs variables aléatoires, la dépendance se décrit par la **loi jointe** et la **covariance** $\operatorname{Cov}(X,Y)$.
 
+{% include fviz/distributions.html %}
+
 ## Un exemple concret
 
 Variable aléatoire de Bernoulli : un lancer unique, avec une probabilité de pile $p=0.3$ ; on pose $X=1$ pour pile et $X=0$ pour face.

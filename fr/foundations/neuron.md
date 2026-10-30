@@ -41,6 +41,8 @@ $$ a = \sigma(z) = \sigma(\mathbf{w}^\top \mathbf{x} + b) $$
 
 Sans $\sigma$ (c'est-à-dire si $\sigma$ est l'identité), quel que soit le nombre de couches empilées, le réseau entier n'est qu'une composition de transformations linéaires, donc encore une fonction linéaire — voilà pourquoi la [fonction d'activation](../activation-function/) est indispensable.
 
+{% include fviz/neuron-2d.html %}
+
 ## Un exemple concret
 
 Supposons un neurone à deux entrées $x_1, x_2$, de poids $\mathbf{w} = (0.5,\ -1.2)$, de biais $b = 0.3$, avec ReLU comme fonction d'activation ($\mathrm{ReLU}(z)=\max(0,z)$).

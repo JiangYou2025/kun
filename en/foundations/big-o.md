@@ -26,6 +26,8 @@ $$O(1) < O(\log n) < O(n) < O(n\log n) < O(n^2) < O(2^n)$$
 
 The further left, the better. Watch out for **exponential** growth such as $O(2^n)$: at $n=50$ it is already an astronomical number, and the algorithm basically "won't finish".
 
+{% include fviz/big-o.html %}
+
 ## Key points
 
 How do you read off the complexity of a piece of code? Look at how the loops are nested:

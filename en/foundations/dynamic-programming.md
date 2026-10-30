@@ -25,6 +25,8 @@ A problem is usually amenable to DP when it satisfies two conditions:
 - **Overlapping subproblems**: the same small problems are needed again and again (otherwise caching is pointless).
 - **Optimal substructure**: the optimal solution to the large problem can be assembled from optimal solutions to the smaller ones.
 
+{% include fviz/fib-memo.html %}
+
 ## Key points
 
 DP comes in two equivalent implementation styles:

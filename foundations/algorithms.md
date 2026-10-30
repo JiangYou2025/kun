@@ -23,6 +23,8 @@ math: true
 
 算法关心的不只是「能不能解」，更是「用多少时间、多少内存解」。衡量这一点的尺子就是 [Big-O 复杂度](../big-o/)。
 
+{% include fviz/binary-search.html %}
+
 ## 核心要点
 
 一个算法通常要满足几条性质：

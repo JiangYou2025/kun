@@ -1,0 +1,72 @@
+{% include fviz/base.html %}
+<div class="fviz" id="fv-broadcast" markdown="0">
+<h4 data-t="title"></h4>
+<p class="hint" data-t="hint"></p>
+<canvas></canvas>
+<div class="ctl">
+  <span><span data-t="a"></span> <span data-g="a"><button data-v="4,3" class="on">(4, 3)</button><button data-v="4,1">(4, 1)</button><button data-v="1,3">(1, 3)</button><button data-v="3">(3,)</button></span></span>
+  <span><span data-t="b"></span> <span data-g="b"><button data-v="3" class="on">(3,)</button><button data-v="4">(4,)</button><button data-v="4,1">(4, 1)</button><button data-v="1,3">(1, 3)</button><button data-v="">()</button></span></span>
+</div>
+<p class="out" data-k="out"></p>
+<script>
+(function () {
+  var T = {
+    zh: { title: '📐 NumPy 广播：形状不同的数组怎样相加', hint: '选两个形状，看 A + B 的结果。规则：把两个形状<b>靠右对齐</b>，缺的维度左边补 1；每一维要么相等，要么有一个是 1——是 1 的那一维被“拉伸”（虚线格子是虚拟复制，并不真占内存）。否则报错。', a: 'A 的形状', b: 'B 的形状', err: '无法广播', ok: '可以广播', rule: '逐维对比（从右往左）', eq: '相等', one: '为 1，拉伸', bad: '既不相等也不是 1', pad: '补 1', scalar: '标量', colon: '：', sep: '；' },
+    en: { title: '📐 NumPy broadcasting: adding arrays of different shapes', hint: 'Pick two shapes and look at A + B. The rule: align both shapes <b>to the right</b> and pad the missing dimensions with 1 on the left; in every dimension the sizes must be equal or one of them must be 1, and a size-1 dimension is “stretched” (dashed cells are virtual copies that take no extra memory). Otherwise you get an error.', a: 'shape of A', b: 'shape of B', err: 'cannot broadcast', ok: 'broadcasts', rule: 'dimension by dimension (right to left)', eq: 'equal', one: 'is 1, stretched', bad: 'neither equal nor 1', pad: 'padded with 1', scalar: 'scalar', colon: ': ', sep: '; ' },
+    fr: { title: '📐 Le broadcasting NumPy : additionner des tableaux de formes différentes', hint: 'Choisissez deux formes et regardez A + B. La règle : on aligne les deux formes <b>à droite</b> et on complète à gauche par des 1 ; dans chaque dimension, les tailles doivent être égales ou l’une doit valoir 1, et une dimension de taille 1 est « étirée » (les cases en pointillés sont des copies virtuelles qui n’occupent pas de mémoire). Sinon, NumPy lève une erreur.', a: 'forme de A', b: 'forme de B', err: 'broadcasting impossible', ok: 'broadcasting possible', rule: 'dimension par dimension (de droite à gauche)', eq: 'égales', one: 'vaut 1, étirée', bad: 'ni égales ni égales à 1', pad: 'complété par 1', scalar: 'scalaire', colon: ' : ', sep: ' ; ' }
+  };
+  var W = 560, H = 204;
+  var o = FV.init('fv-broadcast', T, W, H); if (!o) return;
+  var sa = [4, 3], sb = [3];
+  var parse = function (v) { return v === '' ? [] : v.split(',').map(Number); };
+  FV.group(o, 'a', function (v) { sa = parse(v); });
+  FV.group(o, 'b', function (v) { sb = parse(v); });
+  var shp = function (s) { return s.length === 0 ? '()' : s.length === 1 ? '(' + s[0] + ',)' : '(' + s.join(', ') + ')'; };
+  var pad2 = function (s) { var p = s.slice(); while (p.length < 2) p.unshift(1); return p; };
+  /* value of a padded 2-D array at (i, j); A uses 10·i + j, B uses 100, 200, … in flat order */
+  function valA(p, i, j) { return 10 * i + j; }
+  function valB(p, i, j) { return 100 * (i * p[1] + j + 1); }
+  function grid(ctx, c, x, y, real, shown, val, col, title, cw, ch) {
+    FV.label(ctx, title, x, y - 10, c.text, 'left', 'bold 12px system-ui,sans-serif');
+    for (var i = 0; i < shown[0]; i++) for (var j = 0; j < shown[1]; j++) {
+      var X = x + j * cw, Y = y + i * ch, virt = i >= real[0] || j >= real[1];
+      var ri = i < real[0] ? i : 0, rj = j < real[1] ? j : 0;
+      ctx.globalAlpha = virt ? 0.12 : 0.3; ctx.fillStyle = col; ctx.fillRect(X, Y, cw - 2, ch - 2); ctx.globalAlpha = 1;
+      ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 1.2; ctx.setLineDash(virt ? [3, 3] : []);
+      ctx.strokeRect(X + 0.5, Y + 0.5, cw - 3, ch - 3); ctx.restore();
+      FV.label(ctx, String(val(real, ri, rj)), X + cw / 2 - 1, Y + ch / 2 + 3, virt ? c.muted : c.text, 'center', '11px system-ui,sans-serif');
+    }
+  }
+  o.draw = function (c) {
+    var ctx = o.ctx, pa = pad2(sa), pb = pad2(sb), ok = true, res = [], why = [];
+    for (var d = 1; d >= 0; d--) {
+      var a = pa[d], b = pb[d], dimA = d - (2 - sa.length), dimB = d - (2 - sb.length);
+      var la = dimA < 0 ? '1 (' + o.t.pad + ')' : String(a), lb = dimB < 0 ? '1 (' + o.t.pad + ')' : String(b);
+      if (a === b) { res[d] = a; why.push(la + ' vs ' + lb + ' ✓ ' + o.t.eq); }
+      else if (a === 1 || b === 1) { res[d] = Math.max(a, b); why.push(la + ' vs ' + lb + ' ✓ ' + o.t.one); }
+      else { ok = false; why.push('<span style="color:' + c.bad + '">' + la + ' vs ' + lb + ' ✗ ' + o.t.bad + '</span>'); }
+    }
+    var cw = 34, ch = 28, y = 42, x0 = 14, gap = 44;
+    var showA = ok ? res : pa, showB = ok ? res : pb;
+    var wA = showA[1] * cw, wB = showB[1] * cw;
+    grid(ctx, c, x0, y, pa, showA, valA, c.accent, 'A ' + shp(sa), cw, ch);
+    var xb = x0 + wA + gap;
+    FV.label(ctx, '+', x0 + wA + gap / 2 - 2, y + 2 * ch, c.text, 'center', 'bold 20px system-ui,sans-serif');
+    grid(ctx, c, xb, y, pb, showB, valB, c.warn, 'B ' + (sb.length ? shp(sb) : o.t.scalar), cw, ch);
+    var xr = xb + wB + gap;
+    if (ok) {
+      FV.label(ctx, '=', xb + wB + gap / 2 - 2, y + 2 * ch, c.text, 'center', 'bold 20px system-ui,sans-serif');
+      grid(ctx, c, xr, y, res, res, function (p, i, j) {
+        var ai = pa[0] === 1 ? 0 : i, aj = pa[1] === 1 ? 0 : j, bi = pb[0] === 1 ? 0 : i, bj = pb[1] === 1 ? 0 : j;
+        return valA(pa, ai, aj) + valB(pb, bi, bj);
+      }, c.good, 'A + B ' + shp(res), cw, ch);
+    } else {
+      FV.label(ctx, '✗ ' + o.t.err, xb + wB + 30, y + 2 * ch, c.bad, 'left', 'bold 14px system-ui,sans-serif');
+    }
+    FV.label(ctx, shp(sa) + ' → ' + shp(pa) + '      ' + (sb.length ? shp(sb) : '()') + ' → ' + shp(pb), x0, H - 14, c.muted, 'left', '12px system-ui,sans-serif');
+    o.out((ok ? '✓ ' + o.t.ok + ' → <b>' + shp(res) + '</b>' : '<span style="color:' + c.bad + '">✗ ' + o.t.err + '</span>') + '　' + o.t.rule + o.t.colon + why.join(o.t.sep));
+  };
+  o.redraw();
+})();
+</script>
+</div>

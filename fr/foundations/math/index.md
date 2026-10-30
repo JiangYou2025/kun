@@ -22,6 +22,8 @@ Les mathématiques du « changement », fondement de l'optimisation et de l'entr
 - **[Règle de dérivation en chaîne](../chain-rule/)** : dériver une fonction composée, principe mathématique de la **[rétropropagation](../backpropagation/)**
 - **Intégrale** : calculer des aires / des quantités cumulées ; nécessaire pour normaliser une densité de probabilité
 
+{% include fviz/derivative.html %}
+
 ## 2. [Algèbre linéaire](../linear-algebra/)
 
 Le « langage » des données et des modèles — tout y est vecteur ou matrice.
@@ -33,6 +35,8 @@ Le « langage » des données et des modèles — tout y est vecteur ou matrice.
 - **Valeurs propres et vecteurs propres** : stabilité, directions principales
 - **Décompositions matricielles ([ACP](../pca/) / [SVD](../svd/))** : réduction de dimension et compression
 
+{% include fviz/matrix-transform.html %}
+
 ## 3. [Probabilités et statistiques](../probability-statistics/)
 
 Les outils pour raisonner et décider dans l'**incertitude**.
@@ -43,6 +47,8 @@ Les outils pour raisonner et décider dans l'**incertitude**.
 - **Loi des grands nombres et théorème central limite** : pourquoi la « moyenne » et la « loi normale » sont partout
 - **Estimation** : [maximum de vraisemblance](../maximum-likelihood/) (MLE), maximum a posteriori (MAP)
 - **Tests d'hypothèses et intervalles de confiance** : juger si une « différence est significative »
+
+{% include fviz/clt.html %}
 
 ## 4. [Optimisation](../optimization/)
 
@@ -63,6 +69,8 @@ Elle mesure la « quantité d'information » et l'« écart entre distributions 
 - **[Entropie croisée](../cross-entropy/) (cross-entropy)** : la perte la plus courante en classification
 - **[Divergence KL](../kl-divergence/)** : la « distance » entre deux distributions
 - **Information mutuelle** : combien d'information deux variables partagent
+
+{% include fviz/cross-entropy.html %}
 
 ---
 

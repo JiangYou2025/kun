@@ -22,6 +22,8 @@ Any linear transformation (matrix), however complicated, can essentially be spli
 
 The "scaling factors" are the **singular values**, which measure "how strongly" the matrix acts along each principal direction. Directions with large singular values carry the main structure of the data / transformation, while directions with small singular values are often noise or minor detail — **discarding small singular values = compression / denoising**, and this is where SVD's power comes from.
 
+{% include fviz/svd-lowrank.html %}
+
 ## Mathematical formulation
 
 Any matrix $A\in\mathbb{R}^{m\times n}$ can be decomposed as:

@@ -66,6 +66,8 @@ To carry an error from $T$ steps back, this factor has to be multiplied $T$ time
 
 This is the typical form the [vanishing / exploding gradient](../vanishing-exploding-gradient/) problem takes in sequence models. Since $\tanh'$ is at most 1 and close to 0 far from the origin, a plain RNN is especially prone to vanishing gradients and **finds it hard to remember information from dozens of steps earlier**. Exploding gradients are usually mitigated with "gradient clipping", while vanishing gradients gave rise to the [LSTM](../lstm/).
 
+{% include fviz/bptt-gradient.html %}
+
 ## A concrete example
 
 Let's walk through the numbers of a tiny one-dimensional RNN to see how memory accumulates. Let $W_x = 0.5,\ W_h = 0.9,\ b = 0$, the input sequence $x = [1, 1, 1]$, and $h_0 = 0$:

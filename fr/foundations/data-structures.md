@@ -37,6 +37,8 @@ La complexité d'une même opération varie fortement d'une structure à l'autre
 
 Retenez un compromis fondamental : **échanger de l'espace contre du temps**. Une table de hachage occupe un peu plus de mémoire, en échange d'une recherche quasi instantanée.
 
+{% include fviz/hash-lookup.html %}
+
 ## Un exemple
 
 Une même tâche — « trouver les éléments qui apparaissent plusieurs fois » — n'a pas du tout la même complexité selon la structure utilisée :

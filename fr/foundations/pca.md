@@ -20,6 +20,8 @@ En ne gardant alors que la coordonnée sur le premier axe, on comprime des donn�
 
 Pourquoi mesurer l'information par la **variance** ? Parce qu'une grande variance signifie que les exemples se distinguent bien dans cette direction et portent beaucoup de différences ; dans une direction de variance proche de 0, tous les exemples se ressemblent, et la garder ne sert à rien.
 
+{% include fviz/pca-2d.html %}
+
 ## Principe et formulation mathématique
 
 Voici la démarche standard de l'ACP. Soit une matrice de données $X$ à $n$ lignes (exemples) et $p$ colonnes (variables).

@@ -21,6 +21,8 @@ math: true
 
 $$h = \sigma(Wx + b)$$
 
+{% include fviz/activation.html %}
+
 ## 2. Comment entraîner : la [rétropropagation](../backpropagation/)
 
 - **[Fonction de perte](../loss-function/)** : mesure l'écart entre la prédiction et la réalité
@@ -28,6 +30,8 @@ $$h = \sigma(Wx + b)$$
 - **[Différentiation automatique](../autodiff/)** : le framework calcule ces dérivées automatiquement (vous n'écrivez que la propagation avant)
 - **[Optimiseurs](../optimizer/)** : SGD, Momentum, RMSProp, **[Adam](../adam/)** (le plus utilisé)
 - **[Taux d'apprentissage](../learning-rate/)** : l'hyperparamètre le plus important — trop grand, l'entraînement diverge ; trop petit, il est trop lent
+
+{% include fviz/optimizer.html %}
 
 ## 3. Éviter le [surapprentissage](../overfitting/)
 
@@ -37,6 +41,8 @@ Les modèles profonds ont énormément de paramètres : la généralisation est
 - **[Normalisation par lots (BatchNorm)](../batchnorm/) / normalisation par couche (LayerNorm)** : stabiliser l'entraînement
 - **[Arrêt précoce (early stopping)](../early-stopping/)** : s'arrêter quand la validation se dégrade
 - **Augmentation de données / décroissance des poids** : régularisation supplémentaire
+
+{% include fviz/dropout.html %}
 
 ## 4. [Architectures](../architectures/) courantes
 

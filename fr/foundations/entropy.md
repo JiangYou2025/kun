@@ -22,6 +22,8 @@ Voyez l'entropie comme « **le nombre moyen de questions fermées (oui / non) à
 
 La règle : **plus c'est uniforme et plus il y a de possibilités → plus c'est incertain → plus l'entropie est élevée** ; plus c'est concentré sur un résultat → plus c'est certain → plus l'entropie est faible. L'entropie atteint son maximum pour la distribution uniforme.
 
+{% include fviz/entropy-bars.html %}
+
 ## Formulation mathématique
 
 L'entropie de Shannon d'une variable aléatoire discrète $X$ :

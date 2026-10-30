@@ -23,6 +23,8 @@ Both methods will find the person, but their efficiency is worlds apart. For a p
 
 Algorithms are concerned not only with "can it be solved" but even more with "how much time and memory does it take to solve". The yardstick for this is [Big-O complexity](../big-o/).
 
+{% include fviz/binary-search.html %}
+
 ## Key points
 
 An algorithm usually has to satisfy a few properties:
