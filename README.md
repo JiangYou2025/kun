@@ -63,6 +63,8 @@ Chinese is the source language and lives at the root; `en/` and `fr/` mirror it 
 
 🌟 If you find this resource useful, consider adding a star to this repository and citing our research:
 
+- J. You, A. Cela, R. Natowicz, J. Ouanounou, P. Siarry. **Kernel-U-Net: Multivariate Time Series Forecasting using Custom Kernels.** In *2024 International Conference on INnovations in Intelligent SysTems and Applications (INISTA)*, pp. 1–8, 2024. [doi:10.1109/INISTA62901.2024.10683862](https://doi.org/10.1109/INISTA62901.2024.10683862)
+
 ```bibtex
 @inproceedings{you_2024_kernel_u_net,
   author={You, Jiang and Cela, Arben and Natowicz, René and Ouanounou, Jacob and Siarry, Patrick},
@@ -77,6 +79,8 @@ Chinese is the source language and lives at the root; `en/` and `fr/` mirror it 
 ```
 
 For anomaly prediction, please use:
+
+- J. You, A. Cela, R. Natowicz, J. Ouanounou, P. Siarry. **Anomaly Prediction: A Novel Approach with Explicit Delay and Horizon.** In *2024 IEEE 20th International Conference on Intelligent Computer Communication and Processing (ICCP)*, 2024. [arXiv:2408.04377](https://arxiv.org/abs/2408.04377)
 
 ```bibtex
 @inproceedings{you_2024_anomaly_prediction,
