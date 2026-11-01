@@ -1,7 +1,7 @@
 # KUN · Kernel U-Net — documentation & learning site
 
 <p align="center">
-  <b>English</b> | <a href="README.zh.md">简体中文</a> | <a href="README.fr.md">Français</a>
+  <b>🇬🇧 English</b> | <a href="README.zh.md">🇨🇳 简体中文</a> | <a href="README.fr.md">🇫🇷 Français</a>
 </p>
 
 **🔗 Live site: <https://jiangyou2025.github.io/kun/en/>** · [中文](https://jiangyou2025.github.io/kun/zh/) · [Français](https://jiangyou2025.github.io/kun/fr/)
