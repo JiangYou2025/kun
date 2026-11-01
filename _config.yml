@@ -30,6 +30,8 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
+  - README.zh.md
+  - README.fr.md
   - vendor
   - .github
   - notebooks
